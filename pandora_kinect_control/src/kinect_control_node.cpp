@@ -35,14 +35,14 @@
 * Author:  Evangelos Apostolidis
 *********************************************************************/
 
-#include <pandora_kinect_control/pandora_kinect_control.h>
+#include <pandora_kinect_control/kinect_control.h>
 
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "pandora_kinect_control_node");
+  ros::init(argc, argv, "kinect_control_node");
   ros::NodeHandle nodeHandle;
-   std::string actionName = "move_kinect_action";
+  std::string actionName = "move_kinect_action";
   pandora_kinect_control::PandoraMoveKinectActionServer pandoraMoveKinectActionServer(
     actionName,
     nodeHandle);

@@ -34,9 +34,11 @@
 *
 * Author:  Evangelos Apostolidis
 *********************************************************************/
+#ifndef PANDORA_KINECT_CONTROL_KINECT_CONTROL_H
+#define PANDORA_KINECT_CONTROL_KINECT_CONTROL_H
 
 #include <ros/ros.h>
-#include <tf/tf.h>
+#include <tf/transform_listener.h>
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/Imu.h>
 #include <actionlib/server/simple_action_server.h>
@@ -51,7 +53,7 @@ namespace pandora_kinect_control
     CENTER = 2,
     RIGHT = 3
   };
-  
+
   class PandoraMoveKinectActionServer
   {
     private:
@@ -67,10 +69,7 @@ namespace pandora_kinect_control
       void compassCallback(
         const sensor_msgs::ImuConstPtr& msg);
       int position_;
-      double compassYaw_;
-      double compassPitch_;
     public:
-
       PandoraMoveKinectActionServer(
         std::string name,
         ros::NodeHandle nodeHandle_);
@@ -82,3 +81,4 @@ namespace pandora_kinect_control
       void preemptCallback();
   };
 }  // namespace pandora_kinect_control
+#endif  // PANDORA_KINECT_CONTROL_KINECT_CONTROL_H

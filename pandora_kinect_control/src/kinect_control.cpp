@@ -35,16 +35,19 @@
 * Author:  Evangelos Apostolidis
 *********************************************************************/
 
-#include <pandora_kinect_control/pandora_kinect_control.h>
+#include <pandora_kinect_control/kinect_control.h>
 
 namespace pandora_kinect_control
 {
-  PandoraMoveKinectActionServer::PandoraMoveKinectActionServer(std::string name, ros::NodeHandle nodeHandle) : 
+  PandoraMoveKinectActionServer::PandoraMoveKinectActionServer(
+    std::string name,
+    ros::NodeHandle nodeHandle)
+  :
     actionServer_(nodeHandle, name, false),
     actionName_(name),
     nodeHandle_(nodeHandle)
   {
-    //register the goal and feeback callbacks
+    // register the goal and feeback callbacks
     actionServer_.registerGoalCallback(
       boost::bind(
         &PandoraMoveKinectActionServer::goalCallback,
@@ -62,14 +65,6 @@ namespace pandora_kinect_control
         "/kinect_orientation_yaw_joint_position_controller/command",
         5);
 
-    compassYaw_ = 0;
-    compassPitch_ = 0;
-    _compassSubscriber = nodeHandle_.subscribe(
-      "sensors/imu",
-      1,
-      &PandoraMoveKinectActionServer::compassCallback,
-      this);
-
     std_msgs::Float64 targetPosition;
     targetPosition.data = 0;
     kinect_pitch_publisher.publish(targetPosition);
@@ -86,13 +81,34 @@ namespace pandora_kinect_control
   {
     // accept the new goal
     int command = actionServer_.acceptNewGoal()->command;
-    if(
+    if (
       command == pandora_control_communications::MoveKinectGoal::CENTER )
     {
-      std_msgs::Float64 targetPosition;
-      targetPosition.data = 0;
-      kinect_pitch_publisher.publish(targetPosition);
-      kinect_yaw_publisher.publish(targetPosition);
+      tf::TransformListener tfListener;
+      tf::StampedTransform baseTransform;
+      double yaw;
+      double pitch;
+      double roll;
+      try
+      {
+        tfListener.lookupTransform(
+          "/map",
+          "/base_link",
+          ros::Time(0),
+          baseTransform);
+      }
+      catch (tf::TransformException ex)
+      {
+        ROS_ERROR("%s", ex.what());
+      }
+
+      baseTransform.getBasis().getRPY(roll, pitch, yaw);
+
+      std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
+      pitchTargetPosition.data = 0 - pitch;
+      yawTargetPosition.data = 0 - yaw;
+      kinect_pitch_publisher.publish(pitchTargetPosition);
+      kinect_yaw_publisher.publish(yawTargetPosition);
       ROS_INFO("%s: Succeeded", actionName_.c_str());
       // set the action state to succeeded
       actionServer_.setSucceeded();
@@ -102,31 +118,52 @@ namespace pandora_kinect_control
     {
       std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
 
+      tf::TransformListener tfListener;
+      tf::StampedTransform baseTransform;
+      double yaw;
+      double pitch;
+      double roll;
+
+      double lastTime =ros::Time::now().toSec() - 5;
+
       while ( actionServer_.isPreemptRequested() == false )
       {
-        double lastTime =ros::Time::now().toSec() - 5;
         if ( (ros::Time::now().toSec() - lastTime ) < 3)
         {
+          try
+          {
+            tfListener.lookupTransform(
+              "/map",
+              "/base_link",
+              ros::Time(0),
+              baseTransform);
+          }
+          catch (tf::TransformException ex)
+          {
+            ROS_ERROR("%s", ex.what());
+          }
+          baseTransform.getBasis().getRPY(roll, pitch, yaw);
+
           switch (position_)
           {
             case START:
-              pitchTargetPosition.data = 0 - compassPitch_;
-              yawTargetPosition.data = 0.25 - compassYaw_;
+              pitchTargetPosition.data = 0 - pitch;
+              yawTargetPosition.data = 0.25 - yaw;
               position_ == LEFT;
               break;
             case LEFT:
-              pitchTargetPosition.data = 0 - compassPitch_;
-              yawTargetPosition.data = 0 - compassYaw_;
+              pitchTargetPosition.data = 0 - pitch;
+              yawTargetPosition.data = 0 - yaw;
               position_ == CENTER;
               break;
             case CENTER:
-              pitchTargetPosition.data = 0 - compassPitch_;
-              yawTargetPosition.data = -0.25 - compassYaw_;
+              pitchTargetPosition.data = 0 - pitch;
+              yawTargetPosition.data = -0.25 - yaw;
               position_ == RIGHT;
               break;
             case RIGHT:
-              pitchTargetPosition.data = 0 - compassPitch_;
-              yawTargetPosition.data = 0 - compassYaw_;
+              pitchTargetPosition.data = 0 - pitch;
+              yawTargetPosition.data = 0 - yaw;
               position_ == START;
               break;
           }
@@ -138,8 +175,7 @@ namespace pandora_kinect_control
     else
     {
       ROS_INFO("%s: Aborted, there is no such command", actionName_.c_str());
-      //set the action state to aborted
-      //~ pandora_control_communications::MoveKinectResult moveKinectResult;
+      // set the action state to aborted
       actionServer_.setAborted();
     }
   }
@@ -149,18 +185,5 @@ namespace pandora_kinect_control
     ROS_INFO("%s: Preempted", actionName_.c_str());
     // set the action state to preempted
     actionServer_.setPreempted();
-  }
-  void PandoraMoveKinectActionServer::compassCallback(
-    const sensor_msgs::ImuConstPtr& msg)
-  {
-    double compassRoll;
-    tf::Matrix3x3 matrix(
-      tf::Quaternion(
-        msg->orientation.x,
-        msg->orientation.y,
-        msg->orientation.z,
-        msg->orientation.w));
-
-    matrix.getRPY(compassRoll, compassPitch_, compassYaw_);
   }
 }  // namespace pandora_kinect_control
