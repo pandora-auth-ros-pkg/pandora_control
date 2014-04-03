@@ -13,9 +13,9 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <run_depend>pandora_control_communications</run_depend>
   <run_depend>pandora_laser_control</run_depend>
   <run_depend>pandora_kinect_control</run_depend>
+  <run_depend>pandora_motor_control</run_depend>
 
   <export>
     <metapackage/>
