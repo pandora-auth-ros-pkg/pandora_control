@@ -102,7 +102,7 @@ namespace pandora_kinect_control
     if (actionServer_.isActive())
     {
      if (
-        command_ == pandora_control_communications::MoveKinectGoal::CENTER )
+        command_ == pandora_kinect_control::MoveKinectGoal::CENTER )
       {
         if (position_ != START && position_ != CENTER)
         {
@@ -118,7 +118,7 @@ namespace pandora_kinect_control
         actionServer_.setSucceeded();
       }
       else if (
-        command_ == pandora_control_communications::MoveKinectGoal::MOVE)
+        command_ == pandora_kinect_control::MoveKinectGoal::MOVE)
       {
         std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
 
@@ -126,7 +126,7 @@ namespace pandora_kinect_control
 
         while (
           ros::ok() &&
-          command_ == pandora_control_communications::MoveKinectGoal::MOVE)
+          command_ == pandora_kinect_control::MoveKinectGoal::MOVE)
         {
           if ( (ros::Time::now().toSec() - lastTime ) > 3)
           {

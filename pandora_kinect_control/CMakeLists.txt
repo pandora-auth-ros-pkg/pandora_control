@@ -5,26 +5,36 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp 
   std_msgs
   sensor_msgs
-  pandora_control_communications
   actionlib
   actionlib_msgs
+  message_generation
   tf
   roslint
 )
 
+add_action_files(
+  FILES
+  MoveKinect.action
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  actionlib_msgs
+)
 
 catkin_package(
-  #~ INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES rrbot_plugin
   CATKIN_DEPENDS 
     roscpp 
     std_msgs
     sensor_msgs
-    pandora_control_communications
     actionlib
     actionlib_msgs
     tf
     roslint
+    message_runtime
 #  DEPENDS system_lib
 )
 

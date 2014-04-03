@@ -41,7 +41,7 @@
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/Imu.h>
 #include <actionlib/server/simple_action_server.h>
-#include <pandora_control_communications/MoveKinectAction.h>
+#include <pandora_kinect_control/MoveKinectAction.h>
 
 namespace pandora_kinect_control
 {
@@ -58,7 +58,7 @@ namespace pandora_kinect_control
     private:
     ros::NodeHandle nodeHandle_;
       actionlib::SimpleActionServer<
-        pandora_control_communications::MoveKinectAction> actionServer_;
+        pandora_kinect_control::MoveKinectAction> actionServer_;
       std::string actionName_;
 
       ros::Publisher kinect_pitch_publisher;
