@@ -1,0 +1,9 @@
+<launch>
+
+  <node
+    name="pandora_kinect_control_node"
+    pkg="pandora_control"
+    type="pandora_kinect_control_node"
+    respawn="false" output="screen"/>
+
+</launch>
