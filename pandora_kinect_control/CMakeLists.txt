@@ -31,6 +31,8 @@ catkin_package(
 include_directories(include
   ${catkin_INCLUDE_DIRS}
 )
+
+#~ set(CMAKE_BUILD_TYPE Debug)
   
 add_executable(
   kinect_control_node

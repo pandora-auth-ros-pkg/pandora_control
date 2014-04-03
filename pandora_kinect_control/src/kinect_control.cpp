@@ -58,18 +58,25 @@ namespace pandora_kinect_control
         this));
     kinect_pitch_publisher =
       nodeHandle_.advertise<std_msgs::Float64>(
-        "/kinect_orientation_pitch_joint_position_controller/command",
-        5);
-    kinect_yaw_publisher =
-      nodeHandle_.advertise<std_msgs::Float64>(
-        "/kinect_orientation_yaw_joint_position_controller/command",
+        "/kinect_pitch_joint_position_controller/command",
         5);
 
+    kinect_yaw_publisher =
+      nodeHandle_.advertise<std_msgs::Float64>(
+        "/kinect_yaw_joint_position_controller/command",
+        5);
+    ros::Duration(0.5).sleep();
     std_msgs::Float64 targetPosition;
     targetPosition.data = 0;
     kinect_pitch_publisher.publish(targetPosition);
     kinect_yaw_publisher.publish(targetPosition);
     position_ = START;
+
+    timer_ = nodeHandle_.createTimer(
+      ros::Duration(0.1),
+      &PandoraMoveKinectActionServer::timerCallback,
+      this);
+
     actionServer_.start();
   }
 
@@ -80,104 +87,7 @@ namespace pandora_kinect_control
   void PandoraMoveKinectActionServer::goalCallback()
   {
     // accept the new goal
-    int command = actionServer_.acceptNewGoal()->command;
-    if (
-      command == pandora_control_communications::MoveKinectGoal::CENTER )
-    {
-      tf::TransformListener tfListener;
-      tf::StampedTransform baseTransform;
-      double yaw;
-      double pitch;
-      double roll;
-      try
-      {
-        tfListener.lookupTransform(
-          "/map",
-          "/base_link",
-          ros::Time(0),
-          baseTransform);
-      }
-      catch (tf::TransformException ex)
-      {
-        ROS_ERROR("%s", ex.what());
-      }
-
-      baseTransform.getBasis().getRPY(roll, pitch, yaw);
-
-      std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
-      pitchTargetPosition.data = 0 - pitch;
-      yawTargetPosition.data = 0 - yaw;
-      kinect_pitch_publisher.publish(pitchTargetPosition);
-      kinect_yaw_publisher.publish(yawTargetPosition);
-      ROS_INFO("%s: Succeeded", actionName_.c_str());
-      // set the action state to succeeded
-      actionServer_.setSucceeded();
-    }
-    else if (
-      command == pandora_control_communications::MoveKinectGoal::MOVE)
-    {
-      std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
-
-      tf::TransformListener tfListener;
-      tf::StampedTransform baseTransform;
-      double yaw;
-      double pitch;
-      double roll;
-
-      double lastTime =ros::Time::now().toSec() - 5;
-
-      while ( actionServer_.isPreemptRequested() == false )
-      {
-        if ( (ros::Time::now().toSec() - lastTime ) < 3)
-        {
-          try
-          {
-            tfListener.lookupTransform(
-              "/map",
-              "/base_link",
-              ros::Time(0),
-              baseTransform);
-          }
-          catch (tf::TransformException ex)
-          {
-            ROS_ERROR("%s", ex.what());
-          }
-          baseTransform.getBasis().getRPY(roll, pitch, yaw);
-
-          switch (position_)
-          {
-            case START:
-              pitchTargetPosition.data = 0 - pitch;
-              yawTargetPosition.data = 0.25 - yaw;
-              position_ == LEFT;
-              break;
-            case LEFT:
-              pitchTargetPosition.data = 0 - pitch;
-              yawTargetPosition.data = 0 - yaw;
-              position_ == CENTER;
-              break;
-            case CENTER:
-              pitchTargetPosition.data = 0 - pitch;
-              yawTargetPosition.data = -0.25 - yaw;
-              position_ == RIGHT;
-              break;
-            case RIGHT:
-              pitchTargetPosition.data = 0 - pitch;
-              yawTargetPosition.data = 0 - yaw;
-              position_ == START;
-              break;
-          }
-          kinect_pitch_publisher.publish(pitchTargetPosition);
-          kinect_yaw_publisher.publish(yawTargetPosition);
-        }
-      }
-    }
-    else
-    {
-      ROS_INFO("%s: Aborted, there is no such command", actionName_.c_str());
-      // set the action state to aborted
-      actionServer_.setAborted();
-    }
+    command_ = actionServer_.acceptNewGoal()->command;
   }
 
   void PandoraMoveKinectActionServer::preemptCallback()
@@ -185,5 +95,76 @@ namespace pandora_kinect_control
     ROS_INFO("%s: Preempted", actionName_.c_str());
     // set the action state to preempted
     actionServer_.setPreempted();
+  }
+
+  void PandoraMoveKinectActionServer::timerCallback(const ros::TimerEvent&)
+  {
+    if (actionServer_.isActive())
+    {
+     if (
+        command_ == pandora_control_communications::MoveKinectGoal::CENTER )
+      {
+        if (position_ != START && position_ != CENTER)
+        {
+          std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
+          pitchTargetPosition.data = 0;
+          yawTargetPosition.data = 0;
+          kinect_pitch_publisher.publish(pitchTargetPosition);
+          kinect_yaw_publisher.publish(yawTargetPosition);
+          position_ = START;
+        }
+        ROS_INFO("%s: Succeeded", actionName_.c_str());
+        // set the action state to succeeded
+        actionServer_.setSucceeded();
+      }
+      else if (
+        command_ == pandora_control_communications::MoveKinectGoal::MOVE)
+      {
+        std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
+
+        double lastTime =ros::Time::now().toSec() - 5;
+
+        while (
+          ros::ok() &&
+          command_ == pandora_control_communications::MoveKinectGoal::MOVE)
+        {
+          if ( (ros::Time::now().toSec() - lastTime ) > 3)
+          {
+            switch (position_)
+            {
+              case START:
+                pitchTargetPosition.data = 0;
+                yawTargetPosition.data = 0.25;
+                position_ = LEFT;
+                break;
+              case LEFT:
+                pitchTargetPosition.data = 0;
+                yawTargetPosition.data = 0;
+                position_ = CENTER;
+                break;
+              case CENTER:
+                pitchTargetPosition.data = 0;
+                yawTargetPosition.data = -0.25;
+                position_ = RIGHT;
+                break;
+              case RIGHT:
+                pitchTargetPosition.data = 0;
+                yawTargetPosition.data = 0;
+                position_ = START;
+                break;
+            }
+            kinect_pitch_publisher.publish(pitchTargetPosition);
+            kinect_yaw_publisher.publish(yawTargetPosition);
+            lastTime = ros::Time::now().toSec();
+          }
+        }
+      }
+      else
+      {
+        ROS_INFO("%s: Aborted, there is no such command", actionName_.c_str());
+        // set the action state to aborted
+        actionServer_.setAborted();
+      }
+    }
   }
 }  // namespace pandora_kinect_control

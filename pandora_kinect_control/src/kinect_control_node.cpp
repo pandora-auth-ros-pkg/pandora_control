@@ -43,8 +43,10 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "kinect_control_node");
   ros::NodeHandle nodeHandle;
   std::string actionName = "move_kinect_action";
-  pandora_kinect_control::PandoraMoveKinectActionServer pandoraMoveKinectActionServer(
-    actionName,
-    nodeHandle);
-  ros::spin();
+  pandora_kinect_control::PandoraMoveKinectActionServer
+    pandoraMoveKinectActionServer(
+      actionName,
+      nodeHandle);
+  ros::MultiThreadedSpinner spinner(2);
+  spinner.spin();
 }

@@ -38,7 +38,6 @@
 #define PANDORA_KINECT_CONTROL_KINECT_CONTROL_H
 
 #include <ros/ros.h>
-#include <tf/transform_listener.h>
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/Imu.h>
 #include <actionlib/server/simple_action_server.h>
@@ -69,16 +68,21 @@ namespace pandora_kinect_control
       void compassCallback(
         const sensor_msgs::ImuConstPtr& msg);
       int position_;
+      int command_;
+
+      ros::Timer timer_;
+
+      void goalCallback();
+
+      void preemptCallback();
+
+      void timerCallback(const ros::TimerEvent&);
     public:
       PandoraMoveKinectActionServer(
         std::string name,
         ros::NodeHandle nodeHandle_);
 
       ~PandoraMoveKinectActionServer(void);
-
-      void goalCallback();
-
-      void preemptCallback();
   };
 }  // namespace pandora_kinect_control
 #endif  // PANDORA_KINECT_CONTROL_KINECT_CONTROL_H

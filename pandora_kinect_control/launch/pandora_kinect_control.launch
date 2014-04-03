@@ -2,7 +2,7 @@
 
   <node
     name="kinect_control_node"
-    pkg="pandora_control"
+    pkg="pandora_kinect_control"
     type="kinect_control_node"
     respawn="false" output="screen"/>
 
