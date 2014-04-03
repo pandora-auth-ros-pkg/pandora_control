@@ -23,10 +23,10 @@ catkin_package(
 #~ include_directories(${catkin_INCLUDE_DIRS})
 
 # To check lint : catkin_make roslint_pandora_control
-set(ROSLINT_CPP_OPTS
-  "--filter=-build/include_what_you_use")
-
-FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
-  RELATIVE ${PROJECT_SOURCE_DIR}
-)
-roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})
+#~ set(ROSLINT_CPP_OPTS
+  #~ "--filter=-build/include_what_you_use")
+#~ 
+#~ FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
+  #~ RELATIVE ${PROJECT_SOURCE_DIR}
+#~ )
+#~ roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})

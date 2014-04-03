@@ -48,6 +48,7 @@ add_executable(
   kinect_control_node
   src/kinect_control.cpp
   src/kinect_control_node.cpp)
+add_dependencies(kinect_control_node ${PROJECT_NAME}_gencpp)
 target_link_libraries(
   kinect_control_node 
   ${catkin_LIBRARIES} )
