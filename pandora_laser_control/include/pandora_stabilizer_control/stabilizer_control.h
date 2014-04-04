@@ -34,8 +34,8 @@
 *
 * Author:  Evangelos Apostolidis
 *********************************************************************/
-#ifndef PANDORA_STABILIZER_CONTROL_PANDORA_STABILIZER_CONTROL_H
-#define PANDORA_STABILIZER_CONTROL_PANDORA_STABILIZER_CONTROL_H
+#ifndef PANDORA_STABILIZER_CONTROL_STABILIZER_CONTROL_H
+#define PANDORA_STABILIZER_CONTROL_STABILIZER_CONTROL_H
 
 #include <sensor_msgs/Imu.h>
 #include <geometry_msgs/Quaternion.h>
@@ -60,4 +60,4 @@ namespace pandora_control
       StabilizerController(void);
   };
 }  // namespace pandora_control
-#endif  // PANDORA_STABILIZER_CONTROL_PANDORA_STABILIZER_CONTROL_H
+#endif  // PANDORA_STABILIZER_CONTROL_STABILIZER_CONTROL_H

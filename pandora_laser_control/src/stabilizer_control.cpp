@@ -34,7 +34,7 @@
 *
 * Author:  Evangelos Apostolidis
 *********************************************************************/
-#include "pandora_stabilizer_control/pandora_stabilizer_control.h"
+#include "pandora_stabilizer_control/stabilizer_control.h"
 
 namespace pandora_control
 {
