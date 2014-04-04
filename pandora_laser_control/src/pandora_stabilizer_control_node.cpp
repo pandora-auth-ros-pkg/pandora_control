@@ -39,6 +39,6 @@
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "pandora_stabilizer_control_node");
-  StabilizerController stabilizerController;
+  pandora_control::StabilizerController stabilizerController;
   ros::spin();
 }

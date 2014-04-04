@@ -34,8 +34,8 @@
 *
 * Author:  Evangelos Apostolidis
 *********************************************************************/
-#ifndef STABILIZER_STABILIZER_CONTROL_H
-#define STABILIZER_STABILIZER_CONTROL_H
+#ifndef PANDORA_STABILIZER_CONTROL_PANDORA_STABILIZER_CONTROL_H
+#define PANDORA_STABILIZER_CONTROL_PANDORA_STABILIZER_CONTROL_H
 
 #include <sensor_msgs/Imu.h>
 #include <geometry_msgs/Quaternion.h>
@@ -43,19 +43,21 @@
 #include "ros/ros.h"
 #include <tf/tf.h>
 
-class StabilizerController
+namespace pandora_control
 {
-  private:
-    ros::NodeHandle nh;
-    ros::Subscriber _compassSubscriber;
+  class StabilizerController
+  {
+    private:
+      ros::NodeHandle nodeHandle_;
+      ros::Subscriber compassSubscriber_;
 
-    ros::Publisher _laser_roll_publisher;
-    ros::Publisher _laser_pitch_publisher;
+      ros::Publisher laserRollPublisher_;
+      ros::Publisher laserPitchPublisher_;
 
-    void serveImuMessage(const sensor_msgs::ImuConstPtr& msg);
+      void serveImuMessage(const sensor_msgs::ImuConstPtr& msg);
 
-  public:
-    StabilizerController(void);
-};
-
-#endif  // STABILIZER_STABILIZER_CONTROL_H
+    public:
+      StabilizerController(void);
+  };
+}  // namespace pandora_control
+#endif  // PANDORA_STABILIZER_CONTROL_PANDORA_STABILIZER_CONTROL_H
