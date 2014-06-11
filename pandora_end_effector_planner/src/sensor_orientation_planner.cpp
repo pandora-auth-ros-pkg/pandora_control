@@ -36,62 +36,60 @@
 * Author:  Chris Zalidis
 *********************************************************************/
 
-#include <pandora_kinect_control/kinect_control.h>
+#include <pandora_end_effector_planner/sensor_orientation_planner.h>
 
 namespace pandora_control
 {
-  PandoraMoveKinectActionServer::PandoraMoveKinectActionServer(
-    std::string name,
+  SensorOrientationActionServer::SensorOrientationActionServer(
+    std::string actionName,
     ros::NodeHandle nodeHandle)
   :
     actionServer_(
       nodeHandle,
-      name,
-      boost::bind(&PandoraMoveKinectActionServer::callback, this, _1), false),
-    actionName_(name),
+      actionName,
+      boost::bind(&SensorOrientationActionServer::callback, this, _1), false),
+    actionName_(actionName),
     nodeHandle_(nodeHandle)
   {
     // get params from param server
-    nodeHandle_.param("max_pitch", maxPitch_, 0.4);
-    nodeHandle_.param("max_yaw", maxYaw_, 0.7);
-    nodeHandle_.param("time_step", timeStep_, 1.0);
+    if (getPlannerParams())
+    {
+      if (timeStep_ <= 0) {
+        ROS_WARN_STREAM("[" << actionName_ << "] Wrong time step value: "
+          << timeStep_ << ", updating as fast as possible!");
+        timeStep_ = 0.01;
+      }
 
-    if (timeStep_ <= 0) {
-      ROS_WARN_STREAM("[kinect_control] Wrong time step value: " << timeStep_
-         << ", updating as fast as possible!");
-      timeStep_ = 0.01;
+      kinect_pitch_publisher =
+        nodeHandle_.advertise<std_msgs::Float64>(
+          pitchCommandTopic_,
+          5, true);
+
+      kinect_yaw_publisher =
+        nodeHandle_.advertise<std_msgs::Float64>(
+          yawCommandTopic_,
+          5, true);
+
+      std_msgs::Float64 targetPosition;
+      targetPosition.data = 0;
+      kinect_pitch_publisher.publish(targetPosition);
+      kinect_yaw_publisher.publish(targetPosition);
+      position_ = CENTER;
+
+      actionServer_.start();
     }
-
-    kinect_pitch_publisher =
-      nodeHandle_.advertise<std_msgs::Float64>(
-        "kinect_pitch_controller/command",
-        5, true);
-
-    kinect_yaw_publisher =
-      nodeHandle_.advertise<std_msgs::Float64>(
-        "kinect_yaw_controller/command",
-        5, true);
-
-    std_msgs::Float64 targetPosition;
-    targetPosition.data = 0;
-    kinect_pitch_publisher.publish(targetPosition);
-    kinect_yaw_publisher.publish(targetPosition);
-    position_ = CENTER;
-
-
-    actionServer_.start();
   }
 
-  PandoraMoveKinectActionServer::~PandoraMoveKinectActionServer(void)
+  SensorOrientationActionServer::~SensorOrientationActionServer(void)
   {
   }
 
-  void PandoraMoveKinectActionServer::callback(
-      const pandora_kinect_control::MoveKinectGoalConstPtr& goal)
+  void SensorOrientationActionServer::callback(
+      const pandora_end_effector_planner::MoveSensorGoalConstPtr& goal)
   {
     command_ = goal->command;
 
-    if (command_ == pandora_kinect_control::MoveKinectGoal::CENTER )
+    if (command_ == pandora_end_effector_planner::MoveSensorGoal::CENTER )
     {
       if (position_ != CENTER)
       {
@@ -107,7 +105,7 @@ namespace pandora_control
       actionServer_.setSucceeded();
       return;
     }
-    else if (command_ == pandora_kinect_control::MoveKinectGoal::MOVE)
+    else if (command_ == pandora_end_effector_planner::MoveSensorGoal::MOVE)
     {
       ros::Rate rate(1/timeStep_);
 
@@ -161,6 +159,16 @@ namespace pandora_control
         rate.sleep();
       }
     }
+    else if (command_ == pandora_end_effector_planner::MoveSensorGoal::POINT)
+    {
+    }
+    else if (command_ == pandora_end_effector_planner::MoveSensorGoal::STOP)
+    {
+      ROS_DEBUG("%s: Succeeded", actionName_.c_str());
+      // set the action state to succeeded
+      actionServer_.setSucceeded();
+      return;
+    }
     else
     {
       ROS_DEBUG("%s: Aborted, there is no such command", actionName_.c_str());
@@ -169,4 +177,54 @@ namespace pandora_control
       return;
     }
   }
+
+  bool SensorOrientationActionServer::getPlannerParams()
+  {
+    nodeHandle_.param(actionName_ + "/max_pitch", maxPitch_, 0.4);
+    nodeHandle_.param(actionName_ + "/max_yaw", maxYaw_, 0.7);
+    nodeHandle_.param(actionName_ + "/time_step", timeStep_, 1.0);
+
+    if (nodeHandle_.getParam(actionName_ + "/pitch_command_topic",
+      pitchCommandTopic_))
+    {
+      ROS_INFO_STREAM("Got param pitch_command_topic: " << pitchCommandTopic_);
+    }
+    else
+    {
+      ROS_FATAL("Failed to get param pitch_command_topic shuting down");
+      return false;
+    }
+
+    if (nodeHandle_.getParam(actionName_ + "/yaw_command_topic",
+      yawCommandTopic_))
+    {
+      ROS_INFO_STREAM("Got param yaw_command_topic: " << yawCommandTopic_);
+    }
+    else
+    {
+      ROS_FATAL("Failed to get param yaw_command_topic shuting down");
+      return false;
+    }
+    return true;
+  }
 }  // namespace pandora_control
+
+int main(int argc, char **argv)
+{
+  if (argc != 4)
+  {
+    ROS_FATAL_STREAM("No arguement passed. Action name is required");
+    return 1;
+  }
+
+  ros::init(argc, argv, argv[1]);
+  ros::NodeHandle nodeHandle;
+  std::string actionName = argv[1];
+
+  pandora_control::SensorOrientationActionServer
+    sensorOrientationActionServer(
+      actionName,
+      nodeHandle);
+
+  ros::spin();
+}

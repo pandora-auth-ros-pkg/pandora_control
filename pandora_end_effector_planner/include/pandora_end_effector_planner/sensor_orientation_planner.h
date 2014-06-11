@@ -35,14 +35,14 @@
 * Author:  Evangelos Apostolidis
 * Author:  Chris Zalidis
 *********************************************************************/
-#ifndef PANDORA_KINECT_CONTROL_KINECT_CONTROL_H
-#define PANDORA_KINECT_CONTROL_KINECT_CONTROL_H
+#ifndef PANDORA_END_EFFECTOR_PLANNER_SENSOR_ORIENTATION_PLANNER_H
+#define PANDORA_END_EFFECTOR_PLANNER_SENSOR_ORIENTATION_PLANNER_H
 
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/Imu.h>
 #include <actionlib/server/simple_action_server.h>
-#include <pandora_kinect_control/MoveKinectAction.h>
+#include <pandora_end_effector_planner/MoveSensorAction.h>
 
 namespace pandora_control
 {
@@ -56,13 +56,13 @@ namespace pandora_control
     HIGH_RIGHT = 5,
   };
 
-  class PandoraMoveKinectActionServer
+  class SensorOrientationActionServer
   {
     private:
-    ros::NodeHandle nodeHandle_;
-      actionlib::SimpleActionServer<
-        pandora_kinect_control::MoveKinectAction> actionServer_;
+      ros::NodeHandle nodeHandle_;
       std::string actionName_;
+      actionlib::SimpleActionServer<
+        pandora_end_effector_planner::MoveSensorAction> actionServer_;
 
       ros::Publisher kinect_pitch_publisher;
       ros::Publisher kinect_yaw_publisher;
@@ -75,15 +75,19 @@ namespace pandora_control
       double maxPitch_;
       double maxYaw_;
       double timeStep_;
+      std::string pitchCommandTopic_;
+      std::string yawCommandTopic_;
 
-      void callback(const pandora_kinect_control::MoveKinectGoalConstPtr& goal);
+      void callback(const pandora_end_effector_planner::MoveSensorGoalConstPtr& goal);
+
+      bool getPlannerParams();
 
     public:
-      PandoraMoveKinectActionServer(
+      SensorOrientationActionServer(
         std::string name,
         ros::NodeHandle nodeHandle_);
 
-      ~PandoraMoveKinectActionServer(void);
+      ~SensorOrientationActionServer(void);
   };
 }  // namespace pandora_control
-#endif  // PANDORA_KINECT_CONTROL_KINECT_CONTROL_H
+#endif  // PANDORA_END_EFFECTOR_PLANNER_SENSOR_ORIENTATION_PLANNER_H

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(pandora_laser_control)
+project(pandora_stabiliser)
 
 find_package(catkin REQUIRED COMPONENTS 
   roscpp 

@@ -1,5 +1,7 @@
 uint32 CENTER = 0
 uint32 MOVE = 1
+uint32 POINT = 2
+uint32 STOP = 3
 
 # Define the goal
 uint32 command
