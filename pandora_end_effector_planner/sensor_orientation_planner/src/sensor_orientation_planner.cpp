@@ -36,7 +36,7 @@
 * Author:  Chris Zalidis
 *********************************************************************/
 
-#include <pandora_sensor_orientation_planner/sensor_orientation_planner.h>
+#include <sensor_orientation_planner/sensor_orientation_planner.h>
 
 namespace pandora_control
 {
@@ -60,20 +60,20 @@ namespace pandora_control
         timeStep_ = 0.01;
       }
 
-      sensorPitchPublisher =
+      sensorPitchPublisher_ =
         nodeHandle_.advertise<std_msgs::Float64>(
           pitchCommandTopic_,
           5, true);
 
-      sensorYawPublisher =
+      sensorYawPublisher_ =
         nodeHandle_.advertise<std_msgs::Float64>(
           yawCommandTopic_,
           5, true);
 
       std_msgs::Float64 targetPosition;
       targetPosition.data = 0;
-      sensorPitchPublisher.publish(targetPosition);
-      sensorYawPublisher.publish(targetPosition);
+      sensorPitchPublisher_.publish(targetPosition);
+      sensorYawPublisher_.publish(targetPosition);
       position_ = HIGH_START;
 
       actionServer_.start();
@@ -99,12 +99,6 @@ namespace pandora_control
     else if (command_ == pandora_end_effector_planner::MoveSensorGoal::POINT)
     {
       pointSensor(goal->point_of_interest);
-    }
-    else if (command_ == pandora_end_effector_planner::MoveSensorGoal::STOP)
-    {
-      ROS_DEBUG("%s: Succeeded", actionName_.c_str());
-      // set the action state to succeeded
-      actionServer_.setSucceeded();
     }
     else
     {
@@ -162,8 +156,8 @@ namespace pandora_control
       std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
       pitchTargetPosition.data = 0;
       yawTargetPosition.data = 0;
-      sensorPitchPublisher.publish(pitchTargetPosition);
-      sensorYawPublisher.publish(yawTargetPosition);
+      sensorPitchPublisher_.publish(pitchTargetPosition);
+      sensorYawPublisher_.publish(yawTargetPosition);
       position_ = HIGH_CENTER;
     }
     ROS_DEBUG("%s: Succeeded", actionName_.c_str());
@@ -229,8 +223,8 @@ namespace pandora_control
           position_ = HIGH_START;
           break;
       }
-      sensorPitchPublisher.publish(pitchTargetPosition);
-      sensorYawPublisher.publish(yawTargetPosition);
+      sensorPitchPublisher_.publish(pitchTargetPosition);
+      sensorYawPublisher_.publish(yawTargetPosition);
       rate.sleep();
     }
   }
@@ -278,19 +272,7 @@ namespace pandora_control
       desiredVectorX = targetTransform.getOrigin() - sensorTransform.getOrigin();
       desiredVectorX = desiredVectorX.normalized();
 
-      tf::StampedTransform baseTransform;
-      try
-      {
-        tfListener_.lookupTransform(
-          "map", "base_link",
-          ros::Time(0), targetTransform);
-      }
-      catch (tf::TransformException ex)
-      {
-        ROS_ERROR("%s", ex.what());
-      }
-
-      tf::Vector3 baseVectorZ = baseTransform.getBasis().getColumn(2);
+      tf::Vector3 baseVectorZ = targetTransform.getBasis().getColumn(2);
 
       tf::Vector3 desiredVectorZ = baseVectorZ
         - desiredVectorX*tfDot(desiredVectorX, baseVectorZ);
@@ -309,8 +291,8 @@ namespace pandora_control
 
       pitchTargetPosition.data = pitch;
       yawTargetPosition.data = yaw;
-      sensorPitchPublisher.publish(pitchTargetPosition);
-      sensorYawPublisher.publish(yawTargetPosition);
+      sensorPitchPublisher_.publish(pitchTargetPosition);
+      sensorYawPublisher_.publish(yawTargetPosition);
       rate.sleep();
     }
   }

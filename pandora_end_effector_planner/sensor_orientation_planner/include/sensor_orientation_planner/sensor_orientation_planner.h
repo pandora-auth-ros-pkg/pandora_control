@@ -35,12 +35,11 @@
 * Author:  Evangelos Apostolidis
 * Author:  Chris Zalidis
 *********************************************************************/
-#ifndef PANDORA_SENSOR_ORIENTATION_PLANNER_SENSOR_ORIENTATION_PLANNER_H
-#define PANDORA_SENSOR_ORIENTATION_PLANNER_SENSOR_ORIENTATION_PLANNER_H
+#ifndef SENSOR_ORIENTATION_PLANNER_SENSOR_ORIENTATION_PLANNER_H
+#define SENSOR_ORIENTATION_PLANNER_SENSOR_ORIENTATION_PLANNER_H
 
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
-#include <sensor_msgs/Imu.h>
 #include <actionlib/server/simple_action_server.h>
 #include <pandora_end_effector_planner/MoveSensorAction.h>
 #include <tf/transform_listener.h>
@@ -68,12 +67,9 @@ namespace pandora_control
       actionlib::SimpleActionServer<
         pandora_end_effector_planner::MoveSensorAction> actionServer_;
 
-      ros::Publisher sensorPitchPublisher;
-      ros::Publisher sensorYawPublisher;
+      ros::Publisher sensorPitchPublisher_;
+      ros::Publisher sensorYawPublisher_;
 
-      ros::Subscriber _compassSubscriber;
-      void compassCallback(
-        const sensor_msgs::ImuConstPtr& msg);
       int position_;
       int command_;
       double maxPitch_;
@@ -100,4 +96,4 @@ namespace pandora_control
       ~SensorOrientationActionServer(void);
   };
 }  // namespace pandora_control
-#endif  // PANDORA_SENSOR_ORIENTATION_PLANNER_SENSOR_ORIENTATION_PLANNER_H
+#endif  // SENSOR_ORIENTATION_PLANNER_SENSOR_ORIENTATION_PLANNER_H
