@@ -12,6 +12,10 @@ find_package(catkin REQUIRED COMPONENTS
   roslint
 )
 
+set(THIS_PACKAGE_INCLUDE_DIRS
+    pandora_sensor_orientation_planner/include
+)
+
 add_action_files(
   FILES
   MoveSensor.action
@@ -24,7 +28,7 @@ generate_messages(
 )
 
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS ${THIS_PACKAGE_INCLUDE_DIRS}
 #  LIBRARIES rrbot_plugin
   CATKIN_DEPENDS 
     roscpp 
@@ -38,21 +42,14 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
-include_directories(include
+include_directories(
+  ${THIS_PACKAGE_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
 
 #~ set(CMAKE_BUILD_TYPE Debug)
   
-add_executable(
-  sensor_orientation_planner
-  src/sensor_orientation_planner.cpp)
-add_dependencies(
-  sensor_orientation_planner
-  ${PROJECT_NAME}_gencpp)
-target_link_libraries(
-  sensor_orientation_planner 
-  ${catkin_LIBRARIES} )
+add_subdirectory(pandora_sensor_orientation_planner)
 
 # To check lint : catkin_make roslint_pandora_end_effector_planner
 set(ROSLINT_CPP_OPTS
@@ -61,7 +58,7 @@ set(ROSLINT_CPP_OPTS
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
   RELATIVE ${PROJECT_SOURCE_DIR}
 
-  include/pandora_end_effector_planner/sensor_orientation_planner.h
-  src/sensor_orientation_planner.cpp
+  pandora_sensor_orientation_planner/*.h
+  pandora_sensor_orientation_planner/*.cpp
 )
 roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})

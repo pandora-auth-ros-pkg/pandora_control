@@ -36,7 +36,7 @@
 * Author:  Chris Zalidis
 *********************************************************************/
 
-#include <pandora_end_effector_planner/sensor_orientation_planner.h>
+#include <pandora_sensor_orientation_planner/sensor_orientation_planner.h>
 
 namespace pandora_control
 {

@@ -35,8 +35,8 @@
 * Author:  Evangelos Apostolidis
 * Author:  Chris Zalidis
 *********************************************************************/
-#ifndef PANDORA_END_EFFECTOR_PLANNER_SENSOR_ORIENTATION_PLANNER_H
-#define PANDORA_END_EFFECTOR_PLANNER_SENSOR_ORIENTATION_PLANNER_H
+#ifndef PANDORA_SENSOR_ORIENTATION_PLANNER_SENSOR_ORIENTATION_PLANNER_H
+#define PANDORA_SENSOR_ORIENTATION_PLANNER_SENSOR_ORIENTATION_PLANNER_H
 
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
@@ -100,4 +100,4 @@ namespace pandora_control
       ~SensorOrientationActionServer(void);
   };
 }  // namespace pandora_control
-#endif  // PANDORA_END_EFFECTOR_PLANNER_SENSOR_ORIENTATION_PLANNER_H
+#endif  // PANDORA_SENSOR_ORIENTATION_PLANNER_SENSOR_ORIENTATION_PLANNER_H
