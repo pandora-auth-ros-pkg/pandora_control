@@ -43,17 +43,21 @@
 #include <sensor_msgs/Imu.h>
 #include <actionlib/server/simple_action_server.h>
 #include <pandora_end_effector_planner/MoveSensorAction.h>
+#include <tf/transform_listener.h>
+
 
 namespace pandora_control
 {
   enum
   {
-    CENTER = 0,
-    HIGH_LEFT = 1,
-    LOW_LEFT = 2,
-    LOW_CENTER = 3,
-    LOW_RIGHT = 4,
-    HIGH_RIGHT = 5,
+    HIGH_START = 0,
+    LOW_START = 1,
+    HIGH_LEFT = 2,
+    LOW_LEFT = 3,
+    HIGH_CENTER = 4,
+    LOW_CENTER = 5,
+    HIGH_RIGHT = 6,
+    LOW_RIGHT = 7,
   };
 
   class SensorOrientationActionServer
@@ -64,8 +68,8 @@ namespace pandora_control
       actionlib::SimpleActionServer<
         pandora_end_effector_planner::MoveSensorAction> actionServer_;
 
-      ros::Publisher kinect_pitch_publisher;
-      ros::Publisher kinect_yaw_publisher;
+      ros::Publisher sensorPitchPublisher;
+      ros::Publisher sensorYawPublisher;
 
       ros::Subscriber _compassSubscriber;
       void compassCallback(
@@ -77,10 +81,16 @@ namespace pandora_control
       double timeStep_;
       std::string pitchCommandTopic_;
       std::string yawCommandTopic_;
+      std::string sensorFrame_;
+
+      tf::TransformListener tfListener_;
 
       void callback(const pandora_end_effector_planner::MoveSensorGoalConstPtr& goal);
 
       bool getPlannerParams();
+      void centerSensor();
+      void scan();
+      void pointSensor(std::string pointOfInterest);
 
     public:
       SensorOrientationActionServer(

@@ -5,6 +5,7 @@ uint32 STOP = 3
 
 # Define the goal
 uint32 command
+string point_of_interest
 ---
 # Define the result
 ---

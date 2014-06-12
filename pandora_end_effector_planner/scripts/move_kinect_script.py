@@ -12,4 +12,6 @@ if __name__ == '__main__':
   client.wait_for_server()
   goal = MoveSensorGoal()
   goal.command = int(sys.argv[1])
+  if goal.command == 2:
+    goal.point_of_interest = sys.argv[2]
   client.send_goal(goal)
