@@ -38,9 +38,10 @@ roslib.load_manifest('pandora_end_effector_planner')
 roslib.load_manifest('smach')
 roslib.load_manifest('smach_ros')
 import rospy
+import threading
+import smach_ros
 
 from smach import StateMachine, Concurrence
-from smach_ros import ActionServerWrapper
 from states import EndEffectorPlannerState, KinectOrientationState, \
     HeadOrientationState, LinearMovementState
 from pandora_end_effector_planner.msg import MoveEndEffectorAction, \
@@ -133,7 +134,7 @@ def main():
             remapping={'move_end_effector_msg': 'move_end_effector_msg'}
         )
 
-    asw = ActionServerWrapper(
+    asw = smach_ros.ActionServerWrapper(
         move_end_effector_planner_topic,
         MoveEndEffectorAction,
         wrapped_container=sm,
@@ -143,7 +144,12 @@ def main():
         goal_key='move_end_effector_msg'
     )
 
-    asw.run_server()
+    sis = smach_ros.IntrospectionServer('eef_fsm_introspection', sm, '/EEF_FSM')
+    sis.start()
+
+    smach_thread = threading.Thread(target = asw.run_server)
+    smach_thread.start()
+
     rospy.spin()
 
 
