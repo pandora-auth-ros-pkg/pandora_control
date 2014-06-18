@@ -173,6 +173,13 @@ namespace pandora_control
         actionServer_.setAborted();
         return;
       }
+      if (actionServer_.isPreemptRequested() || !ros::ok())
+      {
+        ROS_WARN("%s: Preempted", actionName_.c_str());
+        // set the action state to preempted
+        actionServer_.setPreempted();
+        return;
+      }
     }
     ROS_DEBUG("%s: Succeeded", actionName_.c_str());
     // set the action state to succeeded
@@ -208,6 +215,13 @@ namespace pandora_control
         ROS_DEBUG("%s: Aborted", actionName_.c_str());
         // set the action state to succeeded
         actionServer_.setAborted();
+        return;
+      }
+      if (actionServer_.isPreemptRequested() || !ros::ok())
+      {
+        ROS_WARN("%s: Preempted", actionName_.c_str());
+        // set the action state to preempted
+        actionServer_.setPreempted();
         return;
       }
     }
