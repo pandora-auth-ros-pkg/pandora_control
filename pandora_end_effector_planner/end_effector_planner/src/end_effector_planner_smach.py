@@ -45,6 +45,7 @@ from states import EndEffectorPlannerState, KinectOrientationState, \
     HeadOrientationState, LinearMovementState
 from pandora_end_effector_planner.msg import MoveEndEffectorAction, \
     MoveEndEffectorGoal
+from topics import move_end_effector_planner_topic
 
 
 def main():
@@ -120,7 +121,7 @@ def main():
                 'aborted': 'aborted',
                 'preempted': 'preempted'
             },
-            remapping={'lower_linear': 'move_end_effector_msg'}
+            remapping={'move_end_effector_msg': 'lower_linear'}
         )
 
         StateMachine.add(
@@ -133,7 +134,7 @@ def main():
         )
 
     asw = ActionServerWrapper(
-        'END_EXPLORATION_PLANNER_SMACH',
+        move_end_effector_planner_topic,
         MoveEndEffectorAction,
         wrapped_container=sm,
         succeeded_outcomes=['succeeded'],
