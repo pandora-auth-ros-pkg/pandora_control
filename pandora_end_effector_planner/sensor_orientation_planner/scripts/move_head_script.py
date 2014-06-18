@@ -8,7 +8,7 @@ from pandora_end_effector_planner.msg import *
 
 if __name__ == '__main__':
   rospy.init_node('move_head_client_py')
-  client = actionlib.SimpleActionClient('move_head_action', MoveSensorAction)
+  client = actionlib.SimpleActionClient('control/move_head_action', MoveSensorAction)
   client.wait_for_server()
   goal = MoveSensorGoal()
   goal.command = int(sys.argv[1])
