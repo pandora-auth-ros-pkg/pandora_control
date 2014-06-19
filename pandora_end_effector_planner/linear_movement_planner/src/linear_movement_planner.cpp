@@ -139,7 +139,7 @@ namespace pandora_control
       ROS_ERROR("%s", ex.what());
     }
     double startX = linearTransform.getOrigin()[2];
-    double step = -0.03;
+    double step = -0.006;
     if (startX + step < minElevation_)
     {
       step = - step;
