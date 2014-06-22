@@ -260,7 +260,7 @@ namespace pandora_control
 
   void SensorOrientationActionServer::scan()
   {
-    ros::Rate rate(1/timeStep_);
+    ros::Rate rate(1.1);
     std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
 
     while (ros::ok())
@@ -312,8 +312,7 @@ namespace pandora_control
       }
       sensorPitchPublisher_.publish(pitchTargetPosition);
       sensorYawPublisher_.publish(yawTargetPosition);
-      checkGoalCompletion(pitchTargetPosition.data, yawTargetPosition.data)
-      //~ rate.sleep();
+      rate.sleep();
     }
   }
 
