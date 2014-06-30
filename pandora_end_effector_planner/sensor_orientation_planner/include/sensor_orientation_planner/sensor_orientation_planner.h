@@ -78,6 +78,7 @@ namespace pandora_control
       double scanRate_;
       double commandTimeout_;
       double movementThreshold_;
+      double laxMovementThreshold_;
       std::string pitchJointParent_;
       std::string pitchJointChild_;
       std::string yawJointParent_;
@@ -94,7 +95,7 @@ namespace pandora_control
       void testSensor();
       void centerSensor();
       void scan();
-      void pointSensor(std::string pointOfInterest);
+      void pointSensor(std::string pointOfInterest, double movementThreshold);
       int checkGoalCompletion(double pitchCommand, double yawCommand);
       void setGoalState(int state);
       void checkAngleLimits(std_msgs::Float64 *pitchTargetPosition,

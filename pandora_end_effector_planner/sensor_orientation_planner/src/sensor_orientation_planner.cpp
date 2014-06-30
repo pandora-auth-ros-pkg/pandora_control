@@ -103,7 +103,11 @@ namespace pandora_control
     }
     else if (command_ == pandora_end_effector_planner::MoveSensorGoal::POINT)
     {
-      pointSensor(goal->point_of_interest);
+      pointSensor(goal->point_of_interest, movementThreshold_);
+    }
+    else if (command_ == pandora_end_effector_planner::MoveSensorGoal::LAX_POINT)
+    {
+      pointSensor(goal->point_of_interest, laxMovementThreshold_);
     }
     else
     {
@@ -123,6 +127,7 @@ namespace pandora_control
     nodeHandle_.param(actionName_ + "/max_yaw", maxYaw_, 1.0);
     nodeHandle_.param(actionName_ + "/command_timeout", commandTimeout_, 3.0);
     nodeHandle_.param(actionName_ + "/movement_threshold", movementThreshold_, 0.017);
+    nodeHandle_.param(actionName_ + "/lax_movement_threshold", laxMovementThreshold_, 0.2);
     if (pitchStep_ > maxPitch_ || pitchStep_ < minPitch_)
     {
       if (maxPitch_ < fabs(minPitch_))
@@ -324,11 +329,14 @@ namespace pandora_control
     }
   }
 
-  void SensorOrientationActionServer::pointSensor(std::string pointOfInterest)
+  void SensorOrientationActionServer::pointSensor(std::string pointOfInterest,
+    double movementThreshold)
   {
     ros::Time lastTf = ros::Time::now();
     ros::Rate rate(5);
     std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
+    double lastPitchTarget = movementThreshold;
+    double lastYawTarget = movementThreshold;
 
     while (ros::ok())
     {
@@ -399,9 +407,13 @@ namespace pandora_control
       pitchTargetPosition.data = pitch;
       yawTargetPosition.data = yaw;
       checkAngleLimits(&pitchTargetPosition, &yawTargetPosition);
-      sensorPitchPublisher_.publish(pitchTargetPosition);
-      sensorYawPublisher_.publish(yawTargetPosition);
-      position_ = UNKNOWN;
+      if (fabs(lastPitchTarget - pitchTargetPosition.data) > movementThreshold
+        && fabs(lastYawTarget - yawTargetPosition.data) > movementThreshold)
+      {
+        sensorPitchPublisher_.publish(pitchTargetPosition);
+        sensorYawPublisher_.publish(yawTargetPosition);
+        position_ = UNKNOWN;
+      }
       rate.sleep();
     }
   }
