@@ -74,7 +74,7 @@ namespace pandora_control
       targetPosition.data = 0;
       sensorPitchPublisher_.publish(targetPosition);
       sensorYawPublisher_.publish(targetPosition);
-      position_ = HIGH_CENTER;
+      position_ = START;
 
       actionServer_.start();
     }
@@ -230,7 +230,7 @@ namespace pandora_control
     std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
     pitchTargetPosition.data = pitchStep_;
     yawTargetPosition.data = yawStep_;
-    position_ = LOW_LEFT;
+    position_ = UNKNOWN;
     sensorPitchPublisher_.publish(pitchTargetPosition);
     sensorYawPublisher_.publish(yawTargetPosition);
 
@@ -240,14 +240,14 @@ namespace pandora_control
 
   void SensorOrientationActionServer::centerSensor()
   {
-    if (position_ != HIGH_CENTER)
+    if (position_ != START  || position_ != CENTER)
     {
       std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
       pitchTargetPosition.data = 0;
       yawTargetPosition.data = 0;
       sensorPitchPublisher_.publish(pitchTargetPosition);
       sensorYawPublisher_.publish(yawTargetPosition);
-      position_ = HIGH_CENTER;
+      position_ = START;
       setGoalState(
         checkGoalCompletion(pitchTargetPosition.data, yawTargetPosition.data));
     }
@@ -289,43 +289,34 @@ namespace pandora_control
 
       switch (position_)
       {
-        case HIGH_CENTER:
-          pitchTargetPosition.data = 0;
-          yawTargetPosition.data = yawStep_;
-          position_ = HIGH_LEFT;
-          break;
-        case HIGH_LEFT:
+        case START:
           pitchTargetPosition.data = pitchStep_;
           yawTargetPosition.data = yawStep_;
-          position_ = LOW_LEFT;
+          position_ = LEFT;
           break;
-        case LOW_LEFT:
+        case LEFT:
           pitchTargetPosition.data = pitchStep_;
           yawTargetPosition.data = 0;
-          position_ = LOW_CENTER;
+          position_ = CENTER;
           break;
-        case LOW_CENTER:
+        case CENTER:
           pitchTargetPosition.data = pitchStep_;
           yawTargetPosition.data = -yawStep_;
-          position_ = LOW_RIGHT;
+          position_ = RIGHT;
           break;
-        case LOW_RIGHT:
-          pitchTargetPosition.data = 0;
-          yawTargetPosition.data = -yawStep_;
-          position_ = HIGH_RIGHT;
-          break;
-        case HIGH_RIGHT:
-          pitchTargetPosition.data = 0;
+        case RIGHT:
+          pitchTargetPosition.data = pitchStep_;
           yawTargetPosition.data = 0;
-          position_ = HIGH_CENTER;
+          position_ = START;
           break;
         case UNKNOWN:
-          pitchTargetPosition.data = 0;
+          pitchTargetPosition.data = pitchStep_;
           yawTargetPosition.data = 0;
-          position_ = HIGH_CENTER;
+          position_ = START;
           break;
       }
       pitchTargetPosition.data = pitchTargetPosition.data - basePitch;
+      checkAngleLimits(&pitchTargetPosition, &yawTargetPosition);
       sensorPitchPublisher_.publish(pitchTargetPosition);
       sensorYawPublisher_.publish(yawTargetPosition);
       rate.sleep();
@@ -406,22 +397,7 @@ namespace pandora_control
 
       pitchTargetPosition.data = pitch;
       yawTargetPosition.data = yaw;
-      if (pitchTargetPosition.data < minPitch_)
-      {
-        pitchTargetPosition.data = minPitch_;
-      }
-      else if (pitchTargetPosition.data > maxPitch_)
-      {
-        pitchTargetPosition.data = maxPitch_;
-      }
-      if (yawTargetPosition.data < minYaw_)
-      {
-        yawTargetPosition.data = minYaw_;
-      }
-      else if (yawTargetPosition.data > maxYaw_)
-      {
-        yawTargetPosition.data = maxYaw_;
-      }
+      checkAngleLimits(&pitchTargetPosition, &yawTargetPosition);
       sensorPitchPublisher_.publish(pitchTargetPosition);
       sensorYawPublisher_.publish(yawTargetPosition);
       position_ = UNKNOWN;
@@ -494,6 +470,26 @@ namespace pandora_control
         ROS_DEBUG("%s: Preempted", actionName_.c_str());
         actionServer_.setPreempted();
         break;
+    }
+  }
+  void SensorOrientationActionServer::checkAngleLimits(
+    std_msgs::Float64 *pitchTargetPosition, std_msgs::Float64 *yawTargetPosition)
+  {
+    if (pitchTargetPosition->data < minPitch_)
+    {
+      pitchTargetPosition->data = minPitch_;
+    }
+    else if (pitchTargetPosition->data > maxPitch_)
+    {
+      pitchTargetPosition->data = maxPitch_;
+    }
+    if (yawTargetPosition->data < minYaw_)
+    {
+      yawTargetPosition->data = minYaw_;
+    }
+    else if (yawTargetPosition->data > maxYaw_)
+    {
+      yawTargetPosition->data = maxYaw_;
     }
   }
 }  // namespace pandora_control
