@@ -54,10 +54,11 @@ namespace pandora_control
     // get params from param server
     if (getPlannerParams())
     {
-      if (timeStep_ <= 0) {
-        ROS_DEBUG_STREAM("[" << actionName_ << "] Wrong time step value: "
-          << timeStep_ << ", updating as fast as possible!");
-        timeStep_ = 0.01;
+      if (scanRate_ <= 0)
+      {
+        ROS_DEBUG_STREAM("[" << actionName_ << "] Wrong scan rate value: "
+          << scanRate_ << ", updating as fast as possible!");
+        scanRate_ = 1;
       }
 
       sensorPitchPublisher_ =
@@ -144,7 +145,7 @@ namespace pandora_control
         yawStep_ = fabs(minYaw_);
       }
     }
-    nodeHandle_.param(actionName_ + "/time_step", timeStep_, 1.0);
+    nodeHandle_.param(actionName_ + "/scan_rate", scanRate_, 1.0);
 
     if (nodeHandle_.getParam(actionName_ + "/pitch_command_topic",
       pitchCommandTopic_))
@@ -260,7 +261,7 @@ namespace pandora_control
 
   void SensorOrientationActionServer::scan()
   {
-    ros::Rate rate(1.1);
+    ros::Rate rate(scanRate_);
     std_msgs::Float64 pitchTargetPosition, yawTargetPosition;
     double baseRoll, basePitch, baseYaw;
 

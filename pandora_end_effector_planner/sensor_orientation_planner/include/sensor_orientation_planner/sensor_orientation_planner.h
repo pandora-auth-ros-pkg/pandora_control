@@ -75,7 +75,7 @@ namespace pandora_control
       double minYaw_;
       double maxPitch_;
       double maxYaw_;
-      double timeStep_;
+      double scanRate_;
       double commandTimeout_;
       double movementThreshold_;
       std::string pitchJointParent_;
