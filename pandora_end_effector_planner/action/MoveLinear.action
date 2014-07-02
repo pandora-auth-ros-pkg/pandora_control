@@ -11,3 +11,4 @@ string center_point
 # Define the result
 ---
 # Define a feedback message
+bool linear_command_converged

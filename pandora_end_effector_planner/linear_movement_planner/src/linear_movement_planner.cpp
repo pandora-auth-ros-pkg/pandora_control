@@ -106,6 +106,7 @@ namespace pandora_control
     nodeHandle_.param("max_command", maxCommand_, 0.18);
     nodeHandle_.param("movement_threshold", movementThreshold_, 0.005);
     nodeHandle_.param("lax_movement_threshold", laxMovementThreshold_, 0.03);
+    nodeHandle_.param("target_distance_threshold", targetDistanceThreshold_, 1.5);
     movementThreshold_ = fabs(movementThreshold_);
     nodeHandle_.param("command_timeout", commandTimeout_, 15.0);
 
@@ -262,6 +263,7 @@ namespace pandora_control
     ros::Time lastTf = ros::Time::now();
     ros::Rate rate(5);
     std_msgs::Float64 targetPosition;
+    pandora_end_effector_planner::MoveLinearFeedback feedback;
 
     while (ros::ok())
     {
@@ -346,27 +348,42 @@ namespace pandora_control
       }
       lastTf = ros::Time::now();
 
-      double deltaZ = linearToTargetTransform.getOrigin()[2]
-        - linearToCenterTransform.getOrigin()[2];
+      if (linearToTargetTransform.getOrigin().length() < targetDistanceThreshold_)
+      {
+        double deltaZ = linearToTargetTransform.getOrigin()[2]
+          - linearToCenterTransform.getOrigin()[2];
 
-      double targetZ = linearTransform.getOrigin()[2] + deltaZ;
-      if (targetZ < minElevation_)
-      {
-        targetPosition.data = minCommand_;
-      }
-      else if (targetZ <= minElevation_ + maxCommand_)
-      {
-        targetPosition.data = targetZ - minElevation_;
+        double targetZ = linearTransform.getOrigin()[2] + deltaZ;
+        if (targetZ < minElevation_)
+        {
+          targetPosition.data = minCommand_;
+        }
+        else if (targetZ <= minElevation_ + maxCommand_)
+        {
+          targetPosition.data = targetZ - minElevation_;
+        }
+        else
+        {
+          targetPosition.data = maxCommand_;
+        }
+
+        double commandDifference = fabs(previousTarget_ - targetPosition.data);
+        if (commandDifference > movementThreshold_)
+        {
+          linearCommandPublisher_.publish(targetPosition);
+          previousTarget_ = targetPosition.data;
+          feedback.linear_command_converged = false;
+        }
+        else
+        {
+          feedback.linear_command_converged = true;
+        }
       }
       else
       {
-        targetPosition.data = maxCommand_;
+        feedback.linear_command_converged = false;
       }
-      if (fabs(previousTarget_ - targetPosition.data) > movementThreshold)
-      {
-        linearCommandPublisher_.publish(targetPosition);
-        previousTarget_ = targetPosition.data;
-      }
+      actionServer_.publishFeedback(feedback);
       rate.sleep();
     }
   }

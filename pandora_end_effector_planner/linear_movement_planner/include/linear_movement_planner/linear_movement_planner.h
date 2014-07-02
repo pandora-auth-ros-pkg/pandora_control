@@ -63,6 +63,7 @@ namespace pandora_control
       double maxCommand_;
       double movementThreshold_;
       double laxMovementThreshold_;
+      double targetDistanceThreshold_;
       double commandTimeout_;
       double previousTarget_;
       std::string linearCommandTopic_;
