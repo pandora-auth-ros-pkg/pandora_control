@@ -165,14 +165,14 @@ namespace pandora_control
     {
       ROS_ERROR("%s", ex.what());
     }
-    double startX = linearTransform.getOrigin()[2];
+    double startZ = linearTransform.getOrigin()[2];
     double step = -0.006;
-    if (startX + step < minElevation_)
+    if (startZ + step < minElevation_)
     {
       step = - step;
     }
     std_msgs::Float64 targetPosition;
-    targetPosition.data = previousTarget_ = startX + step - minElevation_;
+    targetPosition.data = previousTarget_ = startZ + step - minElevation_;
     // Step could be a param
     linearCommandPublisher_.publish(targetPosition);
 
@@ -180,7 +180,7 @@ namespace pandora_control
 
     double linearZ = -1;
     while (ros::ok() &&
-      fabs(linearZ - (startX + step)) >= movementThreshold_)
+      fabs(linearZ - (startZ + step)) >= movementThreshold_)
     {
       try
       {
@@ -274,6 +274,8 @@ namespace pandora_control
         actionServer_.setPreempted();
         return;
       }
+
+      feedback.linear_command_converged = false;
 
       tf::StampedTransform linearTransform;
       try
@@ -372,16 +374,22 @@ namespace pandora_control
         {
           linearCommandPublisher_.publish(targetPosition);
           previousTarget_ = targetPosition.data;
-          feedback.linear_command_converged = false;
-        }
-        else
-        {
-          feedback.linear_command_converged = true;
         }
       }
-      else
+      try
       {
-        feedback.linear_command_converged = false;
+        tfListener_.lookupTransform(
+          "/base_link", linearMotorFrame_,
+          ros::Time(0), linearTransform);
+      }
+      catch (tf::TransformException ex)
+      {
+        ROS_ERROR("%s", ex.what());
+      }
+      double linearZ = linearTransform.getOrigin()[2] - minElevation_;
+      if (fabs(linearZ -  targetPosition.data) < movementThreshold_)
+      {
+        feedback.linear_command_converged = true;
       }
       actionServer_.publishFeedback(feedback);
       rate.sleep();
