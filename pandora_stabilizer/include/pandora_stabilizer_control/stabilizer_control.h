@@ -63,6 +63,8 @@ namespace pandora_control
       double maxRoll_;
       double minPitch_;
       double maxPitch_;
+      double offsetRoll_;
+      double offsetPitch_;
 
     public:
       StabilizerController(void);

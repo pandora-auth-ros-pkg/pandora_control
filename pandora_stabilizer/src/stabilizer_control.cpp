@@ -87,6 +87,8 @@ namespace pandora_control
     nodeHandle_.param("min_pitch", minPitch_, -1.57);
     nodeHandle_.param("max_roll", maxRoll_, 1.57);
     nodeHandle_.param("max_pitch", maxPitch_, 0.785);
+    nodeHandle_.param("offset_roll", offsetRoll_, -1.57);
+    nodeHandle_.param("offset_pitch", offsetPitch_, 0.0);
 
     imuSubscriber_ = nodeHandle_.subscribe(
       imuTopic,
@@ -131,28 +133,33 @@ namespace pandora_control
     bufferCounter_ = fmod(bufferCounter_ + 1, bufferSize_);
 
     double command[2];
-    command[0] = 0;  // roll command
-    command[1] = 0;  // pitch command
+    command[0] = 0;
+    command[1] = 0;
 
     for (int ii = 0; ii < bufferSize_; ii++)
     {
       command[0] = command[0] - rollBuffer_[ii] / bufferSize_;
       command[1] = command[1] - pitchBuffer_[ii] / bufferSize_;
     }
-
     if (command[0] < minRoll_)
+    {
       command[0] = minRoll_;
+    }
     else if (command[0] > maxRoll_)
+    {
       command[0] = maxRoll_;
-
+    }
     if (command[1] < minPitch_)
+    {
       command[1] = minPitch_;
+    }
     else if (command[1] > maxPitch_)
+    {
       command[1] = maxPitch_;
-
-    str.data = command[0];
+    }
+    str.data = command[0] + offsetRoll_;
     laserRollPublisher_.publish(str);
-    str.data = command[1];
+    str.data = command[1] + offsetPitch_;
     laserPitchPublisher_.publish(str);
   }
 }  // namespace pandora_control
