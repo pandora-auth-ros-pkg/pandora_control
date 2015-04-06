@@ -14,7 +14,7 @@ move_kinect_action:
   lax_movement_threshold: 0.5
   pitch_command_topic: /kinect_pitch_controller/command
   yaw_command_topic: /kinect_yaw_controller/command
-  pitch_joint_parent: linear_elevator_link
+  pitch_joint_parent: base_link
   pitch_joint_child: kinect_servo_link
   yaw_joint_parent: kinect_servo_link
   yaw_joint_child: kinect_base_link
