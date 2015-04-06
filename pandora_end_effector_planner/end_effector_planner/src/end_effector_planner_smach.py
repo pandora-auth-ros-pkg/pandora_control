@@ -157,7 +157,7 @@ def main():
 
 
 def out_cb(outcome_map):
-    if outcome_map['KINECT_ORIENTATION'] == 'succeeded': # and \
+    if outcome_map['KINECT_ORIENTATION'] == 'succeeded':  # and \
         # outcome_map['HEAD_ORIENTATION'] == 'succeeded' and \
         # outcome_map['LINEAR_MOVEMENT'] == 'succeeded':
         rospy.sleep(0.1)
