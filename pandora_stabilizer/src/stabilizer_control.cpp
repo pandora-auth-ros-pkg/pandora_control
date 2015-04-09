@@ -131,30 +131,25 @@ namespace pandora_control
     bufferCounter_ = fmod(bufferCounter_ + 1, bufferSize_);
 
     double command[2];
-    command[0] = 0;
-    command[1] = 0;
+    command[0] = 0;  // roll command
+    command[1] = 0;  // pitch command
 
     for (int ii = 0; ii < bufferSize_; ii++)
     {
       command[0] = command[0] - rollBuffer_[ii] / bufferSize_;
       command[1] = command[1] - pitchBuffer_[ii] / bufferSize_;
     }
+
     if (command[0] < minRoll_)
-    {
       command[0] = minRoll_;
-    }
     else if (command[0] > maxRoll_)
-    {
       command[0] = maxRoll_;
-    }
+
     if (command[1] < minPitch_)
-    {
       command[1] = minPitch_;
-    }
     else if (command[1] > maxPitch_)
-    {
       command[1] = maxPitch_;
-    }
+
     str.data = command[0];
     laserRollPublisher_.publish(str);
     str.data = command[1];
