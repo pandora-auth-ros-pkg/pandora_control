@@ -51,16 +51,6 @@ class PandoraStabilizerNodeTester(test_base.TestBase):
       self.imu_topic, self.roll_cmd_topic, imu_msg)
     self.assertGreaterEqual(output_data, self.min_roll)
 
-  def test_valid_pitch(self):
-    imu_msg = self.rpy_to_imu_msg(0.0, 0.6, 0.0)
-    output_data = self.mockTransaction(self.imu_topic, self.pitch_cmd_topic, imu_msg)
-    self.assertAlmostEqual(output_data, -0.6)
-
-  def test_valid_roll(self):
-    imu_msg = self.rpy_to_imu_msg(-1.2, 0.0, 0.0)
-    output_data = self.mockTransaction(self.imu_topic, self.roll_cmd_topic, imu_msg)
-    self.assertAlmostEqual(output_data, 1.2)
-
   def test_successive_roll_posts(self):
     imu_msg = self.rpy_to_imu_msg(-2.0, 0.0, 0.0)
     output_data = self.mockTransaction(self.imu_topic, self.roll_cmd_topic, imu_msg)

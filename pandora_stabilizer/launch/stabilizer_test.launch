@@ -4,10 +4,6 @@
 
   <include file="$(find pandora_stabilizer)/launch/stabilizer_control.launch"/>
 
-  <rosparam>
-    /control/buffer_size: 1
-  </rosparam>
-
   <test test-name="PandoraStabilizerNodeTester"
     pkg="pandora_stabilizer"
     type="test_pandora_stabilizer_node.py"/>
