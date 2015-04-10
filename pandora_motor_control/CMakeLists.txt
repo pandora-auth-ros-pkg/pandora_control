@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(pandora_motor_control)
 
-find_package(catkin REQUIRED COMPONENTS 
-  roscpp 
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
   std_msgs
   geometry_msgs
   roslint
@@ -13,11 +13,10 @@ find_package(Boost REQUIRED COMPONENTS thread)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES rrbot_plugin
-  CATKIN_DEPENDS 
-    roscpp 
+  CATKIN_DEPENDS
+    roscpp
     std_msgs
     geometry_msgs
-    roslint
 #  DEPENDS system_lib
 )
 
