@@ -42,8 +42,7 @@ import threading
 import smach_ros
 
 from smach import StateMachine, Concurrence
-from states import EndEffectorPlannerState, KinectOrientationState, \
-    HeadOrientationState, LinearMovementState
+from states import EndEffectorPlannerState, KinectOrientationState
 from pandora_end_effector_planner.msg import MoveEndEffectorAction, \
     MoveEndEffectorGoal
 from topics import move_end_effector_planner_topic
