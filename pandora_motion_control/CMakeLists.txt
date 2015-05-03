@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(pandora_motor_control)
+project(pandora_motion_control)
+
+################################################################################
+#                          Find Package Dependencies                           #
+################################################################################
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -9,6 +13,10 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Boost REQUIRED COMPONENTS thread)
+
+################################################################################
+#                               Declare Package                                #
+################################################################################
 
 catkin_package(
 #  INCLUDE_DIRS include
@@ -22,10 +30,34 @@ catkin_package(
 
 include_directories(${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
-add_executable(pandora_teleop_key src/pandora_teleop_key.cpp )
-target_link_libraries(pandora_teleop_key ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+################################################################################
+#                                Build Targets                                 #
+################################################################################
 
-# To check lint : catkin_make roslint_pandora_motor_control
+
+################################################################################
+#                                Pandora Teleop                                #
+################################################################################
+
+
+add_executable(pandora_teleop_key src/pandora_teleop/pandora_teleop_key.cpp)
+target_link_libraries(pandora_teleop_key
+  ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES})
+
+################################################################################
+#                          Pandora Kinodynamic Model                           #
+################################################################################
+
+################################################################################
+#                         Pandora Kinodynamic Control                          #
+################################################################################
+
+################################################################################
+#                                   Roslint                                    #
+################################################################################
+
+# To check lint : catkin_make roslint_pandora_motion_control
 set(ROSLINT_CPP_OPTS
   "--filter=-build/include_what_you_use")
 
@@ -34,3 +66,16 @@ FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
   src/pandora_teleop_key.cpp
 )
 roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})
+
+################################################################################
+#                                   Testing                                    #
+################################################################################
+
+if(CATKIN_ENABLE_TESTING)
+  add_subdirectory(test)
+endif()
+
+################################################################################
+#                               Install Targets                                #
+################################################################################
+
