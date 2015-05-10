@@ -140,9 +140,8 @@ namespace pandora_control
       command[1] = command[1] - pitchBuffer_[ii] / bufferSize_;
     }
 
-    for (int ii = 0; ii < sizeof(command) / sizeof(double); ii++)
-      command[ii] =
-        command[ii] * 2 * boost::math::constants::pi<double>() / 180.0;
+    command[0] = -command[0] * 2 * boost::math::constants::pi<double>() / 180.0;
+    command[1] = command[1] * 2 * boost::math::constants::pi<double>() / 180.0;
 
     if (command[0] < minRoll_)
     {
