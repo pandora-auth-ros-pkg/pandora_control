@@ -195,6 +195,7 @@ void Teleoperation::keyLoop(void)
         linear_ = -1.0;
         dirty = true;
         break;
+      case KEYCODE_SPACE:
       case KEYCODE_H:
         ROS_DEBUG("HALT");
         linear_ = 0.0;
