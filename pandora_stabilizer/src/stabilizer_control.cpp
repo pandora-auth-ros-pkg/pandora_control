@@ -39,7 +39,6 @@
 #include <vector>
 
 #include "pandora_stabilizer_control/stabilizer_control.h"
-#include <string>
 
 namespace pandora_control
 {

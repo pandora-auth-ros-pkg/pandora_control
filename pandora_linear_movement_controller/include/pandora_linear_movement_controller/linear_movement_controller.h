@@ -46,7 +46,6 @@
 #include <actionlib/server/simple_action_server.h>
 #include <tf/transform_listener.h>
 #include <urdf_parser/urdf_parser.h>
-#include <string>
 
 #include <pandora_linear_movement_controller/MoveLinearAction.h>
 

@@ -39,7 +39,6 @@
 
 #include <vector>
 #include <boost/math/constants/constants.hpp>
-#include <vector>
 
 #include <ros/ros.h>
 #include <tf/tf.h>
