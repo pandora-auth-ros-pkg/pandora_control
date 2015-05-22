@@ -37,6 +37,7 @@ target_link_libraries(
   ${PROJECT_NAME}_control_node
   ${catkin_LIBRARIES}
   )
+
 add_dependencies(
   ${PROJECT_NAME}_control_node
   ${catkin_EXPORTED_TARGETS}
@@ -53,6 +54,10 @@ if(CATKIN_ENABLE_TESTING)
 
   add_rostest(launch/stabilizer_test.launch)
 endif()
+
+# To check lint : catkin_make roslint_pandora_control
+set(ROSLINT_CPP_OPTS
+  "--filter=-build/include_what_you_use")
 
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
   RELATIVE ${PROJECT_SOURCE_DIR}

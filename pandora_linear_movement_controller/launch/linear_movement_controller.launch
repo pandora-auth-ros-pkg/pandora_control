@@ -1,0 +1,17 @@
+<launch>
+  <!-- load params -->
+  <rosparam
+    command="load"
+    ns="control"
+    file="$(find pandora_linear_movement_controller)
+    /config/linear_movement_controller.yaml"/>
+
+  <node
+    name="linear_movement_controller"
+    pkg="pandora_linear_movement_controller"
+    type="linear_movement_controller"
+    respawn="false"
+    output="screen"
+    ns="control"/>
+
+</launch>
