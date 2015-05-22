@@ -37,6 +37,7 @@
 *********************************************************************/
 
 #include <pandora_linear_movement_controller/linear_movement_controller.h>
+#include <string>
 
 namespace pandora_control
 {

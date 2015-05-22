@@ -42,7 +42,7 @@ catkin_package(
 )
 
 include_directories(
-  ${THIS_PACKAGE_INCLUDE_DIRS}
+  include
   ${catkin_INCLUDE_DIRS}
 )
 

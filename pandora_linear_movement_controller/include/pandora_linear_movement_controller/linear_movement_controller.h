@@ -44,6 +44,7 @@
 #include <pandora_linear_movement_controller/MoveLinearAction.h>
 #include <tf/transform_listener.h>
 #include <urdf_parser/urdf_parser.h>
+#include <string>
 
 namespace pandora_control
 {
