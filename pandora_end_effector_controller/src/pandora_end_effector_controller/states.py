@@ -39,8 +39,9 @@ import rospy
 
 from smach import State
 from smach_ros import SimpleActionState
-from pandora_end_effector_controller.msg import MoveSensorAction, MoveSensorGoal, \
-    MoveLinearAction, MoveLinearGoal, MoveEndEffectorAction, MoveEndEffectorGoal
+from pandora_end_effector_controller.msg import MoveEndEffectorAction, MoveEndEffectorGoal
+from pandora_sensor_orientation_controller.msg import MoveSensorAction, MoveSensorGoal
+from pandora_linear_movement_controller.msg import MoveLinearAction, MoveLinearGoal
 from topics import move_end_effector_controller_topic, move_kinect_topic, \
     move_head_topic, linear_movement_topic
 

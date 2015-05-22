@@ -11,20 +11,20 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   urdf
   roslint
-)
+  )
 
 catkin_python_setup()
 
 add_action_files(
   FILES
   MoveSensor.action
-)
+  )
 
 generate_messages(
   DEPENDENCIES
   std_msgs
   actionlib_msgs
-)
+  )
 
 catkin_package(
   INCLUDE_DIRS include
@@ -39,31 +39,31 @@ catkin_package(
     urdf
     message_runtime
 #  DEPENDS system_lib
-)
+  )
 
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-)
+  )
 
-#~ set(CMAKE_BUILD_TYPE Debug)
-
-
-add_executable(
-  sensor_orientation_controller
-  src/sensor_orientation_controller.cpp)
-add_dependencies(
-  sensor_orientation_controller
-  ${PROJECT_NAME}_gencpp)
-target_link_libraries(
-  sensor_orientation_controller 
-  ${catkin_LIBRARIES} )
+add_executable(${PROJECT_NAME}_node
+  src/sensor_orientation_controller.cpp
+  )
+target_link_libraries(${PROJECT_NAME}_node
+  ${catkin_LIBRARIES}
+  )
+add_dependencies(${PROJECT_NAME}_node
+  ${PROJECT_NAME}_gencpp
+  )
 
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_PYTHON
-     ${PROJECT_SOURCE_DIR}
-     scripts/pandora_sensor_orientation_controller/move_head_script.py
-     scripts/pandora_sensor_orientation_controller/move_kinect_script.py
-    )
+  RELATIVE ${PROJECT_SOURCE_DIR}
+  scripts/*
+  )
+list(REMOVE_ITEM ${PROJECT_NAME}_LINT_PYTHON
+  RELATIVE ${PROJECT_SOURCE_DIR}
+  *.pyc
+  )
 roslint_python(${${PROJECT_NAME}_LINT_PYTHON})
 
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS

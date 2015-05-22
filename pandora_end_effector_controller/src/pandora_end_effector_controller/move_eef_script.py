@@ -4,7 +4,7 @@ import roslib
 import rospy
 import sys
 import actionlib
-from pandora_end_effector_controller.msg import MoveEndEffectorAction, MoveEndEffectorGoal
+from pandora_end_effector_controller.msg import *
 
 if __name__ == '__main__':
     rospy.init_node('move_eef_client_py')

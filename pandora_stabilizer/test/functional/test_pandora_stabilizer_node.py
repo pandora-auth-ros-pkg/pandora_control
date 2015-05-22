@@ -6,7 +6,8 @@ import unittest
 PKG = "pandora_stabilizer"
 NAME = "PandoraStabilizerNodeTester"
 
-import roslib; roslib.load_manifest(PKG)
+import roslib
+roslib.load_manifest(PKG)
 import rostest
 import rospy
 import tf

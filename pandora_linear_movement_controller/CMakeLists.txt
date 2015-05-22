@@ -11,20 +11,20 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   urdf
   roslint
-)
+  )
 
 catkin_python_setup()
 
 add_action_files(
   FILES
   MoveLinear.action
-)
+  )
 
 generate_messages(
   DEPENDENCIES
   std_msgs
   actionlib_msgs
-)
+  )
 
 catkin_package(
   INCLUDE_DIRS include
@@ -39,37 +39,36 @@ catkin_package(
     urdf
     message_runtime
 #  DEPENDS system_lib
-)
+  )
 
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-)
+  )
 
-#~ set(CMAKE_BUILD_TYPE Debug)
-
-
-add_executable(
-  linear_movement_controller
-  src/linear_movement_controller.cpp)
-add_dependencies(
-  linear_movement_controller
-  ${PROJECT_NAME}_gencpp)
-target_link_libraries(
-  linear_movement_controller 
-  ${catkin_LIBRARIES} )
+add_executable(${PROJECT_NAME}_node
+  src/linear_movement_controller.cpp
+  )
+target_link_libraries(${PROJECT_NAME}_node
+  ${catkin_LIBRARIES}
+  )
+add_dependencies(${PROJECT_NAME}_node
+  ${PROJECT_NAME}_gencpp
+  )
 
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_PYTHON
-     ${PROJECT_SOURCE_DIR}
-    scripts/pandora_linear_movement_controller/move_linear_script.py
-    )
+  RELATIVE ${PROJECT_SOURCE_DIR}
+  scripts/*
+  )
+list(REMOVE_ITEM ${PROJECT_NAME}_LINT_PYTHON
+  RELATIVE ${PROJECT_SOURCE_DIR}
+  *.pyc
+  )
 roslint_python(${${PROJECT_NAME}_LINT_PYTHON})
 
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
   RELATIVE ${PROJECT_SOURCE_DIR}
-
   include/*
   src/*
-)
-
+  )
 roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})

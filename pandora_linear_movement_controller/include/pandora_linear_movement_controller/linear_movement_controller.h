@@ -38,13 +38,17 @@
 #ifndef PANDORA_LINEAR_MOVEMENT_CONTROLLER_LINEAR_MOVEMENT_CONTROLLER_H
 #define PANDORA_LINEAR_MOVEMENT_CONTROLLER_LINEAR_MOVEMENT_CONTROLLER_H
 
+#include <string>
+
 #include <ros/ros.h>
+
 #include <std_msgs/Float64.h>
 #include <actionlib/server/simple_action_server.h>
-#include <pandora_linear_movement_controller/MoveLinearAction.h>
 #include <tf/transform_listener.h>
 #include <urdf_parser/urdf_parser.h>
 #include <string>
+
+#include <pandora_linear_movement_controller/MoveLinearAction.h>
 
 namespace pandora_control
 {

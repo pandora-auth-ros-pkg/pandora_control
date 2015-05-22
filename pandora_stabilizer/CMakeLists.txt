@@ -52,6 +52,17 @@ if(CATKIN_ENABLE_TESTING)
   )
 
   add_rostest(launch/stabilizer_test.launch)
+
+  FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_PYTHON
+    RELATIVE ${PROJECT_SOURCE_DIR}
+    test/*
+    )
+  list(REMOVE_ITEM ${PROJECT_NAME}_LINT_PYTHON
+    RELATIVE ${PROJECT_SOURCE_DIR}
+    *.pyc
+    )
+  roslint_python(${${PROJECT_NAME}_LINT_PYTHON})
+
 endif()
 
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
@@ -61,3 +72,4 @@ FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
   src/stabilizer_control.cpp
 )
 roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})
+roslint_add_test()

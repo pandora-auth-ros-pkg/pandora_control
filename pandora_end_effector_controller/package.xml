@@ -26,6 +26,8 @@
   <depend>actionlib_msgs</depend>
   <depend>tf</depend>
   <depend>urdf</depend>
+  <depend>pandora_linear_movement_controller</depend>
+  <depend>pandora_sensor_orientation_controller</depend>
 
   <export>
   </export>

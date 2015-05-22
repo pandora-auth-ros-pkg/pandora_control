@@ -38,13 +38,15 @@
 #ifndef PANDORA_SENSOR_ORIENTATION_CONTROLLER_SENSOR_ORIENTATION_CONTROLLER_H
 #define PANDORA_SENSOR_ORIENTATION_CONTROLLER_SENSOR_ORIENTATION_CONTROLLER_H
 
-#include <ros/ros.h>
-#include <std_msgs/Float64.h>
-#include <actionlib/server/simple_action_server.h>
-#include <pandora_sensor_orientation_controller/MoveSensorAction.h>
-#include <tf/transform_listener.h>
 #include <string>
 
+#include <ros/ros.h>
+#include <tf/transform_listener.h>
+#include <actionlib/server/simple_action_server.h>
+
+#include <std_msgs/Float64.h>
+
+#include <pandora_sensor_orientation_controller/MoveSensorAction.h>
 
 namespace pandora_control
 {

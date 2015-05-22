@@ -37,12 +37,15 @@
 #ifndef PANDORA_STABILIZER_CONTROL_STABILIZER_CONTROL_H
 #define PANDORA_STABILIZER_CONTROL_STABILIZER_CONTROL_H
 
-#include <pandora_sensor_msgs/ImuRPY.h>
-#include <std_msgs/Float64.h>
-#include "ros/ros.h"
-#include <tf/tf.h>
+#include <vector>
 #include <boost/math/constants/constants.hpp>
 #include <vector>
+
+#include <ros/ros.h>
+#include <tf/tf.h>
+#include <std_msgs/Float64.h>
+
+#include <pandora_sensor_msgs/ImuRPY.h>
 
 namespace pandora_control
 {

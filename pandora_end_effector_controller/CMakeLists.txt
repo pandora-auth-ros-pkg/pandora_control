@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   urdf
   roslint
+  pandora_linear_movement_controller
+  pandora_sensor_orientation_controller
   )
 
 catkin_python_setup()
@@ -47,9 +49,11 @@ include_directories(
   )
 
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_PYTHON
-     ${PROJECT_SOURCE_DIR}
-     end_effector_controller/src/end_effector_controller_smach.py
-     end_effector_controller/src/states.py
-     end_effector_controller/src/topics.py
-     )
+  RELATIVE ${PROJECT_SOURCE_DIR}
+  src/*
+  )
+LIST(REMOVE_ITEM ${PROJECT_NAME}_LINT_PYTHON
+  RELATIVE ${PROJECT_SOURCE_DIR}
+  src/pandora_end_effector_controller/*.pyc
+  )
 roslint_python(${${PROJECT_NAME}_LINT_PYTHON})
