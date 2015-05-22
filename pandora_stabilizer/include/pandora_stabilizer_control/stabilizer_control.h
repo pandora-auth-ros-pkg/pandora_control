@@ -42,6 +42,7 @@
 #include "ros/ros.h"
 #include <tf/tf.h>
 #include <boost/math/constants/constants.hpp>
+#include <vector>
 
 namespace pandora_control
 {

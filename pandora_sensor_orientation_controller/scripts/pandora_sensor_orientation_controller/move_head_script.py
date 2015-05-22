@@ -4,7 +4,7 @@ import roslib
 import rospy
 import sys
 import actionlib
-from pandora_sensor_orientation_controller.msg import *
+from pandora_sensor_orientation_controller.msg import MoveSensorAction, MoveSensorGoal
 
 if __name__ == '__main__':
     rospy.init_node('move_head_client_py')

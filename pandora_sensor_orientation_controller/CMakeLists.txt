@@ -27,7 +27,7 @@ generate_messages(
 )
 
 catkin_package(
-  INCLUDE_DIRS ${THIS_PACKAGE_INCLUDE_DIRS}
+  INCLUDE_DIRS include
 #  LIBRARIES rrbot_plugin
   CATKIN_DEPENDS
     roscpp
@@ -42,7 +42,7 @@ catkin_package(
 )
 
 include_directories(
-  ${THIS_PACKAGE_INCLUDE_DIRS}
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -63,7 +63,6 @@ FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_PYTHON
      ${PROJECT_SOURCE_DIR}
      scripts/pandora_sensor_orientation_controller/move_head_script.py
      scripts/pandora_sensor_orientation_controller/move_kinect_script.py
-
     )
 roslint_python(${${PROJECT_NAME}_LINT_PYTHON})
 
@@ -71,5 +70,5 @@ FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
   RELATIVE ${PROJECT_SOURCE_DIR}
   include/*
   src/*
-)
+  )
 roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})

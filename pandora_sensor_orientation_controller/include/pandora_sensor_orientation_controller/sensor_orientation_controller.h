@@ -43,6 +43,7 @@
 #include <actionlib/server/simple_action_server.h>
 #include <pandora_sensor_orientation_controller/MoveSensorAction.h>
 #include <tf/transform_listener.h>
+#include <string>
 
 
 namespace pandora_control

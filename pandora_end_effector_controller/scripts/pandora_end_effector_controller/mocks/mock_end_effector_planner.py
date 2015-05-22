@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-#!/usr/bin/env python
+# !/usr/bin/env python
+# !/usr/bin/env python
 # Software License Agreement
 __version__ = "0.0.1"
 __status__ = "Production"
@@ -43,6 +43,7 @@ from actionlib import SimpleActionServer
 from pandora_end_effector_planner.msg import MoveEndEffectorAction, \
     MoveEndEffectorResult, MoveEndEffectorGoal
 
+
 class MockEndEffectorPlanner():
 
     def __init__(self, end_effector_planner_topic):
@@ -54,7 +55,7 @@ class MockEndEffectorPlanner():
         self.command = 0
         self.point_of_interest = ""
         self.center_point = ""
-        
+
         self.end_effector_planner_as_ = SimpleActionServer(
             end_effector_planner_topic,
             MoveEndEffectorAction,
@@ -89,4 +90,3 @@ class MockEndEffectorPlanner():
             else:
                 self.moves_end_effector = False
                 self.end_effector_planner_as_.set_aborted(result)
-

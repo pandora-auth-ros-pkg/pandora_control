@@ -37,6 +37,7 @@
 *********************************************************************/
 
 #include <pandora_sensor_orientation_controller/sensor_orientation_controller.h>
+#include <string>
 
 namespace pandora_control
 {
