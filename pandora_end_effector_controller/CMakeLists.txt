@@ -48,12 +48,8 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   )
 
-FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_PYTHON
+file(GLOB_RECURSE ${PROJECT_NAME}_LINT_PYTHON
   RELATIVE ${PROJECT_SOURCE_DIR}
-  src/*
-  )
-LIST(REMOVE_ITEM ${PROJECT_NAME}_LINT_PYTHON
-  RELATIVE ${PROJECT_SOURCE_DIR}
-  src/pandora_end_effector_controller/*.pyc
+  src/**/*.py
   )
 roslint_python(${${PROJECT_NAME}_LINT_PYTHON})
