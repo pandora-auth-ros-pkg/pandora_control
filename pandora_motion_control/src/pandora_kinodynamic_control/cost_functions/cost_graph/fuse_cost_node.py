@@ -24,7 +24,9 @@ class FuseCostNode(CostNode):
     def set_lesser_nodes(self, nodes):
         """Setter of lesser_cost_nodes variable. Should update fusion_strategy
         afterwards
+
         @param nodes list, of lesser_cost_nodes to be fused by a strategy
+        @return: nothing
 
         """
         self.lesser_cost_nodes = nodes
@@ -35,6 +37,7 @@ class FuseCostNode(CostNode):
         lesser_cost_nodes afterwards
 
         @param strategy FusionStrategy, a function to fuse costs
+        @return: nothing
 
         """
         self.fusion_strategy = strategy
@@ -42,7 +45,7 @@ class FuseCostNode(CostNode):
 
     def fuse_cost(self, cost):
         """Uses FusionStrategy in order to combine cost from the CostNodes
-        that this FuseCostNode object holds
+        that this FuseCostNode object holds. Delegate to FusionStrategy
 
         @param cost double, a cost to be fused with the rest of the already
         calculated costs
