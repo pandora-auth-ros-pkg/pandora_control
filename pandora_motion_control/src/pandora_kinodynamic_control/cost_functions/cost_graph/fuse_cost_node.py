@@ -43,7 +43,7 @@ class FuseCostNode(CostNode):
         self.fusion_strategy = strategy
         self.fusion_strategy.set_nodes(self.lesser_cost_nodes)
 
-    def fuse_cost(self, cost):
+    def fuse_cost(self):
         """Uses FusionStrategy in order to combine cost from the CostNodes
         that this FuseCostNode object holds. Delegate to FusionStrategy
 
@@ -52,7 +52,7 @@ class FuseCostNode(CostNode):
         @return: a unified estimation of cost from various sources of error
 
         """
-        unified_cost = self.fusion_strategy.fuse_with(cost)
+        unified_cost = self.fusion_strategy.fuse()
         return unified_cost
 
     def update_cost(self):
@@ -64,7 +64,7 @@ class FuseCostNode(CostNode):
 
         """
         self.__inside_update_cost()
-        self.__cost = self.fuse_cost(self.__inside_cost)
+        self.__cost = self.fuse_cost()
         self.process_cost()
 
     def process_cost(self):
