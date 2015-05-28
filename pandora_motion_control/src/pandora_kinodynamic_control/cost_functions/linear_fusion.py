@@ -2,18 +2,18 @@ from cost_graph.fusion_strategy import FusionStrategy
 
 class LinearFusion(FusionStrategy):
 
-    """A FusionStrategy that implements a weighted linear approach to fusing
-       costs"""
+    """@brief: A FusionStrategy that implements a weighted linear approach to
+    fusing costs"""
 
     def __init__(self):
-        """Simple initiation of a LinearFusion object"""
+        """@brief: Simple initiation of a LinearFusion object"""
         super(LinearFusion, self).__init__()
         self.cost_weights = list()
 
     def set_weights(self, weight_list):
-        """TODO: Docstring for set_weights.
+        """@brief: Setter for the weights of each cost node
 
-        @param weight_list list, of doubles, each weight is a multiplier coeff
+        @param weight_list: list, of doubles, each weight is a multiplier coeff
         of the corresponding (by index) cost given by a cost node
         @return: nothing
 
@@ -21,8 +21,9 @@ class LinearFusion(FusionStrategy):
         self.cost_weights = weight_list
 
     def fuse(self):
-        """Fuses costs in a linear way. Each cost is multiplied with a weight
-        and then are added all together.
+        """@brief: Fuses costs in a linear way. Each cost is multiplied with a
+        weight and then are added all together.
+
         @return: double, a unified perception of these cost
 
         """
