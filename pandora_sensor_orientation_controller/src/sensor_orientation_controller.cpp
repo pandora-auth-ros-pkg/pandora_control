@@ -37,9 +37,9 @@
 * Author:  Kostas Peppas
 *********************************************************************/
 
-#include <string>
-
 #include <pandora_sensor_orientation_controller/sensor_orientation_controller.h>
+
+#include <string>
 
 namespace pandora_control
 {
@@ -110,25 +110,30 @@ namespace pandora_control
     command_ = goal->command;
     pointOfInterest_ = goal->point_of_interest;
     stopPreviousTimers();
-    if (command_ == pandora_sensor_orientation_controller::MoveSensorGoal::TEST)
+    if (command_ ==
+        pandora_sensor_orientation_controller::MoveSensorGoal::TEST)
     {
-      testSensor(); 
+      testSensor();
     }
-    else if (command_ == pandora_sensor_orientation_controller::MoveSensorGoal::CENTER)
+    else if (command_ ==
+             pandora_sensor_orientation_controller::MoveSensorGoal::CENTER)
     {
       centerSensor();
     }
-    else if (command_ == pandora_sensor_orientation_controller::MoveSensorGoal::MOVE)
+    else if (command_ ==
+             pandora_sensor_orientation_controller::MoveSensorGoal::MOVE)
     {
       scanYawTimer_.start();
       scanPitchTimer_.start();
     }
-    else if (command_ == pandora_sensor_orientation_controller::MoveSensorGoal::POINT)
+    else if (command_ ==
+             pandora_sensor_orientation_controller::MoveSensorGoal::POINT)
     {
       pointThreshold_ = movementThreshold_;
       pointSensorTimer_.start();
     }
-    else if (command_ == pandora_sensor_orientation_controller::MoveSensorGoal::LAX_POINT)
+    else if (command_ ==
+             pandora_sensor_orientation_controller::MoveSensorGoal::LAX_POINT)
     {
       pointThreshold_ = laxMovementThreshold_;
       pointSensorTimer_.start();
@@ -152,8 +157,10 @@ namespace pandora_control
     nodeHandle_.param(actionName_ + "/offset_pitch", offsetPitch_, 0.0);
     nodeHandle_.param(actionName_ + "/offset_yaw", offsetYaw_, 0.0);
     nodeHandle_.param(actionName_ + "/command_timeout", commandTimeout_, 3.0);
-    nodeHandle_.param(actionName_ + "/movement_threshold", movementThreshold_, 0.017);
-    nodeHandle_.param(actionName_ + "/lax_movement_threshold", laxMovementThreshold_, 0.2);
+    nodeHandle_.param(actionName_ + "/movement_threshold",
+                      movementThreshold_, 0.017);
+    nodeHandle_.param(actionName_ + "/lax_movement_threshold",
+                      laxMovementThreshold_, 0.2);
     if (pitchStep_ > maxPitch_ || pitchStep_ < minPitch_)
     {
       if (maxPitch_ < fabs(minPitch_))
@@ -331,7 +338,8 @@ namespace pandora_control
     lastYawTarget_ = yawTargetPosition_.data;
   }
 
-  void SensorOrientationActionServer::stabilizePitch(const ros::TimerEvent& event)
+  void SensorOrientationActionServer::stabilizePitch(
+    const ros::TimerEvent& event)
   {
     double baseRoll, basePitch, baseYaw;
 
@@ -356,7 +364,7 @@ namespace pandora_control
     }
     baseTransform.getBasis().getRPY(baseRoll, basePitch, baseYaw);
     // FIXME needs an if
-    pitchTargetPosition_.data =pitchStep_;
+    pitchTargetPosition_.data = pitchStep_;
     pitchTargetPosition_.data += offsetPitch_ - basePitch;
     checkAngleLimits();
     if (fabs(lastPitchTarget_ - pitchTargetPosition_.data) > pointThreshold_)
