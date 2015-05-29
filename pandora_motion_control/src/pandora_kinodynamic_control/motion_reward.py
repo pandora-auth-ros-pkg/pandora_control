@@ -22,7 +22,7 @@ class MotionReward(object):
         self.strategy = LinearFusion()
         self.fuse_cost_node = FuseCostNode(self.cost_nodes, self.strategy)
 
-    def get_reward(self, actual_pose):
+    def get_reward_from_pose(self, actual_pose):
         """@brief: Returns and calculates the reward associated with a certain
         action taken by the agent who controls the kinodynamic controller
 
@@ -31,9 +31,36 @@ class MotionReward(object):
         @return: double, the reward of the action
 
         """
-        self.update_environmental_info(actual_pose)
+        self.update_actual_info(actual_pose)
         self.goal_cost_node.set_actual_pose(actual_pose)
 
+        return self.__get_reward()
+
+    def get_reward_from_trajectory(self, actual_trajectory):
+        """@brief: Returns and calculates the reward associated with a certain
+        action taken by the agent who controls the kinodynamic controller
+
+        Need vehicle's actual trajectory as given from the corresponding topic.
+
+        @param actual_trajectory: list of Pose, actual trajectory of vehicle
+        between two time moments of consecutive states
+        @return: double, the reward of an action
+
+        """
+        self.trajectory_cost_node.set_actual_trajectory(actual_trajectory)
+        if len(actual_trajectory) <= 1:
+            print "[MotionReward] ERROR: actual_trajectory has length <= 1"
+        self.goal_cost_node.set_actual_pose(actual_trajectory[-1])
+
+        return self.__get_reward()
+
+    def __get_reward(self):
+        """@brief: Returns reward according to the unified cost return by the
+        cost functions
+
+        @return: double, the reward of an action
+
+        """
         self.goal_cost_node.update_cost()
         self.trajectory_cost_node.update_cost()
         self.fuse_cost_node.update_cost()
@@ -42,45 +69,43 @@ class MotionReward(object):
         reward = 1 / cost  # TODO how should reward be calculated from cost?
         return reward
 
-    def get_reward(self, actual_trajectory):
-        """@brief: Returns and calculates the reward associated with a certain
-        action taken by the agent who controls the kinodynamic controller
+    def init_info_from_action(self, actual_pose, twist, duration, clear=False):
+        """@brief: Initialize cost functions with latest actual pose and
+        velocity command
 
-        Need vehicle's actual trajectory as given from the corresponding topic.
-
-        @param actual_trajectory: TODO
-        @return: TODO
-
-        """
-        pass
-
-    def init_info(self, actual_pose, twist, duration):
-        """@brief: TODO: Docstring for init_info.
-
-        @param actual_pose: TODO
-        @param twist: TODO
-        @param duration: TODO
-        @return: TODO
+        @param actual_pose: Pose, vehicle's pose at the latest state
+        @param twist: Twist, velocity command from local planner
+        @param duration: double, how much time will the twist be followed
+        @return: nothing
 
         """
-        self.trajectory_cost_node.clear_trajectories()
+        if clear:
+            self.trajectory_cost_node.clear_trajectories()
         self.trajectory_cost_node.calculate_expected_trajectory(actual_pose,
-                twist, duration)
+                                                                twist, duration)
         expected_trajectory = self.trajectory_cost_node.get_expected_trajectory()
+        if len(expected_trajectory) <= 1:
+            print "[MotionReward] ERROR: expected_trajectory has length <= 1"
         goal_pose = expected_trajectory[-1]
         self.goal_cost_node.set_goal_pose(goal_pose)
 
-    def init_info(self, expected_trajectory):
+    def init_info_from_expected(self, expected_trajectory, clear=False):
         """@brief: Initialize cost functions with expected trajectory given from
         local planner
 
-        @param expected_trajectory: TODO
-        @return: TODO
+        @param expected_trajectory: list of Pose, the expected trajectory
+        @return: nothing
 
         """
-        pass
+        if clear:
+            self.trajectory_cost_node.clear_trajectories()
+        self.trajectory_cost_node.extend_expected_trajectory(expected_trajectory)
+        if len(expected_trajectory) <= 1:
+            print "[MotionReward] ERROR: expected_trajectory has length <= 1"
+        goal_pose = expected_trajectory[-1]
+        self.goal_cost_node.set_goal_pose(goal_pose)
 
-    def update_info(self, actual_pose):
+    def update_actual_info(self, actual_pose):
         """@brief: Update agent's perception of the environment
 
         @param actual_pose: Pose, new information from the environment

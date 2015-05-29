@@ -27,10 +27,12 @@ class TrajectoryCost(CostNode):
         # self.__cost = ..something
 
     def calculate_expected_trajectory(self, pose, twist, duration):
-        """@brief: Calculates self.expected_trajectory curve with a resolution
-        defined by self.time_granularity according to the twist movement command
-        and the duration which the command is to be followed
+        """@brief: Calculates expected trajectory and extends
+        self.expected_trajectory with it.
 
+        Trajectory is a curve with resolution defined by self.time_granularity
+        according to the twist movement command and the duration which
+        the command is to be followed.
         Every expected_trajectory must be a discrete arc of a circle.
 
         @param pose: Pose, vehicle's initial pose at the time of movement command
@@ -78,15 +80,15 @@ class TrajectoryCost(CostNode):
         """
         return self.actual_trajectory
 
-    def set_expected_trajectory(self, trajectory):
-        """@brief: Setter for the expected trajectory of the robot as calculated
-        by the local planner
+    def extend_expected_trajectory(self, trajectory):
+        """@brief: Extends self.expected_trajectory with  the expected
+        trajectory of the robot as calculated by the local planner
 
         @param trajectory: list, of Pose the expected trajectory
         @return: nothing
 
         """
-        self.expected_trajectory = trajectory
+        self.expected_trajectory.extend(trajectory)
 
     def get_expected_trajectory(self):
         """@brief: Getter for the expected trajectory calculated
