@@ -4,7 +4,7 @@ from tf import transformations
 import math
 
 def find_distance(pose_a, pose_b):
-    """@brief: finds distance between two poses in terms of x, y and yaw
+    """ @brief: finds distance between two poses in terms of x, y and yaw
 
     @return: double, euclidean distance of (x, y, yaw)
 
@@ -34,18 +34,18 @@ def find_distance(pose_a, pose_b):
 
 class GoalCost(CostNode):
 
-    """@brief: Implementation of CostNode for calculating a cost from goal
-       based errors"""
+    """ @brief: Implementation of CostNode for calculating a cost from goal
+        based errors"""
 
     def __init__(self):
-        """Initiates a GoalCost object"""
+        """ @brief: Initiates a GoalCost object"""
         super(GoalCost, self).__init__()
         self.expected_pose = Pose()
         self.actual_pose = Pose()
 
     def update_cost(self):
-        """@brief: Uses expected final pose (goal) and actual final pose in
-        order to calculate a cost. Updates self.__cost
+        """ @brief: Uses expected final pose (goal) and actual final pose in
+            order to calculate a cost. Updates self.__cost
 
         @return: nothing
 
@@ -53,22 +53,22 @@ class GoalCost(CostNode):
         self.__cost = find_distance(self.expected_pose, self.actual_pose)
 
     def set_goal_pose(self, pose):
-        """@brief: Sets goal pose, expected pose of vehicle when movement
-        command will have finished
+        """ @brief: Sets goal pose, expected pose of vehicle when movement
+            command will have finished
 
-        @param pose: Pose, expected final vehicle's pose
-        (we care about x, y and yaw)
+        @param pose: expected final vehicle's pose (we care about x, y and yaw)
+        @type pose: Pose
         @return: nothing
 
         """
         self.expected_pose = pose
 
     def set_actual_pose(self, pose):
-        """@brief: Sets final pose, actual pose of vehicle when movement
-        command has finished
+        """ @brief: Sets final pose, actual pose of vehicle when movement
+            command has finished
 
-        @param pose: Pose, actual final vehicle's pose
-        (we care about x, y and yaw)
+        @param pose: actual final vehicle's pose (we care about x, y and yaw)
+        @type pose: Pose
         @return: nothing
 
         """
