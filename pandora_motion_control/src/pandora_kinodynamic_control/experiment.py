@@ -1,3 +1,7 @@
+import rospy
+from geometry_msgs.msg import Twist
+from topics import *
+
 class Experiment(object):
     """ @brief: An experiment matches up a task with an agent and handles
         their interactions"""
@@ -9,31 +13,36 @@ class Experiment(object):
         self.agent = agent
         self.stepid = 0
 
-    def doInteractions(self, number = 1):
-        """ @brief: The default implementation directly maps the methods of the
-            agent and the task.
+        self.action_done = False
 
-        @return: int, the number of interactions done
+        self.command_subscriber = rospy.Subscriber(NAVIGATION_TOPIC,
+                                                   Twist, self.navi_callback)
 
-        """
+    def navi_callback(self, cmd_vel):
+        """ @brief: Callback that handles velocity commands from navigation
 
-        for _ in range(number):
-            self._oneInteraction()
-        return self.stepid
+        Logic has been set up so that it can use a SARSA learning algorithm and
+        a state change in agent will be initiated when this callback is called.
 
-    def _oneInteraction(self):
-        """ @brief: Give the observation to the agent, takes its resulting
-            action and returns it to the task.
-
-            Then gives the reward to the agent again and returns it.
-
-        @return: double, the reward of agent's latest action
+        @param cmd_vel: velocity command for vehicle's center of mass
+        @type cmd_vel: Twist
+        @return: nothing
 
         """
-        self.stepid += 1
-        self.agent.integrateObservation(self.task.getObservation())
-        self.task.performAction(self.agent.getAction())
-        reward = self.task.getReward()
-        self.agent.giveReward(reward)
-        return reward
-
+        observation = self.task.getObservation()
+        # get informed about vehicle's current state
+        if self.action_done:
+            reward = self.task.getReward()
+            # get informed about last action's reward
+            self.agent.giveReward(reward)
+            # inform agent about last action's reward
+        self.agent.integrateObservation(observation)
+        # inform agent about vehicle's current state
+        action = self.agent.getAction()
+        # ask agent to decide what the current action will be
+        if self.action_done:
+            self.agent.learn()
+            # ask agent to update its estimations about expected returns
+        self.task.performAction(action)
+        # do the action in the world
+        self.action_done = True
