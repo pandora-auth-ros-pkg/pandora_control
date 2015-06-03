@@ -1,8 +1,10 @@
 import rospy
 from geometry_msgs.msg import Twist
-from topics import *
+
+from src.pandora_kinodynamic_control.params import *
 
 class Experiment(object):
+
     """ @brief: An experiment matches up a task with an agent and handles
         their interactions"""
 
@@ -15,10 +17,10 @@ class Experiment(object):
 
         self.action_done = False
 
-        self.command_subscriber = rospy.Subscriber(NAVIGATION_TOPIC,
-                                                   Twist, self.navi_callback)
+        self.command_sub = rospy.Subscriber(NAVIGATION_TOPIC,
+                                            Twist, self.navigation_cb)
 
-    def navi_callback(self, cmd_vel):
+    def navigation_cb(self, cmd_vel):
         """ @brief: Callback that handles velocity commands from navigation
 
         Logic has been set up so that it can use a SARSA learning algorithm and
