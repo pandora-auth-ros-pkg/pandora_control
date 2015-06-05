@@ -31,9 +31,50 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-# Author: Voulgarakis George
+# Author: Peppas Kostas
 
-move_end_effector_controller_topic = '/control/move_end_effector_controller_action'
-move_kinect_topic = '/control/move_kinect_action'
-move_head_topic = '/control/move_head_action'
-move_linear_topic = '/control/linear_movement_action'
+
+
+translate_command ={
+  'to_sensor' :
+  {
+    0 : 0,
+    'TEST' : 0,
+    1 : 1,
+    'PARK' : 1,
+    2 : 2,
+    'TRACK' : 2,
+    3 : 3,
+    'LAX_TRACK' : 3,
+    4 : 4,
+    'SCAN' : 4
+  },
+
+  'to_linear' :
+  {
+    0 : 0,
+    'TEST' : 0,
+    1 : 1,
+    'PARK' : 1,
+    2 : 2,
+    'TRACK' : 2,
+    3 : 3,
+    'LAX_TRACK' : 3,
+    4 : 1,
+    'SCAN' : 1
+  },
+
+  'to_head' :
+  {
+    0 : 0,
+    'TEST' : 0,
+    1 : 1,
+    'PARK' : 1,
+    2 : 2,
+    'TRACK' : 2,
+    3 : 3,
+    'LAX_TRACK' : 3,
+    4 : 4,
+    'SCAN' : 4
+  }
+}
