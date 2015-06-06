@@ -31,6 +31,7 @@ class Experiment(object):
         @return: nothing
 
         """
+        self.task.set_velocity_command(cmd_vel)
         observation = self.task.getObservation()
         # get informed about vehicle's current state
         if self.action_done:

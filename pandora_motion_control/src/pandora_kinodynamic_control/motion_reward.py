@@ -3,6 +3,8 @@ from cost_functions.trajectory_cost import TrajectoryCost
 from cost_functions.cost_graph.fuse_cost_node import FuseCostNode
 from cost_functions.linear_fusion import LinearFusion
 
+from src.pandora_kinodynamic_control import utils
+
 class MotionReward(object):
 
     """ @brief: It is responsible for using the environment to calculate
@@ -21,6 +23,7 @@ class MotionReward(object):
         self.cost_nodes = [self.goal_cost_node, self.trajectory_cost_node]
         self.strategy = LinearFusion()
         self.fuse_cost_node = FuseCostNode(self.cost_nodes, self.strategy)
+        self._time_granularity = 5
 
     def get_reward_from_pose(self, actual_pose):
         """ @brief: Returns and calculates the reward associated with a certain
@@ -41,7 +44,7 @@ class MotionReward(object):
         """ @brief: Returns and calculates the reward associated with a certain
             action taken by the agent who controls the kinodynamic controller
 
-        Need vehicle's actual trajectory as given from the corresponding topic.
+            Need vehicle's actual trajectory as given from the corresponding topic.
 
         @param actual_trajectory: actual trajectory of vehicle
         between two time moments of consecutive states
@@ -86,9 +89,9 @@ class MotionReward(object):
         """
         if clear:
             self.trajectory_cost_node.clear_trajectories()
-        self.trajectory_cost_node.calculate_expected_trajectory(actual_pose,
-                                                                twist, duration)
-        expected_trajectory = self.trajectory_cost_node.get_expected_trajectory()
+        expected_trajectory = utils.calculate_expected_trajectory(
+            actual_pose, twist, duration, self._time_granularity)
+        self.trajectory_cost_node.extend_expected_trajectory(expected_trajectory)
         if len(expected_trajectory) <= 1:
             print "[MotionReward] ERROR: expected_trajectory has length <= 1"
         goal_pose = expected_trajectory[-1]
@@ -134,4 +137,4 @@ class MotionReward(object):
 
         """
         self.strategy.set_weights(cost_weights)
-        self.trajectory_cost_node.set_time_granularity(time_granularity)
+        self._time_granularity = time_granularity

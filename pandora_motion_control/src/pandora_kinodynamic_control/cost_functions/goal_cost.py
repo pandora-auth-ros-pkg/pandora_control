@@ -1,36 +1,7 @@
 from cost_graph.cost_node import CostNode
 from geometry_msgs.msg import Pose
-from tf import transformations
-import math
 
-def find_distance(pose_a, pose_b):
-    """ @brief: finds distance between two poses in terms of x, y and yaw
-
-    @return: double, euclidean distance of (x, y, yaw)
-
-    """
-
-    quaternion = (
-        pose_a.orientation.x,
-        pose_a.orientation.y,
-        pose_a.orientation.z,
-        pose_a.orientation.w)
-    euler = transformations.euler_from_quaternion(quaternion)
-    yaw_a = euler[2]
-    quaternion = (
-        pose_b.orientation.x,
-        pose_b.orientation.y,
-        pose_b.orientation.z,
-        pose_b.orientation.w)
-    euler = transformations.euler_from_quaternion(quaternion)
-    yaw_b = euler[2]
-
-    x_diff = pose_a.position.x - pose_b.position.x
-    y_diff = pose_a.position.y - pose_b.position.y
-    yaw_diff = yaw_a - yaw_b
-
-    distance = math.sqrt(x_diff**2 + y_diff**2 + yaw_diff**2)
-    return distance
+from src.pandora_kinodynamic_control.utils import find_distance
 
 class GoalCost(CostNode):
 
