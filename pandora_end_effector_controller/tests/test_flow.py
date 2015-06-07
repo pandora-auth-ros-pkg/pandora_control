@@ -33,35 +33,18 @@
 #
 # Author: Peppas Kostas
 
-from pandora_end_effector_controller.msg import MoveEndEffectorAction, MoveEndEffectorGoal
+import roslib
+roslib.load_manifest('pandora_end_effector_controller')
+import rospy
+
+from mocks.action_servers import MockActionServer
 from pandora_sensor_orientation_controller.msg import MoveSensorAction, MoveSensorGoal
 from pandora_linear_movement_controller.msg import MoveLinearAction, MoveLinearGoal
+from pandora_end_effector_controller.topics import move_end_effector_controller_topic, move_kinect_topic, \
+    move_head_topic, move_linear_topic
 
-translate_command ={
-  'to_sensor' :
-  {
-    MoveEndEffectorGoal.TEST : MoveSensorGoal.TEST,
-    MoveEndEffectorGoal.PARK : MoveSensorGoal.CENTER,
-    MoveEndEffectorGoal.TRACK : MoveSensorGoal.POINT,
-    MoveEndEffectorGoal.LAX_TRACK : MoveSensorGoal.LAX_POINT,
-    MoveEndEffectorGoal.SCAN : MoveSensorGoal.MOVE
-  },
-
-  'to_linear' :
-  {
-    MoveEndEffectorGoal.TEST : MoveLinearGoal.TEST,
-    MoveEndEffectorGoal.PARK : MoveLinearGoal.LOWER,
-    MoveEndEffectorGoal.TRACK : MoveLinearGoal.MOVE,
-    MoveEndEffectorGoal.LAX_TRACK : MoveLinearGoal.LAX_MOVE,
-    MoveEndEffectorGoal.SCAN : MoveLinearGoal.LOWER
-  },
-
-  'to_head' :
-  {
-    MoveEndEffectorGoal.TEST : MoveSensorGoal.TEST,
-    MoveEndEffectorGoal.PARK : MoveSensorGoal.CENTER,
-    MoveEndEffectorGoal.TRACK : MoveSensorGoal.POINT,
-    MoveEndEffectorGoal.LAX_TRACK : MoveSensorGoal.LAX_POINT,
-    MoveEndEffectorGoal.SCAN : MoveSensorGoal.MOVE
-  }
-}
+if __name__ == '__main__':
+    rospy.init_node('mock_servers')
+    sensorServer = MockActionServer('mock/kinect', move_kinect_topic, MoveSensorAction)
+    linearServer = MockActionServer('mock/linear', move_linear_topic, MoveLinearAction)
+    rospy.spin()

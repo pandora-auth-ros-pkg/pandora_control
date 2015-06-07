@@ -76,6 +76,10 @@ class SensorClient(object):
   def has_preempted(self):
     return self.client.get_state() == GoalStatus.PREEMPTED
 
+
+  def has_been_recalled(self):
+    return self.client.get_state() == GoalStatus.RECALLED
+
   def preempt_if_active(self):
     if self.client.get_state() == GoalStatus.ACTIVE:
       self.client.cancel_all_goals()
@@ -114,6 +118,9 @@ class LinearClient(object):
   def has_preempted(self):
     return self.client.get_state() == GoalStatus.PREEMPTED
 
+  def has_been_recalled(self):
+    return self.client.get_state() == GoalStatus.RECALLED
+
   def preempt_if_active(self):
     if self.client.get_state() == GoalStatus.ACTIVE:
       self.client.cancel_all_goals()
@@ -150,6 +157,9 @@ class HeadClient(object):
 
   def has_preempted(self):
     return self.client.get_state() == GoalStatus.PREEMPTED
+
+  def has_been_recalled(self):
+    return self.client.get_state() == GoalStatus.RECALLED
 
   def preempt_if_active(self):
     if self.client.get_state() == GoalStatus.ACTIVE:

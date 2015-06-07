@@ -35,7 +35,7 @@
 
 # Needs to be in accordance to client_factory
 
-clients =[
+CLIENTS =[
   'sensor_client',
   'linear_client',
   'head_client'

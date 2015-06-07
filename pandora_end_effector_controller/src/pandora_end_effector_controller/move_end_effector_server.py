@@ -47,7 +47,7 @@ from pandora_linear_movement_controller.msg import MoveLinearAction, MoveLinearG
 from topics import move_end_effector_controller_topic, move_kinect_topic, \
     move_head_topic, move_linear_topic
 from client_factory import ClientFactory
-from client_list import clients
+from client_list import CLIENTS
 
 class MoveEndEffectorServer(object):
 
@@ -68,7 +68,7 @@ class MoveEndEffectorServer(object):
   def create_clients(self):
     ''' Imports all clients and creates a list of them '''
 
-    for client in clients:
+    for client in CLIENTS:
       self.current_clients.append(self.factory.make_client(client))
 
   def wait_for_servers(self):
@@ -78,10 +78,13 @@ class MoveEndEffectorServer(object):
       client.wait_server()
 
   def execute_cb(self, goal):
+    ''' Callback triggered by the arrival of a goal '''
 
+    rospy.logwarn('exec')
     self.current_goal = goal
     self.fill_goals()
     self.send_goals()
+    self.wait_for_result()
     self.checkGoalState()
 
   def preempt_cb(self):
@@ -101,6 +104,8 @@ class MoveEndEffectorServer(object):
 
     for client in self.current_clients:
       client.send_goal()
+
+  def wait_for_result(self):
 
     for client in self.current_clients:
       client.wait_result()
@@ -150,6 +155,16 @@ class MoveEndEffectorServer(object):
 
     return must_preempt
 
+  def check_recalled(self):
+    ''' Checks if the final state of the goal must be set preempted '''
+
+    must_recall = False
+
+    for  client in self.current_clients:
+      must_recall = must_recall or client.has_been_recalled()
+
+    return must_recall
+
   def checkGoalState(self):
     ''' Checking final state of goal '''
 
@@ -157,7 +172,13 @@ class MoveEndEffectorServer(object):
       self.success()
     elif(self.check_aborted()):
       self.abort()
+    elif(self.check_recalled()):
+      for client in self.current_clients:
+        rospy.loginfo(str(client.client.get_state()))
+      self.abort()
     elif(self.check_preempted()):
       self.preempt()
     else:
-      rospy.loginfo("Unexpected state ")
+      for client in self.current_clients:
+        rospy.loginfo(str(client.client.get_state()))
+      rospy.loginfo('Unexpected State')
