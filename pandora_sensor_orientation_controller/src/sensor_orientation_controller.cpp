@@ -348,14 +348,6 @@ namespace pandora_control
     const ros::TimerEvent& event)
   {
     double baseRoll, basePitch, baseYaw;
-
-    if (actionServer_.isPreemptRequested() || !ros::ok())
-    {
-      ROS_DEBUG("%s: Preempted", actionName_.c_str());
-      actionServer_.setPreempted();
-      stopPreviousTimers();
-      return;
-    }
     tf::StampedTransform baseTransform;
     try
     {
@@ -385,14 +377,6 @@ namespace pandora_control
   void SensorOrientationActionServer::pointSensor(const ros::TimerEvent& event)
   {
     ros::Time lastTf = ros::Time::now();
-    if (actionServer_.isPreemptRequested() || !ros::ok())
-    {
-      ROS_DEBUG("%s: Preempted", actionName_.c_str());
-      // set the action state to preempted
-      actionServer_.setPreempted();
-      stopPreviousTimers();
-      return;
-    }
     tf::StampedTransform sensorTransform;
     try
     {

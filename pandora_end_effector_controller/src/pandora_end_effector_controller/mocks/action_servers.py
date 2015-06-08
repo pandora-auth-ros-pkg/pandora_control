@@ -60,6 +60,7 @@ class MockActionServer(object):
     self._action_type = action_type
     self.timeout = 1
     self.action_result = None
+    self.prefered_callback = ' '
 
     Subscriber('mock/' + name, String, self.receive_commands)
     Subscriber('mock/gui_result', Bool, self.set_gui_result)

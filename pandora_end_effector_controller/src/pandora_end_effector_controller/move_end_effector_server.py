@@ -80,7 +80,6 @@ class MoveEndEffectorServer(object):
   def execute_cb(self, goal):
     ''' Callback triggered by the arrival of a goal '''
 
-    rospy.logwarn('exec')
     self.current_goal = goal
     self.fill_goals()
     self.send_goals()
@@ -113,17 +112,14 @@ class MoveEndEffectorServer(object):
   def success(self):
 
     self.server.set_succeeded()
-    rospy.loginfo("SUCCEEDED")
 
   def abort(self):
 
     self.server.set_aborted()
-    rospy.loginfo("ABORTED")
 
   def preempt(self):
 
     self.server.set_preempted()
-    rospy.loginfo("PREEMPTED")
 
   def check_succeeded(self):
     ''' Checks if the final state of the goal must be set succeeded '''
