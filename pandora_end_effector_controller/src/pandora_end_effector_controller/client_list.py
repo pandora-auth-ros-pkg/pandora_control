@@ -36,7 +36,5 @@
 # Needs to be in accordance to client_factory
 
 CLIENTS =[
-  'sensor_client',
-  'linear_client',
-  'head_client'
+  'sensor_client'
 ]

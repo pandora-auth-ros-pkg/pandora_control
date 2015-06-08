@@ -70,6 +70,7 @@ namespace pandora_control
                          ros::Duration(pitchRate_),
                          &SensorOrientationActionServer::pointSensor,
                          this);
+      stopPreviousTimers();
 
       if (scanRate_ <= 0)
       {
@@ -109,6 +110,7 @@ namespace pandora_control
   {
     command_ = goal->command;
     pointOfInterest_ = goal->point_of_interest;
+    pointThreshold_ = laxMovementThreshold_;
     stopPreviousTimers();
     if (command_ ==
         pandora_sensor_orientation_controller::MoveSensorGoal::TEST)
@@ -125,18 +127,45 @@ namespace pandora_control
     {
       scanYawTimer_.start();
       scanPitchTimer_.start();
+      while (ros::ok) {
+        if (actionServer_.isPreemptRequested() || !ros::ok())
+        {
+          ROS_DEBUG("%s: Preempted", actionName_.c_str());
+          actionServer_.setPreempted();
+          stopPreviousTimers();
+          return;
+        }
+      }
     }
     else if (command_ ==
              pandora_sensor_orientation_controller::MoveSensorGoal::POINT)
     {
       pointThreshold_ = movementThreshold_;
       pointSensorTimer_.start();
+      while (ros::ok) {
+        if (actionServer_.isPreemptRequested() || !ros::ok())
+        {
+          ROS_DEBUG("%s: Preempted", actionName_.c_str());
+          actionServer_.setPreempted();
+          stopPreviousTimers();
+          return;
+        }
+      }
     }
     else if (command_ ==
              pandora_sensor_orientation_controller::MoveSensorGoal::LAX_POINT)
     {
       pointThreshold_ = laxMovementThreshold_;
       pointSensorTimer_.start();
+      while (ros::ok) {
+        if (actionServer_.isPreemptRequested() || !ros::ok())
+        {
+          ROS_DEBUG("%s: Preempted", actionName_.c_str());
+          actionServer_.setPreempted();
+          stopPreviousTimers();
+          return;
+        }
+      }
     }
     else
     {
@@ -304,13 +333,6 @@ namespace pandora_control
 
   void SensorOrientationActionServer::scan(const ros::TimerEvent& event)
   {
-    if (actionServer_.isPreemptRequested() || !ros::ok())
-    {
-      ROS_DEBUG("%s: Preempted", actionName_.c_str());
-      actionServer_.setPreempted();
-      stopPreviousTimers();
-      return;
-    }
     switch (position_)
     {
       case START:
@@ -335,7 +357,6 @@ namespace pandora_control
         break;
     }
     yawTargetPosition_.data += offsetYaw_;
-    lastYawTarget_ = yawTargetPosition_.data;
   }
 
   void SensorOrientationActionServer::stabilizePitch(
@@ -363,13 +384,14 @@ namespace pandora_control
       return;
     }
     baseTransform.getBasis().getRPY(baseRoll, basePitch, baseYaw);
-    // FIXME needs an if
     pitchTargetPosition_.data = pitchStep_;
     pitchTargetPosition_.data += offsetPitch_ - basePitch;
     checkAngleLimits();
-    if (fabs(lastPitchTarget_ - pitchTargetPosition_.data) > pointThreshold_)
+    if (fabs(lastPitchTarget_ - pitchTargetPosition_.data) > pointThreshold_
+      || fabs(lastYawTarget_ - yawTargetPosition_.data) > pointThreshold_)
     {
       lastPitchTarget_ = pitchTargetPosition_.data;
+      lastYawTarget_ = yawTargetPosition_.data;
       sensorPitchPublisher_.publish(pitchTargetPosition_);
       sensorYawPublisher_.publish(yawTargetPosition_);
     }

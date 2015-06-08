@@ -182,3 +182,4 @@ class MoveEndEffectorServer(object):
       for client in self.current_clients:
         rospy.loginfo(str(client.client.get_state()))
       rospy.loginfo('Unexpected State')
+      self.abort()

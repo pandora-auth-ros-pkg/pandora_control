@@ -50,8 +50,7 @@ class ClientFactory(object):
 
   def make_client(self, client_name):
     ''' Making appropriate client '''
-
-    rospy.loginfo('Making client...')
+    rospy.loginfo('Making client... ' + client_name)
     return self.return_client[client_name]()
 
   def return_sensor(self):
