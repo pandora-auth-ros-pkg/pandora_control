@@ -96,7 +96,8 @@ namespace pandora_control
       sensorPitchPublisher_.publish(targetPosition);
       sensorYawPublisher_.publish(targetPosition);
       position_ = START;
-
+      actionServer_.registerPreemptCallback(
+        boost::bind(&SensorOrientationActionServer::preemptCallback, this));
       actionServer_.start();
     }
   }
@@ -127,45 +128,19 @@ namespace pandora_control
     {
       scanYawTimer_.start();
       scanPitchTimer_.start();
-      while (ros::ok) {
-        if (actionServer_.isPreemptRequested() || !ros::ok())
-        {
-          ROS_DEBUG("%s: Preempted", actionName_.c_str());
-          actionServer_.setPreempted();
-          stopPreviousTimers();
-          return;
-        }
-      }
     }
     else if (command_ ==
              pandora_sensor_orientation_controller::MoveSensorGoal::POINT)
     {
       pointThreshold_ = movementThreshold_;
       pointSensorTimer_.start();
-      while (ros::ok) {
-        if (actionServer_.isPreemptRequested() || !ros::ok())
-        {
-          ROS_DEBUG("%s: Preempted", actionName_.c_str());
-          actionServer_.setPreempted();
-          stopPreviousTimers();
-          return;
-        }
-      }
+
     }
     else if (command_ ==
              pandora_sensor_orientation_controller::MoveSensorGoal::LAX_POINT)
     {
       pointThreshold_ = laxMovementThreshold_;
       pointSensorTimer_.start();
-      while (ros::ok) {
-        if (actionServer_.isPreemptRequested() || !ros::ok())
-        {
-          ROS_DEBUG("%s: Preempted", actionName_.c_str());
-          actionServer_.setPreempted();
-          stopPreviousTimers();
-          return;
-        }
-      }
     }
     else
     {
@@ -173,6 +148,16 @@ namespace pandora_control
       // set the action state to aborted
       actionServer_.setAborted();
     }
+    while (actionServer_.isActive())
+    {
+    }
+  }
+
+  void SensorOrientationActionServer::preemptCallback()
+  {
+    ROS_DEBUG("%s: Preempted", actionName_.c_str());
+    actionServer_.setPreempted();
+    stopPreviousTimers();
   }
 
   bool SensorOrientationActionServer::getcontrollerParams()

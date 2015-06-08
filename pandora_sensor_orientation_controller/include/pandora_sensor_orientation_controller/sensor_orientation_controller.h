@@ -61,7 +61,7 @@ namespace pandora_control
 
   class SensorOrientationActionServer
   {
-    private:
+   private:
       ros::NodeHandle nodeHandle_;
       std::string actionName_;
       actionlib::SimpleActionServer<
@@ -106,6 +106,7 @@ namespace pandora_control
       tf::TransformListener tfListener_;
 
       void callback(const pandora_sensor_orientation_controller::MoveSensorGoalConstPtr& goal);
+      void preemptCallback();
 
       bool getcontrollerParams();
       void testSensor();
@@ -117,7 +118,7 @@ namespace pandora_control
       void checkAngleLimits();
       void stopPreviousTimers();
       void stabilizePitch(const ros::TimerEvent& event);
-    public:
+   public:
       SensorOrientationActionServer(
         std::string name,
         ros::NodeHandle nodeHandle_);
