@@ -2,9 +2,10 @@ from pybrain.rl.environments.environment import Environment
 
 import rospy
 import tf
+from tf import transformations
 
 from nav_msgs.msg import Path
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Point
 
 from pandora_kinodynamic_control.msg import KinodynamicCommand
 from src.pandora_kinodynamic_control.params import *
@@ -23,29 +24,49 @@ class NavigationEnvironment(Environment):
 
         super(NavigationEnvironment, self).__init__()
 
-        # self.trajectory_sub = rospy.Subscriber(EXP_TRAJECTORY_TOPIC,
-        #                                        Path, self.expected_trajectory_cb)
+        self.trajectory_sub = rospy.Subscriber(ACTUAL_TRAJECTORY_TOPIC,
+                                               Path, self.actual_trajectory_cb)
         self.command_pub = rospy.Publisher(COMMAND_TOPIC, KinodynamicCommand)
         self.transform_listener = tf.TransformListener()
 
         self._last_moment = None
+        self._last_index = None
         self._curr_moment = None
 
+        self._actual_trajectory = None
         self._last_actual_trajectory = None
-        self.curr_pose = Pose()
 
+        self.curr_pos = Point()
+        self.curr_roll = None
+        self.curr_pitch = None
+        self.curr_yaw = None
 
-    def getSensors(self):
+    def get_sensors(self):
         """ @brief: the current visible state of the vehicle in the world
 
         @return: Details about vehicle's joint state
 
         """
-        pitch = 0
-        roll = 0
-        # get and format current pose
-        # format actual trajectory
-        return [pitch, roll]
+        now = rospy.Time(0)
+        self.transform_listener.waitForTransform(WORLD, BASE_FOOTPRINT,
+                                                 now, rospy.Duration(0.1))
+        trans, rot = self.transform_listener.lookupTransform(WORLD, BASE_FOOTPRINT,
+                                                             now)
+        roll, pitch, yaw = transformations.euler_from_quaternion(rot)
+        self.curr_pos = trans
+        self.curr_roll = roll
+        self.curr_pitch = pitch
+        self.curr_yaw = yaw
+        return [roll, pitch]
+
+    def get_current_pose(self):
+        """ @brief: returns enough info from most recent fetched current pose
+            to describe vehicle's 2d pose
+
+        @return: tuple of (x, y, yaw), information of 2d vehicle pose
+
+        """
+        return (self.curr_pos.x, self.curr_pos.y, self.curr_yaw)
 
     def find_actual_trajectory(self):
         """ @brief: Finds in robot trajectory topic, vehicle's actual trajectory
@@ -56,9 +77,10 @@ class NavigationEnvironment(Environment):
         @return: list of tuples (x, y, yaw), vehicle's actual trajectory
 
         """
+        # TODO write trajectory
         pass
 
-    def performAction(self, action):
+    def perform_action(self, action):
         """ @brief: perform an action on the world that changes vehicle's state
         and influences vehicle's motion
 
@@ -71,3 +93,16 @@ class NavigationEnvironment(Environment):
         command = KinodynamicCommand()
         # TODO format message accordingly
         self.command_pub.publish(command)
+
+    def actual_trajectory_cb(self, actual_trajectory):
+        """ @brief: Callback for actual trajectory subscriber
+
+            SLAM publishes robot trajectory from start in a topic
+
+        @param actual_trajectory: a list of actual robot poses
+        @type actual_trajectory: Path
+        @note: it may need a mutex to assure safety
+        @return: nothing
+
+        """
+        self._actual_trajectory = actual_trajectory

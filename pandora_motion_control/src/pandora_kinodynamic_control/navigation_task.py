@@ -53,7 +53,7 @@ class NavigationTask(Task):
         """
         self._cmd_vel = cmd_vel
 
-    def getObservation(self):
+    def get_observation(self, final=False):
         """ @brief: Calculates environmental info and informs about vehicle's
             state in environment
 
@@ -64,11 +64,12 @@ class NavigationTask(Task):
 
         """
         # Find current pose, return pitch, roll denormalized states
-        sensors = self.env.getSensors()
+        sensors = self.env.get_sensors()
         # Get current pose as found from environment
-        curr_pose = self.env.curr_pose
+        curr_pose = self.env.get_current_pose()
         # Get actual trajectory as resulted from last command
-        self._actual_trajectory = self.env.find_actual_trajectory()
+        if final:
+            self._actual_trajectory = self.env.find_actual_trajectory()
 
         # Set latest action's expected trajectory in motion reward object
         if self._expected_trajectory is not None:
@@ -78,6 +79,10 @@ class NavigationTask(Task):
         self._expected_trajectory = utils.calculate_expected_trajectory(
             curr_pose, self._cmd_vel,
             self._trajectory_duration, self._time_granularity)
+
+        if not final:
+            return list()
+
         # Make a state vector of (pitch, roll, linear, angular)
         sensors.append(self._cmd_vel.linear.x)
         sensors.append(self._cmd_vel.angular.z)
@@ -88,7 +93,7 @@ class NavigationTask(Task):
             sensors = self.discretize(sensors)
         return sensors
 
-    def getReward(self):
+    def get_reward(self):
         """ @brief: Calculates using MotionReward last action's reward
             and returns it
 
@@ -98,7 +103,7 @@ class NavigationTask(Task):
         """
         return self.motion_reward.get_reward_from_trajectory(self._actual_trajectory)
 
-    def performAction(self, action):
+    def perform_action(self, action):
         """ @brief: Delegates to NavigationEnvironment to create messages and
             order a change in environment according to action argument
 
@@ -114,7 +119,7 @@ class NavigationTask(Task):
         final_action.append(self._cmd_vel.angular.z)
         final_action.extend(action)
         # Delegate interaction with environment to NavigationEnvironment
-        self.env.performAction(final_action)
+        self.env.perform_action(final_action)
 
     def discretize(self, sensors):
         """ @brief: Map continuous values to discrete values
