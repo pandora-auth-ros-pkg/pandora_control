@@ -1,5 +1,5 @@
 NAVIGATION_TOPIC = "/cmd_vel"
-EXP_TRAJECTORY_TOPIC = "/expected_trajectory"
+ACTUAL_TRAJECTORY_TOPIC = "/robot_trajectory"
 COMMAND_TOPIC = "/enhanced_cmd_vel"
 
 WORLD = "/world"

@@ -36,24 +36,9 @@ def find_distance(pose_a, pose_b):
 
     """
 
-    quaternion = (
-        pose_a.orientation.x,
-        pose_a.orientation.y,
-        pose_a.orientation.z,
-        pose_a.orientation.w)
-    euler = transformations.euler_from_quaternion(quaternion)
-    yaw_a = euler[2]
-    quaternion = (
-        pose_b.orientation.x,
-        pose_b.orientation.y,
-        pose_b.orientation.z,
-        pose_b.orientation.w)
-    euler = transformations.euler_from_quaternion(quaternion)
-    yaw_b = euler[2]
-
-    x_diff = pose_a.position.x - pose_b.position.x
-    y_diff = pose_a.position.y - pose_b.position.y
-    yaw_diff = yaw_a - yaw_b
+    x_diff = pose_a[0] - pose_b[0]
+    y_diff = pose_a[1] - pose_b[1]
+    yaw_diff = pose_a[0] - pose_b[2]
 
     distance = math.sqrt(x_diff**2 + y_diff**2 + yaw_diff**2)
     return distance
