@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 
-import roslib; roslib.load_manifest('pandora_motor_control')
+import roslib; roslib.load_manifest('pandora_motion_control')
 import rospy
 import sys
 import thread
 from time import sleep
-from geometry_msgs.msg import Twist
+from pandora_motion_control.msg import KinodynamicCommand
 
 class Joystick:
 
   linear = 0
   angular = 0
-  pub = rospy.Publisher("cmd_vel", Twist)
+  pub = rospy.Publisher("cmd_vel", KinodynamicCommand)
+
 
   def __init__(self,linear_coeff,angular_coeff):
     thread.start_new_thread(self.setSpeeds, (linear_coeff,angular_coeff))
@@ -66,7 +67,7 @@ class Joystick:
 
 
       #~ while not rospy.is_shutdown():
-      msg = Twist()
+      msg = KinodynamicCommand()
       msg.linear.x = self.linear*linear_coeff
       msg.angular.z = self.angular*angular_coeff
       self.pub.publish(msg)

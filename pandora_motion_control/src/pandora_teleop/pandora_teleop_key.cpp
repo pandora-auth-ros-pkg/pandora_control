@@ -39,6 +39,7 @@
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <geometry_msgs/Twist.h>
+#include <pandora_motion_control/KinodynamicCommand.h>
 #include <signal.h>
 #include <termios.h>
 #include <stdio.h>
@@ -67,14 +68,16 @@ class Teleoperation
     ~Teleoperation(void);
     double getLinearScale(void);
     double getAngularScale(void);
-    void publishTwist(void);
+    //void publishTwist(void);
     void keyLoop(void);
+    void publishKinodynamicCommand(void);
 
   private:
     ros ::NodeHandle nh_;
     double linear_, linear_scale_;
     double angular_, angular_scale_;
-    ros ::Publisher twist_pub_;
+    //ros ::Publisher twist_pub_;
+    ros::Publisher kinodynamicCommand_pub_;
     boost ::thread pub_thread_;
     boost ::mutex lock_;
 };
@@ -88,8 +91,10 @@ Teleoperation ::Teleoperation(
 {
   nh_.param("scale_linear", linear_scale_, linear_scale_);
   nh_.param("scale_angular", angular_scale_, angular_scale_);
-  twist_pub_ = nh_.advertise < geometry_msgs::Twist > ("/cmd_vel", 1);
-  pub_thread_ = boost::thread(&Teleoperation::publishTwist, this);
+  //twist_pub_ = nh_.advertise < geometry_msgs::Twist > ("/cmd_vel", 1);
+  kinodynamicCommand_pub_=nh_.advertise < pandora_motion_control::KinodynamicCommand > ("/cmd_vel", 1);
+  //pub_thread_ = boost::thread(&Teleoperation::publishTwist, this);
+  pub_thread_ = boost::thread(&Teleoperation::publishKinodynamicCommand, this);
 }
 
 Teleoperation::~Teleoperation(void)
@@ -107,7 +112,7 @@ double Teleoperation::getAngularScale(void)
   return angular_scale_;
 }
 
-void Teleoperation::publishTwist(void)
+/*void Teleoperation::publishTwist(void)
 {
   geometry_msgs::Twist twist;
   ros::Rate rate(100);
@@ -121,7 +126,39 @@ void Teleoperation::publishTwist(void)
     }
     rate.sleep();
   }
+}*/
+
+void Teleoperation::publishKinodynamicCommand(void)
+{
+  pandora_motion_control::KinodynamicCommand kinodynamicCommand;
+  ros::Rate rate(100);
+  while (ros::ok)
+  {
+    kinodynamicCommand.cmd_vel.linear .x = linear_ * linear_scale_;
+    kinodynamicCommand.cmd_vel.angular .z = angular_ * angular_scale_;
+    {
+      boost::mutex::scoped_lock lock(lock_);
+      kinodynamicCommand_pub_.publish(kinodynamicCommand);
+    }
+    rate.sleep();
+  }
 }
+/*void Teleoperation::publishKinodynamicCommand(void)
+{
+  pandora_motioncontrol::KinodynamicCommand KinodynamicCommand;
+  ros::Rate rate(100);
+  while (ros::ok)
+  {
+    KinodynamicCommand.linear .x = linear_ * linear_scale_;
+    KinodynamicCommand.angular .z = angular_ * angular_scale_;
+    {
+      boost::mutex::scoped_lock lock(lock_);
+      kinodynamicCommand_pub_.publish(kinodynamicCommand);
+    }
+    rate.sleep();
+  }
+
+}*/
 
 void Teleoperation::keyLoop(void)
 {
