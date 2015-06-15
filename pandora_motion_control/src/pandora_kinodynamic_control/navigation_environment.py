@@ -77,8 +77,21 @@ class NavigationEnvironment(Environment):
         @return: list of tuples (x, y, yaw), vehicle's actual trajectory
 
         """
-        # TODO write trajectory
-        pass
+        # Read trajecotry from SLAM /robot_trajecotry
+        actual_path = []
+
+        for p in reversed(self._actual_trajectory):
+
+            #Stop if point time stamp < than last_time_stamp
+            if p.header.stamp < self._last_moment:
+                break
+
+            #for every point belonging in last trajectory , save needed information
+            info = (p.pose.position.x,p.pose.position.y,p.orientation.z)
+            actual_path.insert(0,info)
+        
+        self._last_actual_trajectory = actual_path;
+        return actual_path
 
     def perform_action(self, action):
         """ @brief: perform an action on the world that changes vehicle's state
@@ -92,6 +105,7 @@ class NavigationEnvironment(Environment):
         """
         command = KinodynamicCommand()
         # TODO format message accordingly
+        # Not yet. Must be filled with SARSA decisions
         self.command_pub.publish(command)
 
     def actual_trajectory_cb(self, actual_trajectory):
