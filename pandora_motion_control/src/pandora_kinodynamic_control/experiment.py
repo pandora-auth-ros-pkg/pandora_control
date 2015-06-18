@@ -20,6 +20,9 @@ class Experiment(object):
         self.command_sub = rospy.Subscriber(NAVIGATION_TOPIC,
                                             Twist, self.navigation_cb)
 
+        self.local_step = 0
+        self.local_step_size = 1
+
     def navigation_cb(self, cmd_vel):
         """ @brief: Callback that handles velocity commands from navigation
 
@@ -31,20 +34,37 @@ class Experiment(object):
         @return: nothing
 
         """
-        observation = self.task.getObservation()
+        self.local_step += 1
+        self.task.set_velocity_command(cmd_vel)
+        final = self.local_step == self.local_step_size
+        observation = self.task.get_observation(final)
         # get informed about vehicle's current state
-        if self.action_done:
-            reward = self.task.getReward()
-            # get informed about last action's reward
-            self.agent.giveReward(reward)
-            # inform agent about last action's reward
-        self.agent.integrateObservation(observation)
-        # inform agent about vehicle's current state
-        action = self.agent.getAction()
-        # ask agent to decide what the current action will be
-        if self.action_done:
-            self.agent.learn()
-            # ask agent to update its estimations about expected returns
-        self.task.performAction(action)
-        # do the action in the world
-        self.action_done = True
+        if final:
+            self.local_step = 0
+
+            if self.action_done:
+                reward = self.task.get_reward()
+                # get informed about last action's reward
+                self.agent.giveReward(reward)
+                # inform agent about last action's reward
+            self.agent.integrateObservation(observation)
+            # inform agent about vehicle's current state
+            action = self.agent.getAction()
+            # ask agent to decide what the current action will be
+            if self.action_done:
+                self.agent.learn()
+                # ask agent to update its estimations about expected returns
+            self.task.perform_action(action)
+            # do the action in the world
+            self.action_done = True
+
+    def set_params(self, local_step_size):
+        """ @brief: Setter method for experiment's parameters
+
+        @param local_step_size: after how many calls to navigational callback we
+        will consider that world's state has changed
+        @type local_step_size: int
+        @return: nothing
+
+        """
+        self.local_step_size = local_step_size
