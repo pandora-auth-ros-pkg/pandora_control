@@ -91,6 +91,7 @@ Teleoperation ::Teleoperation(
 {
   nh_.param("scale_linear", linear_scale_, linear_scale_);
   nh_.param("scale_angular", angular_scale_, angular_scale_);
+  //nh_.param("terain_param", terain_parameter_, terain_parameter_);
   //twist_pub_ = nh_.advertise < geometry_msgs::Twist > ("/cmd_vel", 1);
   kinodynamicCommand_pub_=nh_.advertise < pandora_motion_control::KinodynamicCommand > ("/cmd_vel", 1);
   //pub_thread_ = boost::thread(&Teleoperation::publishTwist, this);
@@ -136,6 +137,7 @@ void Teleoperation::publishKinodynamicCommand(void)
   {
     kinodynamicCommand.cmd_vel.linear .x = linear_ * linear_scale_;
     kinodynamicCommand.cmd_vel.angular .z = angular_ * angular_scale_;
+    kinodynamicCommand.terrain_param = 2;
     {
       boost::mutex::scoped_lock lock(lock_);
       kinodynamicCommand_pub_.publish(kinodynamicCommand);
