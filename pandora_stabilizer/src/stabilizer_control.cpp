@@ -145,8 +145,9 @@ namespace pandora_control
     }
 
     command[0] = command[0] * 2 * boost::math::constants::pi<double>() / 360.0;
-    command[1] = -command[1] * 2 * boost::math::constants::pi<double>() / 360.0;
+    command[1] = command[1] * 2 * boost::math::constants::pi<double>() / 360.0;
 
+    // TODO: implement clamp method
     if (command[0] < minRoll_)
     {
       command[0] = minRoll_;
