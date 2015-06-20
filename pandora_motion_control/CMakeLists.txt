@@ -10,7 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   geometry_msgs
   roslint
-  message_generation
 )
 
 find_package(Boost REQUIRED COMPONENTS thread)
@@ -19,16 +18,6 @@ find_package(Boost REQUIRED COMPONENTS thread)
 #                              Declare Messages                                #
 ################################################################################
 
-add_message_files(
-  FILES
-   KinodynamicCommand.msg
-   )
-
-generate_messages(
-  DEPENDENCIES
-    std_msgs
-    geometry_msgs
-  )
 
 ################################################################################
 #                               Declare Package                                #
@@ -41,7 +30,6 @@ catkin_package(
     roscpp
     std_msgs
     geometry_msgs
-    message_runtime
 #  DEPENDS system_lib
 )
 
@@ -95,4 +83,3 @@ roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})
 ################################################################################
 #                               Install Targets                                #
 ################################################################################
-
