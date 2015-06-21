@@ -103,9 +103,22 @@ class NavigationEnvironment(Environment):
         @return: nothing
 
         """
+
+        # Form a new empty kinodynamic command msg
         command = KinodynamicCommand()
-        # TODO format message accordingly
-        # Not yet. Must be filled with SARSA decisions
+
+        # Fill with information provided by action argument
+        command.cmd_vel.linear.x = action[0]
+        command.cmd_vel.angular.z = action[1]
+
+        # Scale left/right not used in this version
+        command.scale_left = 1
+        command.scale_right = 1
+
+        # Fill terrain parameter
+        command.terrain_param = action[2]
+
+        # Terrain parameter (= agent's action)
         self.command_pub.publish(command)
 
     def actual_trajectory_cb(self, actual_trajectory):
