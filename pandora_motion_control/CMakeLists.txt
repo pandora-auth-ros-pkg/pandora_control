@@ -7,6 +7,7 @@ project(pandora_motion_control)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  rospy
   std_msgs
   geometry_msgs
   roslint
@@ -18,6 +19,7 @@ find_package(Boost REQUIRED COMPONENTS thread)
 #                              Declare Messages                                #
 ################################################################################
 
+# Declare Kinodynamic Command ? // Paizei na exei metafer8ei sto HW Interface
 
 ################################################################################
 #                               Declare Package                                #
@@ -28,6 +30,7 @@ catkin_package(
 #  LIBRARIES rrbot_plugin
   CATKIN_DEPENDS
     roscpp
+    rospy
     std_msgs
     geometry_msgs
 #  DEPENDS system_lib
@@ -57,6 +60,8 @@ target_link_libraries(pandora_teleop_key
 ################################################################################
 #                         Pandora Kinodynamic Control                          #
 ################################################################################
+
+# TODO ?
 
 ################################################################################
 #                                   Roslint                                    #

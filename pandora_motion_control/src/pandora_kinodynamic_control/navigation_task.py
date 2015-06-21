@@ -22,6 +22,9 @@ class NavigationTask(Task):
 
         @param environment: An object that handles communication from and to
         this module's system environment
+        @note : Although not regiestered as a class variable , NavigationTask holds
+        a NavigationEnvironment object . The NavigationEnvironment is used for communication
+        between the RL module and the real world.
         @type environment: NavigationEnvironment
 
         """
@@ -30,14 +33,14 @@ class NavigationTask(Task):
 
         self.motion_reward = MotionReward()
 
+        # Navigation Command related 
         self._cmd_vel = Twist()
-
         self._expected_trajectory = None
         self._actual_trajectory = None
 
+        # Parameters
         self._trajectory_duration = 0.2
         self._time_granularity = 5
-
         self.discretizing = True
 
     def set_velocity_command(self, cmd_vel):

@@ -20,6 +20,7 @@
   <depend>roscpp</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>rospy</depend>>
 
   <export>
   </export>
