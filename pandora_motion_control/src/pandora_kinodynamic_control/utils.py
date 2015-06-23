@@ -1,4 +1,5 @@
 import math
+import numpy
 from tf import transformations
 
 def calculate_expected_trajectory(pose, twist, duration, time_granularity):
@@ -22,7 +23,58 @@ def calculate_expected_trajectory(pose, twist, duration, time_granularity):
     @return: list of tuples (x, y, yaw), the expected trajectory
 
     """
-    # TODO calculate trajectory
+    
+    # Input Data
+    linear_vel = twist.linear.x
+    angular_vel = twist.angular.z
+    robot_x = pose.position.x
+    robot_y = pose.position.y
+    robot_yaw = pose.orientation.z
+
+    # Movement metrics
+    r = abs(linear_vel/angular_vel)
+    arc_angle = abs(angular_vel)*duration
+
+    # Point Counter
+    angle_step = arc_angle/(time_granularity-1)
+
+    # Pick Points:
+    points = []
+    for i in range(0,time_granularity):
+        # Calculate (x,y) based on polar coordinates
+        ang = angle_step*i
+        x = r * math.sin(ang)
+        y = -r* math.cos(ang)
+        
+        # Add new point to list
+        points.append((x,y))
+
+    # Insert points list in an numpy matrix for tranformations
+    points = numpy.matrix(points)
+    points = numpy.transpose(points)
+
+    # Transformations
+    # 1)Transform first point to (0,0)
+    points = points + [[0],[r]]
+
+    # 2)If angular velocity is negative , then , reverse over x axis
+    if angular_vel<0:
+        points = numpy.matrix([[1,0],[0,-1]])*points
+
+    # 3)Rotate yaw degrees around point (0,0)
+    cos_yaw = numpy.cos(robot_yaw)
+    sin_yaw = numpy.sin(robot_yaw)
+    rotation_matrix = numpy.matrix([[cos_yaw,-sin_yaw],
+                                   [sin_yaw,cos_yaw]])
+
+    # 4)Rotate every point in trajectory
+    for i in range(points[0,:].size):
+        points[:,i] = rotation_matrix*points[:,i]
+
+
+    # 5)Transform to robot_origin
+    points = points+ [[robot_x],[robot_y]]
+
     return None
 
 def find_distance(pose_a, pose_b):
