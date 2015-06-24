@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(pandora_motor_control)
+project(pandora_teleoperation)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -22,8 +22,8 @@ catkin_package(
 
 include_directories(${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
-add_executable(pandora_teleop_key src/pandora_teleop_key.cpp )
-target_link_libraries(pandora_teleop_key ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_executable(teleop_key src/teleop_key.cpp)
+target_link_libraries(teleop_key ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 # To check lint : catkin_make roslint_pandora_motor_control
 set(ROSLINT_CPP_OPTS
@@ -31,6 +31,7 @@ set(ROSLINT_CPP_OPTS
 
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
   RELATIVE ${PROJECT_SOURCE_DIR}
-  src/pandora_teleop_key.cpp
+  include/${PROJECT_NAME}/.h
+  src/*.cpp
 )
 roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})
