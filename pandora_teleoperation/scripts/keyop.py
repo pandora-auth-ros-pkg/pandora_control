@@ -4,6 +4,8 @@ import roslib
 import rospy
 from geometry_msgs.msg import Twist
 import sys, select, termios, tty
+import thread
+from time import sleep
 from numpy import clip
 
 keyboard_keys = {
@@ -24,15 +26,13 @@ control_bindings = {
 class Keyop:
 
   def __init__(self):
-    self.settings = termios.tcgetattr(sys.stdin)
+    self.msg = Twist()
     self.pub = rospy.Publisher('cmd_vel', Twist)
+    self.lock = thread.allocate_lock()
+    thread.start_new_thread(self.publish_twist, ())
     self.lin_vel = 0
     self.ang_vel = 0
-    rospy.loginfo("Keyboard Teleoperation Node Initialized")
-    rospy.loginfo("Use the arrow keys to adjust linear and angular speed or space to brake")
-    rospy.loginfo("Press 'ctr-c' or 'q' to exit")
-    rospy.loginfo(
-      "\033[33;1mLinear Speed: %s - Angular Speed: %s \033[0m \x1b[1A\x1b[1M", self.lin_vel, self.ang_vel)
+    self.key_loop()
 
   def get_key(self):
     tty.setraw(sys.stdin.fileno())
@@ -41,10 +41,31 @@ class Keyop:
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.settings)
     return key
 
+  def publish_twist(self):
+    rate = rospy.Rate(5)
+    while 1:
+      self.lock.acquire()
+      self.pub.publish(self.msg)
+      self.lock.release()
+      rate.sleep()
+
   def key_loop(self):
+    rospy.loginfo("Keyboard Teleoperation Node Initialized")
+    rospy.loginfo("Use the arrow keys to adjust linear and angular speed or space to brake")
+    rospy.loginfo("Press 'ctr-c' or 'q' to exit")
+    rospy.loginfo(
+        "\033[33;1mLinear Speed: %s - Angular Speed: %s\033[0m\x1b[1A\x1b[1M",
+        self.lin_vel, self.ang_vel)
+
+    self.settings = termios.tcgetattr(sys.stdin)
+
     try:
       while 1:
-        key = self.get_key()
+        try:
+          key = self.get_key()
+        except KeyboardInterrupt:
+          raise
+
         if key in control_bindings.keys():
           # rospy.loginfo("key: %s", hex(ord(key)))
           if key == keyboard_keys['space']:
@@ -53,9 +74,8 @@ class Keyop:
           else:
             self.lin_vel = self.lin_vel + control_bindings[key][0]
             self.ang_vel = self.ang_vel + control_bindings[key][1]
-        elif key == '\x03' or key == '\x71':
-          rospy.loginfo("Exiting...")
-          break
+        # elif key == '\x03' or key == '\x71':
+          # break
         else:
           continue
 
@@ -64,19 +84,17 @@ class Keyop:
 
         rospy.loginfo(
           "\033[33;1mLinear Speed: %s - Angular Speed: %s \033[0m \x1b[1A\x1b[1M", self.lin_vel, self.ang_vel)
-        msg = Twist()
-        msg.linear.x = self.lin_vel; msg.linear.y = 0; msg.linear.z = 0
-        msg.angular.x = 0; msg.angular.y = 0; msg.angular.z = self.ang_vel
-        self.pub.publish(msg)
+        self.msg.linear.x = self.lin_vel; self.msg.linear.y = 0; self.msg.linear.z = 0
+        self.msg.angular.x = 0; self.msg.angular.y = 0; self.msg.angular.z = self.ang_vel
 
-    except:
-      print e
+    except KeyboardInterrupt:
+      rospy.loginfo("Keyboard Interrupt caught")
 
     finally:
-      msg = Twist()
-      msg.linear.x = 0; msg.linear.y = 0; msg.linear.z = 0
-      msg.angular.x = 0; msg.angular.y = 0; msg.angular.z = 0
-      self.pub.publish(msg)
+      rospy.loginfo("Halting motors and Exiting...")
+      self.msg.linear.x = 0; self.msg.linear.y = 0; self.msg.linear.z = 0
+      self.msg.angular.x = 0; self.msg.angular.y = 0; self.msg.angular.z = 0
+      self.pub.publish(self.msg)
 
     # termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.settings)
 
@@ -84,4 +102,3 @@ class Keyop:
 if __name__ == "__main__":
   rospy.init_node('keyop_node')
   keyop = Keyop()
-  keyop.key_loop()
