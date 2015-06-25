@@ -47,10 +47,10 @@ class NavigationEnvironment(Environment):
         @return: Details about vehicle's joint state
 
         """
-        now = rospy.Time(0)
-        self.transform_listener.waitForTransform(WORLD, BASE_FOOTPRINT,
-                                                 now, rospy.Duration(0.1))
-        trans, rot = self.transform_listener.lookupTransform(WORLD, BASE_FOOTPRINT,
+        now = rospy.Time()
+        self.transform_listener.waitForTransform(WORLD, BASE_LINK,
+                                                 now, rospy.Duration(0.8))
+        trans, rot = self.transform_listener.lookupTransform(WORLD, BASE_LINK,
                                                              now)
         roll, pitch, yaw = transformations.euler_from_quaternion(rot)
         self.curr_pos = trans
