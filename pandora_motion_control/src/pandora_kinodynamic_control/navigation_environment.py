@@ -45,11 +45,12 @@ class NavigationEnvironment(Environment):
         """ @brief: the current visible state of the vehicle in the world
 
         @return: Details about vehicle's joint state
+        @note : Tricky timout var.Must add exception handlers
 
         """
-        now = rospy.Time()
+        now = rospy.Time.now()
         self.transform_listener.waitForTransform(WORLD, BASE_LINK,
-                                                 now, rospy.Duration(0.8))
+                                                 now, rospy.Duration(1.5))
         trans, rot = self.transform_listener.lookupTransform(WORLD, BASE_LINK,
                                                              now)
         roll, pitch, yaw = transformations.euler_from_quaternion(rot)
@@ -57,6 +58,7 @@ class NavigationEnvironment(Environment):
         self.curr_roll = roll
         self.curr_pitch = pitch
         self.curr_yaw = yaw
+
         return [roll, pitch]
 
     def get_current_pose(self):
@@ -64,9 +66,9 @@ class NavigationEnvironment(Environment):
             to describe vehicle's 2d pose
 
         @return: tuple of (x, y, yaw), information of 2d vehicle pose
-
+        @note : changed curr_pos.x ->curr_pos[0] because it was tuple
         """
-        return (self.curr_pos.x, self.curr_pos.y, self.curr_yaw)
+        return (self.curr_pos[0], self.curr_pos[1], self.curr_yaw)
 
     def find_actual_trajectory(self):
         """ @brief: Finds in robot trajectory topic, vehicle's actual trajectory
@@ -75,22 +77,29 @@ class NavigationEnvironment(Environment):
         called and the next time is called
 
         @return: list of tuples (x, y, yaw), vehicle's actual trajectory
-
+        @note : self._last_moment is not updated ...
+                Update every new actual_path
+        @note : pose information =  geometry_msgs.quaternion , NOT euler angles
         """
         # Read trajecotry from SLAM /robot_trajecotry
         actual_path = []
 
-        for p in reversed(self._actual_trajectory):
+        # The list must be reversed , otherwise it will immedatelly break
+        for p in reversed(self._actual_trajectory.poses):
 
             #Stop if point time stamp < than last_time_stamp
             if p.header.stamp < self._last_moment:
                 break
 
+            # transform quaternion to euler angles , using tf library
+            p_roll ,p_pitch ,p_yaw = transformations.euler_from_quaternion(p.pose.orientation)
+
             #for every point belonging in last trajectory , save needed information
-            info = (p.pose.position.x,p.pose.position.y,p.orientation.z)
+            info = (p.pose.position.x,p.pose.position.y,p_yaw)
             actual_path.insert(0,info)
 
-        self._last_actual_trajectory = actual_path;
+        self._last_actual_trajectory = actual_path
+        self._last_moment = rospy.Time.now()
         return actual_path
 
     def perform_action(self, action):
@@ -133,3 +142,4 @@ class NavigationEnvironment(Environment):
 
         """
         self._actual_trajectory = actual_trajectory
+        #print self.find_actual_trajectory()
