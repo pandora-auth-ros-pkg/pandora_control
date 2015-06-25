@@ -7,8 +7,8 @@ from tf import transformations
 from nav_msgs.msg import Path
 from geometry_msgs.msg import Point
 
-from pandora_kinodynamic_control.msg import KinodynamicCommand
-from src.pandora_kinodynamic_control.params import *
+from pandora_motor_hardware_interface.msg import KinodynamicCommand
+from pandora_kinodynamic_control.params import *
 
 class NavigationEnvironment(Environment):
 
@@ -89,7 +89,7 @@ class NavigationEnvironment(Environment):
             #for every point belonging in last trajectory , save needed information
             info = (p.pose.position.x,p.pose.position.y,p.orientation.z)
             actual_path.insert(0,info)
-        
+
         self._last_actual_trajectory = actual_path;
         return actual_path
 

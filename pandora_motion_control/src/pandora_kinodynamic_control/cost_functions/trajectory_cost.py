@@ -1,6 +1,6 @@
 from cost_graph.cost_node import CostNode
 
-from src.pandora_kinodynamic_control.utils import calculate_expected_trajectory
+from pandora_kinodynamic_control.utils import calculate_expected_trajectory
 
 class TrajectoryCost(CostNode):
 

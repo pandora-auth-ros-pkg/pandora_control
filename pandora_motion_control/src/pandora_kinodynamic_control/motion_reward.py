@@ -3,7 +3,7 @@ from cost_functions.trajectory_cost import TrajectoryCost
 from cost_functions.cost_graph.fuse_cost_node import FuseCostNode
 from cost_functions.linear_fusion import LinearFusion
 
-from src.pandora_kinodynamic_control import utils
+from pandora_kinodynamic_control import utils
 
 class MotionReward(object):
 

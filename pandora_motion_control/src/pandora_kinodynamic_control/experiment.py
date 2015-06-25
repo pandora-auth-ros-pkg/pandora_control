@@ -1,7 +1,7 @@
 import rospy
 from geometry_msgs.msg import Twist
 
-from src.pandora_kinodynamic_control.params import *
+from pandora_kinodynamic_control.params import *
 
 class Experiment(object):
 

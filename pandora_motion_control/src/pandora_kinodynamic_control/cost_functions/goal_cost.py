@@ -1,7 +1,7 @@
 from cost_graph.cost_node import CostNode
 from geometry_msgs.msg import Pose
 
-from src.pandora_kinodynamic_control.utils import find_distance
+from pandora_kinodynamic_control.utils import find_distance
 
 class GoalCost(CostNode):
 

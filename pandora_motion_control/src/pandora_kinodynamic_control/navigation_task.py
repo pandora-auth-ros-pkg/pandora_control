@@ -2,8 +2,8 @@ from pybrain.rl.environments.task import Task
 
 from geometry_msgs.msg import Twist
 
-from src.pandora_kinodynamic_control.motion_reward import MotionReward
-from src.pandora_kinodynamic_control import utils
+from pandora_kinodynamic_control.motion_reward import MotionReward
+from pandora_kinodynamic_control import utils
 
 class NavigationTask(Task):
 
@@ -33,7 +33,7 @@ class NavigationTask(Task):
 
         self.motion_reward = MotionReward()
 
-        # Navigation Command related 
+        # Navigation Command related
         self._cmd_vel = Twist()
         self._expected_trajectory = None
         self._actual_trajectory = None
