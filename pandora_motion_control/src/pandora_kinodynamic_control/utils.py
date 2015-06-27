@@ -21,69 +21,87 @@ def calculate_expected_trajectory(pose, twist, duration, time_granularity):
     @type time_granularity: double
 
     @return: list of tuples (x, y, yaw), the expected trajectory
+    @note: Case angular_vel = 0 , we have ZeroDivision Error FIX ASAP!!!
 
     """
-    
+
     # Input Data
     linear_vel = twist.linear.x
     angular_vel = twist.angular.z
-    robot_x = pose.position.x
-    robot_y = pose.position.y
-    robot_yaw = pose.orientation.z
+    robot_x = pose[0]
+    robot_y = pose[1]
+    robot_yaw = pose[2]
 
-    # Movement metrics
-    r = abs(linear_vel/angular_vel)
-    arc_angle = abs(angular_vel)*duration
+    # Case 1: Linear Movement (angular velocity  = 0)
+    if angular_vel == 0:
+        # Distance to travel
+        distance = linear_vel*duration
+        # Step size
+        step_size = distance/(time_granularity-1)
 
-    # Point Counter
-    angle_step = arc_angle/(time_granularity-1)
+        # Pick Points
+        points = []
+        points_yaw = []
+        for i in range(0,time_granularity):
+            # Calculate (x,y)
+            x = i*step_size
+            y = 0
+            points.append((x,y))
+            points_yaw.append(0)
 
-    if linear_vel<0:
-        angle_step = angle_step*(-1)
+        # Insert points list in an numpy matrix for tranformations
+        points = numpy.matrix(points)
+        points = numpy.transpose(points)
+        points_yaw = numpy.array(points_yaw)
 
-    # Pick Points:
-    points = []
-    points_yaw = []
-    for i in range(0,time_granularity):
-        # Calculate (x,y) based on polar coordinates
-        ang = angle_step*i
-        x = r * math.sin(ang)
-        y = -r* math.cos(ang)
-        
-        # Add new point to lists
-        points.append((x,y))
-        points_yaw.append(ang)
 
-    # Insert points list in an numpy matrix for tranformations
-    points = numpy.matrix(points)
-    points = numpy.transpose(points)
-    points_yaw = numpy.array(points_yaw)
+    # Case 2: Linear + Angular Movement (works also on Linear = 0)
+    else:
+        # Movement metrics
+        r = abs(linear_vel/angular_vel)
+        arc_angle = abs(angular_vel)*duration
+
+        # Point Counter
+        angle_step = arc_angle/(time_granularity-1)
+
+        if linear_vel<0:
+            angle_step = angle_step*(-1)
+
+        # Pick Points:
+        points = []
+        points_yaw = []
+        for i in range(0,time_granularity):
+            # Calculate (x,y) based on polar coordinates
+            ang = angle_step*i
+            x = r * math.sin(ang)
+            y = -r* math.cos(ang)
+
+            # Add new point to lists
+            points.append((x,y))
+            points_yaw.append(ang)
+
+        # Insert points list in an numpy matrix for tranformations
+        points = numpy.matrix(points)
+        points = numpy.transpose(points)
+        points_yaw = numpy.array(points_yaw)
+
+        # 1) Transform first point to (0,0)
+        points = points + [[0],[r]]
+
+        # 2) If angular velocity is negative , then , reverse over x axis
+        if angular_vel<0:
+            points = numpy.matrix([[1,0],[0,-1]])*points
+            points_yaw = points_yaw * (-1)
+
 
     # --------------------- Transformations ---------------------
-    # 1) Transform first point to (0,0)
-    points = points + [[0],[r]]
+    # Rotate points around (0,0)
+    [points , points_yaw] = rotate_trajectory(robot_yaw,points,points_yaw)
 
-    # 2) If angular velocity is negative , then , reverse over x axis
-    if angular_vel<0:
-        points = numpy.matrix([[1,0],[0,-1]])*points
-        points_yaw = points_yaw * (-1)
-
-    # 3) Rotate yaw degrees around point (0,0)
-    cos_yaw = numpy.cos(robot_yaw)
-    sin_yaw = numpy.sin(robot_yaw)
-    rotation_matrix = numpy.matrix([[cos_yaw,-sin_yaw],
-                                   [sin_yaw,cos_yaw]])
-
-    # 4) Rotate every point in trajectory
-    for i in range(points[0,:].size):
-        points[:,i] = rotation_matrix*points[:,i]
-
-    points_yaw = points_yaw + robot_yaw
-
-    # 5) Transform to robot_origin
+    # 4) Transform to robot_origin
     points = points + [[robot_x],[robot_y]]
 
-    # 6) Output Form
+    # 5) Output Form
     points = points.tolist()
     points_x = points[0]
     points_y = points[1]
@@ -111,3 +129,29 @@ def find_distance(pose_a, pose_b):
 
     distance = math.sqrt(x_diff**2 + y_diff**2 + yaw_diff**2)
     return distance
+
+
+def rotate_trajectory(angle,trajectory_points,trajectory_yaw):
+    """ @brief: rotates a given trajectory around (0,0) , angle rads.
+
+    @param angle: angle of rotation. (in rads)
+    @type angle: double
+    @param trajectory_points: points of trajectory to be rotated
+    @type trajectory_points: numpy.matrix
+    @param trajectory_yaw: rotation of points in trajectory
+    @type trajectory_yaw: numpy.array
+    @return: list [new_trajectory_points , new_trajectory_yaw]
+
+    """
+
+    # Rotation Matrix
+    rotation_matrix = numpy.matrix([[numpy.cos(angle),-numpy.sin(angle)],
+                                   [numpy.sin(angle),numpy.cos(angle)]])
+
+    # Multiply points with rotation matrix
+    for i in range(trajectory_points[0,:].size):
+        trajectory_points[:,i] = rotation_matrix*trajectory_points[:,i]
+
+    trajectory_yaw = trajectory_yaw + angle
+
+    return [trajectory_points,trajectory_yaw]
