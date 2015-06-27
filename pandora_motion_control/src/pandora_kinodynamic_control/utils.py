@@ -19,9 +19,7 @@ def calculate_expected_trajectory(pose, twist, duration, time_granularity):
     @param time_granularity: resolution of a discrete curve in respect
     to the time. Must be >1 !
     @type time_granularity: double
-
     @return: list of tuples (x, y, yaw), the expected trajectory
-    @note: Case angular_vel = 0 , we have ZeroDivision Error FIX ASAP!!!
 
     """
 

@@ -29,6 +29,7 @@ class NavigationEnvironment(Environment):
         self.command_pub = rospy.Publisher(COMMAND_TOPIC, KinodynamicCommand)
         self.transform_listener = tf.TransformListener()
 
+        # Temp fix
         self._last_moment = None
         self._last_index = None
         self._curr_moment = None
@@ -50,7 +51,7 @@ class NavigationEnvironment(Environment):
         """
         now = rospy.Time.now()
         self.transform_listener.waitForTransform(WORLD, BASE_LINK,
-                                                 now, rospy.Duration(1.5))
+                                                 now, rospy.Duration(3))
         trans, rot = self.transform_listener.lookupTransform(WORLD, BASE_LINK,
                                                              now)
         roll, pitch, yaw = transformations.euler_from_quaternion(rot)
@@ -79,7 +80,6 @@ class NavigationEnvironment(Environment):
         @return: list of tuples (x, y, yaw), vehicle's actual trajectory
         @note : self._last_moment is not updated ...
                 Update every new actual_path
-        @note : pose information =  geometry_msgs.quaternion , NOT euler angles
         """
         # Read trajecotry from SLAM /robot_trajecotry
         actual_path = []
@@ -91,8 +91,14 @@ class NavigationEnvironment(Environment):
             if p.header.stamp < self._last_moment:
                 break
 
+            #Tranformation from geometry_msgs.quaternion to numpy array
+            numpy_quaternion = (
+            p.pose.orientation.x,
+            p.pose.orientation.y,
+            p.pose.orientation.z,
+            p.pose.orientation.w)
             # transform quaternion to euler angles , using tf library
-            p_roll ,p_pitch ,p_yaw = transformations.euler_from_quaternion(p.pose.orientation)
+            (p_roll ,p_pitch ,p_yaw) = transformations.euler_from_quaternion(numpy_quaternion)
 
             #for every point belonging in last trajectory , save needed information
             info = (p.pose.position.x,p.pose.position.y,p_yaw)
@@ -138,8 +144,9 @@ class NavigationEnvironment(Environment):
         @param actual_trajectory: a list of actual robot poses
         @type actual_trajectory: Path
         @note: it may need a mutex to assure safety
+        BEWARE : in python , callbacks run in a seperate thread by defaul.
+        check : http://answers.ros.org/question/110336/python-spin-once-equivalent/ for more information
         @return: nothing
 
         """
         self._actual_trajectory = actual_trajectory
-        #print self.find_actual_trajectory()
