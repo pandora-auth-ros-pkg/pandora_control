@@ -81,6 +81,12 @@ class NavigationEnvironment(Environment):
         @note : self._last_moment is not updated ...
                 Update every new actual_path
         """
+
+        # Initiallization of time for limiting actual_trajectory from SLAM
+        if self._last_moment == None:
+            last_moment =rospy.Time.now()
+            return list()
+
         # Read trajecotry from SLAM /robot_trajecotry
         actual_path = []
 
