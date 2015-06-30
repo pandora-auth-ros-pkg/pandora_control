@@ -41,7 +41,14 @@ class NavigationTask(Task):
         # Parameters
         self._trajectory_duration = 0.2
         self._time_granularity = 5
-        self.discretizing = True
+
+        # Discretization Parameters
+        # (list containing number of states to produce in each element of sensros list)
+        self._discretazation_vector = [20,20,20,20]
+
+        # State Processing:
+        self._normalize_states = True
+        self._discretize_states = True
 
     def set_velocity_command(self, cmd_vel):
         """ @brief: Setter for velocity command from navigation
@@ -76,7 +83,9 @@ class NavigationTask(Task):
 
         # Set latest action's expected trajectory in motion reward object
         if self._expected_trajectory is not None:
-            self.motion_reward.init_info_from_expected(self._expected_trajectory)
+            pass
+        #     self.motion_reward.init_info_from_expected(self._expected_trajectory)
+
         # Construct current expected trajectory from current pose, velocity
         # command and trajectory duration in time
         self._expected_trajectory = utils.calculate_expected_trajectory(
@@ -90,10 +99,12 @@ class NavigationTask(Task):
         sensors.append(self._cmd_vel.linear.x)
         sensors.append(self._cmd_vel.angular.z)
 
-        if self.sensor_limits:
+        if self._normalize_states:
             sensors = self.normalize(sensors)
-        if self.discretizing:
-            sensors = self.discretize(sensors)
+
+            # Discretization can be applied only to normalized values
+            if self._discretize_states:
+                sensors = self.discretize(sensors)
         return sensors
 
     def get_reward(self):
@@ -132,9 +143,15 @@ class NavigationTask(Task):
         @return: list of doubles, sensor values but in a discrete set
 
         """
-        return sensors
+        discretized_sensors = []
 
-    def set_params(self, duration, cost_weights, time_granularity):
+        for i in range(len(sensors)):
+            k = utils.discretize_value(sensors[i],self._discretazation_vector[i])
+            discretized_sensors.append(k)
+
+        return discretized_sensors
+
+    def set_params(self, duration, cost_weights, time_granularity,limits):
         """ @brief: Configure parameters for NavigationTask
 
         @param duration: duration between 2 supposed state changes, length of
@@ -151,3 +168,6 @@ class NavigationTask(Task):
         self._trajectory_duration = duration
         self._time_granularity = time_granularity
         self.motion_reward.set_params(cost_weights, time_granularity)
+
+        # Adjust sensor limits:
+        self.sensor_limits = limits

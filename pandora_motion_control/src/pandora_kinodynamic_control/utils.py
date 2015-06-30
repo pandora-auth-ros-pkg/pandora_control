@@ -153,3 +153,31 @@ def rotate_trajectory(angle,trajectory_points,trajectory_yaw):
     trajectory_yaw = trajectory_yaw + angle
 
     return [trajectory_points,trajectory_yaw]
+
+def discretize_value(x,states):
+    """ @brief: Calculates discretized value of a given normallized number.
+
+    @param input: a normallized number (belongs to [-1,1])
+    @type input: double
+    @param states: number of states
+    @type states: integer
+    @note: maybe change float states to integers
+                    BEWARE : CANCEROUS AREA !!!!
+    @note : there is a possibility that little differences in python floating
+    system resolve to different states in ActionValueTable()
+    """
+    step_size = 2.0/(states-1)
+    is_possitive = (x>=0)
+
+    (quotient , remainder) = divmod(abs(x),step_size)
+
+    # Rounding (beware in == case : python floats are rarely equal)
+        # After 15 digit , float numbers are NOT equal
+        # Possible solution : round(x,12)
+    if remainder>=(step_size/2.0):
+            quotient = quotient + 1
+
+    if not is_possitive:
+        quotient = (-1)*quotient
+
+    return step_size*quotient

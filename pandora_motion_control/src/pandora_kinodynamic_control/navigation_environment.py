@@ -84,7 +84,7 @@ class NavigationEnvironment(Environment):
 
         # Initiallization of time for limiting actual_trajectory from SLAM
         if self._last_moment == None:
-            last_moment =rospy.Time.now()
+            self._last_moment = rospy.Time.now()
             return list()
 
         # Read trajecotry from SLAM /robot_trajecotry
