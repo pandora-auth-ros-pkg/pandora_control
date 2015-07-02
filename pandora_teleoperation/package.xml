@@ -12,14 +12,18 @@
   <url type="repository">https://github.com/pandora-auth-ros-pkg/pandora_control</url>
 
   <author>Evangelos Apostolidis</author>
+  <author>George Kouros</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>roslint</build_depend>
 
   <depend>roscpp</depend>
+  <depend>rospy</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>joy</depend>
 
   <export>
   </export>

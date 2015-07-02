@@ -1,5 +1,21 @@
 #!/usr/bin/env python
 
+'''
+File Description  Joystick Teleoperation Script, that controls the robot motors
+                  velocity, linear actuator position, xtion and picam
+                  pan n' tilts
+
+Script Usage      Use the keyboard arrow keys to control the module that
+                  corresponds to the mode that is set
+                  Change mode with the m,k,l,p keys
+                    m -> motors
+                    k -> kinect/xtion
+                    l -> linear actuator
+                    p -> picam
+
+Author            George Kouros
+'''
+
 import roslib
 import rospy
 from geometry_msgs.msg import Twist
@@ -7,6 +23,7 @@ from std_msgs.msg import Float64
 import sys, select, termios, tty
 import thread
 from numpy import clip
+from sys import argv
 
 control_keys = {
   'up' : '\x41',
@@ -35,7 +52,15 @@ modes = {
 
 class Keyop:
 
-  def __init__(self):
+  def __init__(self, max_lin_vel=0.5, max_ang_vel=0.8):
+    self.lin_vel_range = [-float(max_lin_vel), float(max_lin_vel)]
+    self.ang_vel_range = [-float(max_ang_vel), float(max_ang_vel)]
+    self.lac_range = [0.0, 14.0]
+    self.xtion_yaw_range = [-0.7, 0.7]
+    self.xtion_pitch_range = [-0.45, -0.75]
+    self.picam_yaw_range = [-0.7, 0.7]
+    self.picam_pitch_range = [-0.45, -0.75]
+
     self.lin_vel = 0       # motors linear velocity
     self.ang_vel = 0       # motors angular velocity
     self.lac_position = 0  # linear actuator vertical position
@@ -43,13 +68,6 @@ class Keyop:
     self.xtion_pitch = 0   # xtion pitch
     self.picam_yaw = 0     # picam yaw
     self.picam_pitch = 0   # picam pitch
-
-    self.motors_msg = Twist()         # motors velocity msg
-    self.lac_msg = Float64()          # linear actuator msg
-    self.xtion_yaw_msg = Float64()    # xtion yaw msg
-    self.xtion_pitch_msg = Float64()  # xtion pitch msg
-    self.picam_yaw_msg = Float64()    # picam yaw msg
-    self.picam_pitch_msg = Float64()  # picam pitch msg
 
     self.motors_pub = rospy.Publisher('cmd_vel', Twist)
     self.lac_pub = rospy.Publisher('linear_motor_controller/command', Float64)
@@ -60,43 +78,41 @@ class Keyop:
 
     self.mode = 'motors'  # initialize mode to motors mode
 
-    self.lock = thread.allocate_lock()
-    thread.start_new_thread(self.publish_commands, ())
+    rospy.Timer(rospy.Duration(0.1), self.pub_callback, oneshot=False)
     self.key_loop()
 
 
-  def publish_commands(self):
-    rate = rospy.Rate(5)
-    while 1:
-      self.lock.acquire()
-      if self.mode == 'motors':
-        self.motors_msg.linear.x = self.lin_vel
-        self.motors_msg.angular.z = self.ang_vel
-        self.motors_pub.publish(self.motors_msg)
-      elif self.mode == 'lac':
-        self.lac_msg.data = self.lac_position
-        self.lac_pub.publish(self.lac_msg)
-      elif self.mode == 'xtion':
-        self.xtion_yaw_msg.data = self.xtion_yaw
-        self.xtion_pitch_msg.data = self.xtion_pitch
-        self.xtion_yaw_pub.publish(self.xtion_yaw_msg)
-        self.xtion_pitch_pub.publish(self.xtion_pitch_msg)
-      elif self.mode == 'picam':
-        self.picam_yaw_msg.data = self.picam_yaw
-        self.picam_pitch_msg.data = self.picam_pitch
-        self.picam_yaw_pub.publish(self.picam_yaw_pub)
-        self.picam_pitch_pub.publish(self.picam_pitch_pub)
-      elif self.mode == 'quit':
-        self.lock.release()
-        break
-      self.lock.release()
-      rate.sleep()
+  def pub_callback(self, event):
+   motors_msg = Twist()         # motors velocity msg
+   lac_msg = Float64()          # linear actuator msg
+   xtion_yaw_msg = Float64()    # xtion yaw msg
+   xtion_pitch_msg = Float64()  # xtion pitch msg
+   picam_yaw_msg = Float64()    # picam yaw msg
+   picam_pitch_msg = Float64()  # picam pitch msg
+
+   if self.mode == 'motors':
+     motors_msg.linear.x = self.lin_vel
+     motors_msg.angular.z = self.ang_vel
+     self.motors_pub.publish(motors_msg)
+   elif self.mode == 'lac':
+     lac_msg.data = self.lac_position
+     self.lac_pub.publish(lac_msg)
+   elif self.mode == 'xtion':
+     xtion_yaw_msg.data = self.xtion_yaw
+     xtion_pitch_msg.data = self.xtion_pitch
+     self.xtion_yaw_pub.publish(xtion_yaw_msg)
+     self.xtion_pitch_pub.publish(xtion_pitch_msg)
+   elif self.mode == 'picam':
+     picam_yaw_msg.data = self.picam_yaw
+     picam_pitch_msg.data = self.picam_pitch
+     self.picam_yaw_pub.publish(picam_yaw_msg)
+     self.picam_pitch_pub.publish(picam_pitch_msg)
 
   def print_state(self, erase):
     if erase:
       rospy.loginfo("\x1b[3A")
 
-    rospy.loginfo("\033[32;1mTeleop Mode: %s\033[0m", self.mode)
+    rospy.loginfo("\033[32;1mTeleop Mode: %s   \033[0m", self.mode)
 
     rospy.loginfo("\x1b[1M\x1b[1A")
 
@@ -131,16 +147,16 @@ class Keyop:
             self.lin_vel = 0.0
             self.ang_vel = 0.0
           else:
-            self.lin_vel = self.lin_vel + control_bindings[key][0] * 2
-            self.ang_vel = self.ang_vel + control_bindings[key][1] * 2
-          self.lin_vel = clip(self.lin_vel, -1.0, 1.0)
-          self.ang_vel = clip(self.ang_vel, -1.0, 1.0)
+            self.lin_vel = self.lin_vel + control_bindings[key][0]
+            self.ang_vel = self.ang_vel + control_bindings[key][1]
+          self.lin_vel = clip(self.lin_vel, self.lin_vel_range[0], self.lin_vel_range[1])
+          self.ang_vel = clip(self.ang_vel, self.ang_vel_range[0], self.ang_vel_range[1])
         elif self.mode == 'lac':
           if key == control_keys['space']:
             self.lac_position = 0
           else:
             self.lac_position = self.lac_position + control_bindings[key][0] * 10
-          self.lac_position = clip(self.lac_position, 0, 14)
+          self.lac_position = clip(self.lac_position, self.lac_range[0], self.lac_range[1])
         elif self.mode == 'xtion':
           if key == control_keys['space']:
             self.xtion_pitch = 0
@@ -148,27 +164,26 @@ class Keyop:
           else:
             self.xtion_pitch = self.xtion_pitch + control_bindings[key][0] / 2
             self.xtion_yaw = self.xtion_yaw + control_bindings[key][1]
-          self.xtion_pitch = clip(self.xtion_pitch, -0.45, 0.75)
-          self.xtion_yaw = clip(self.xtion_yaw, -0.7, 0.7)
+          self.xtion_pitch = clip(self.xtion_pitch, self.xtion_yaw_range[0], self.xtion_yaw_range[1])
+          self.xtion_yaw = clip(self.xtion_yaw, self.xtion_pitch_range[0], self.xtion_pitch_range[1])
         elif self.mode == "picam":
           if key == control_keys['space']:
             self.picam_pitch = 0
             self.picam_yaw = 0
           else:
-            self.picam_pitch = self.picam_pitch + control_bindings[key][0]
+            self.picam_pitch = self.picam_pitch + control_bindings[key][0] / 2
             self.picam_yaw = self.picam_yaw + control_bindings[key][1]
-          self.picam_yaw = clip(self.picam_yaw, -0.7, 0.7)
-          self.picam_pitch = clip(self.picam_pitch, -0.45, 0.75)
+          self.picam_yaw = clip(self.picam_yaw, self.picam_yaw_range[0], self.picam_yaw_range[1])
+          self.picam_pitch = clip(self.picam_pitch, self.picam_pitch_range[0], self.picam_pitch_range[1])
 
         self.print_state(1)
 
       elif key in mode_keys:
-        self.lock.acquire()
         self.lin_vel = 0; self.ang_vel = 0
-        self.motors_msg.linear.x = 0; self.motors_msg.angular.z = 0
-        self.motors_pub.publish(self.motors_msg)
+        motors_msg = Twist()
+        motors_msg.linear.x = 0; motors_msg.angular.z = 0
+        self.motors_pub.publish(motors_msg)
         self.mode = modes[key]
-        self.lock.release()
         self.print_state(1)
         continue
       elif key == '\x03' or key == '\x71':  # ctr-c or q
@@ -180,15 +195,19 @@ class Keyop:
 
   def finalize(self):
     rospy.loginfo('Halting motors and exiting...')
-    self.lock.acquire()
     self.settings = termios.tcgetattr(sys.stdin)
     self.mode = 'quit'
-    self.motors_msg.linear.x = 0; self.motors_msg.angular.z = 0
-    self.motors_pub.publish(self.motors_msg)
-    self.lock.release()
+    motors_msg = Twist(); motors_msg.linear.x = 0; motors_msg.angular.z = 0
+    self.motors_pub.publish(motors_msg)
     sys.exit()
 
 if __name__ == "__main__":
   rospy.init_node('keyop_node')
   rospy.loginfo("Keyboard Teleoperation Node Initialized")
-  keyop = Keyop()
+  args = argv[1:]
+  if len(args) == 2:
+    rospy.loginfo("Setting max linear velocity to %s and angular velocity to %s", args[0], args[1])
+    keyop = Keyop(args[0], args[1])
+  else:
+    rospy.loginfo("Using default max linear(0.5m/s) and angular velocity(0.8m/s)")
+    keyop = Keyop()
