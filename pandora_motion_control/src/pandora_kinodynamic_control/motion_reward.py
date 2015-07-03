@@ -106,11 +106,16 @@ class MotionReward(object):
         @return: nothing
 
         """
+        # Reset Case:
         if clear:
             self.trajectory_cost_node.clear_trajectories()
         self.trajectory_cost_node.extend_expected_trajectory(expected_trajectory)
+
+        # Checks trajectory
         if len(expected_trajectory) <= 1:
             print "[MotionReward] ERROR: expected_trajectory has length <= 1"
+
+        # Goal Related
         goal_pose = expected_trajectory[-1]
         self.goal_cost_node.set_goal_pose(goal_pose)
 

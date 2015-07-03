@@ -73,25 +73,28 @@ class NavigationTask(Task):
         @return: vehicle's state, thus agent's state in MDP
 
         """
+        # 1) Read Info from environment
         # Find current pose, return pitch, roll denormalized states
         sensors = self.env.get_sensors()
         # Get current pose as found from environment
         curr_pose = self.env.get_current_pose()
+
+        # 2) Trajectory Related:
         # Get actual trajectory as resulted from last command
         if final:
             self._actual_trajectory = self.env.find_actual_trajectory()
 
+
         # Set latest action's expected trajectory in motion reward object
         if self._expected_trajectory is not None:
-            pass
-        #     self.motion_reward.init_info_from_expected(self._expected_trajectory)
+             self.motion_reward.init_info_from_expected(self._expected_trajectory)
 
         # Construct current expected trajectory from current pose, velocity
         # command and trajectory duration in time
-        self._expected_trajectory = utils.calculate_expected_trajectory(
-            curr_pose, self._cmd_vel,
-            self._trajectory_duration, self._time_granularity)
+        self._expected_trajectory = utils.calculate_expected_trajectory(curr_pose,self._cmd_vel,
+                                                                        self._trajectory_duration, self._time_granularity)
 
+        # 3)Retruns:
         if not final:
             return list()
 
