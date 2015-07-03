@@ -1,6 +1,5 @@
 from cost_graph.cost_node import CostNode
-
-from pandora_kinodynamic_control.utils import calculate_expected_trajectory
+from pandora_kinodynamic_control.utils import hausdorff_distance
 
 class TrajectoryCost(CostNode):
 
@@ -23,8 +22,7 @@ class TrajectoryCost(CostNode):
         @return: nothing
 
         """
-        # TODO calculate curve similarity
-        # self.__cost = ..something
+        self.__cost = hausdorff_distance(self.expected_trajectory,self.actual_trajectory )
 
     def append_actual_pose(self, pose):
         """ @brief: Appends an actual pose to the self.actual_trajectory
