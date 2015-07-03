@@ -181,3 +181,24 @@ def discretize_value(x,states):
         quotient = (-1)*quotient
 
     return step_size*quotient
+
+
+def hausdorff_distance(A,B):
+    """ @brief: Calculates the Hausdorff Distance between 2 sets A and B.
+
+    @param A: set A
+    @type A: List of tuples . (in this specific application it is (x,y,yaw))
+    @param B: set B
+    @type B: List of tuples . (in this specific application it is (x,y,yaw))
+    """
+
+    assert(len(A)>0)
+    assert(len(B)>0)
+    min_distances = []
+    for a in A:
+        point_distances = []
+        for b in B:
+            point_distances.append(find_distance(a,b))
+        min_distances.append(min(point_distances))
+
+    return max(min_distances)
