@@ -1,52 +1,58 @@
+#!/usr/bin/env python
 
-# Check again
-from src.pandora_kinodynamic_control import experiment
+import rospy
+from pandora_kinodynamic_control.experiment import Experiment
+from pandora_kinodynamic_control.navigation_task import NavigationTask
+from pandora_kinodynamic_control.navigation_environment import NavigationEnvironment
 from pybrain.rl.learners.valuebased import ActionValueTable
 from pybrain.rl.agents import LearningAgent
 from pybrain.rl.learners import SARSA
-
-# Define Action Value Table
-# Number of States: 
-#             Roll : 
-#                range = [-20 , 20] degrees 
-#                step_size = 2 degrees
-#                count = 21 cases
-#             Pitch : 
-#                range = [-20 , 20] degrees 
-#                step_size = 2 degrees
-#                count = 21 cases
-#
-#             Total = Roll x Pitch = 441 states
-#
-#
-# Number of Actions :
-#             Terrain parameter  (a):
-#                range = [1,3]
-#                step_size = 0.2
-#                count = 11 actions
-
-av_table = ActionValueTable(441, 11)
-av_table.initialize(0.)
-
-# Learner =  SARSA (can be changed)
-#        a = 0.5 (better change to smthing like : A* exp(-t))
-#    gamma = 0.3 (small because there is no dependency between 2 states)
-learner = SARSA(0.5,0.3)
-# learner._setExplorer(EpsilonGreedyExplorer(0.0)
-agent = (av_table,learner)
-LearningAgent(av_table, learner)
+from pandora_kinodynamic_control.params import *
 
 
-# Define the environment
-env = NavigationEnvironment()
+class KinodynamicController(object):
+    """ @brief: A class to handle interactions between various components of the RL module"""
 
+    def __init__(self):
+        """ @brief: Setting up internal parameters for the RL module"""
 
-# Define the task
-task = NavigationTask(env)
+        # Navigation Task
+        self._environment = NavigationEnvironment()
+        self._task = NavigationTask(self._environment)
 
-# finally, define experiment
-experiment = Experiment(task, agent)
+        # Number of States : (read from params.py)
+        self._states = STATES
+        self._limits = LIMITS
+
+        self._number_of_states = 1
+        for i in self._states:
+            self._number_of_states*=i
+
+        print "total_states ="+str(self._number_of_states)
+        # Number of actions
+        self._actions = ACTIONS
+        print "total_actions ="+str(self._actions) 
+        self._av_table = ActionValueTable(self._number_of_states, self._actions)
+        self._av_table.initialize(0.)
+
+        # Set up task parameters:
+        time_granularity = 5
+        weights = [1,1]
+        command_duration = 0.2
+        self._task.set_params(command_duration,weights,
+                            time_granularity,self._limits)
+
+        # Agent set up
+        self._learner = SARSA(0.5,0.3)
+        self._agent = LearningAgent(self._av_table, self._learner)
+
+        # Experiment set up
+        self._experiment = Experiment(self._task,self._agent)
+        print "Successfully Initialization of RL module! (kappa)"
+
 
 if __name__ == '__main__':
-  # TODO 
-  # Probably crete an experiment object and spin 
+
+    rospy.init_node('kinodynamic_controller')
+    controller = KinodynamicController()
+    rospy.spin()
