@@ -41,7 +41,7 @@ class Joyop:
     self.picam_pitch = 0
 
     self.motors_vel_pub = rospy.Publisher('/cmd_vel', Twist)
-    self.lac_position_pub = rospy.Publisher('/linear_motor_controller/command', Float64)
+    self.lac_position_pub = rospy.Publisher('/linear_elevator_controller/command', Float64)
     self.xtion_yaw_pub = rospy.Publisher('/kinect_yaw_controller/command', Float64)
     self.xtion_pitch_pub = rospy.Publisher('/kinect_pitch_controller/command', Float64)
     self.picam_yaw_pub = rospy.Publisher('/camera_effector/pan_command', Float64)
@@ -51,20 +51,18 @@ class Joyop:
     rospy.Timer(rospy.Duration(0.1), self.launch_joy_node, oneshot=True)
     rospy.sleep(rospy.Duration(3))
     rospy.Timer(rospy.Duration(0.1), self.pub_callback, oneshot=False)
-
+    rospy.loginfo("\n\n\n\n")
     rospy.spin()
 
   def launch_joy_node(self, event):
     call(["rosrun", "joy", "joy_node"])  # launch joystick node
 
   def print_state(self):
-    call(["clear"])
-    rospy.loginfo("\033[32;1m==========================================================\033[0m")
+    rospy.loginfo("\x1b[1M\x1b[5A\x1b[5M")  # erase previous prints
     rospy.loginfo("\033[33;1m[motors] lin_vel: %s - ang_vel: %s\033[0m", self.motors_lin_vel, self.motors_ang_vel)
     rospy.loginfo("\033[33;1m[linear_actuator] position: %s\033[0m", self.lac_position)
     rospy.loginfo("\033[33;1m[xtion] yaw: %s - pitch: %s\033[0m", self.xtion_yaw, self.xtion_pitch)
     rospy.loginfo("\033[33;1m[picam] yaw: %s - pitch: %s\033[0m", self.picam_yaw, self.picam_pitch)
-    rospy.loginfo("\033[32;1m==========================================================\033[0m")
 
   def joy_callback(self, joy_msg):
     self.motors_lin_vel = joy_msg.axes[2] * self.motors_lin_vel_scale

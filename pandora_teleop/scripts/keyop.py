@@ -70,7 +70,7 @@ class Keyop:
     self.picam_pitch = 0   # picam pitch
 
     self.motors_pub = rospy.Publisher('cmd_vel', Twist)
-    self.lac_pub = rospy.Publisher('linear_motor_controller/command', Float64)
+    self.lac_pub = rospy.Publisher('linear_elevator_controller/command', Float64)
     self.xtion_yaw_pub = rospy.Publisher('kinect_yaw_controller/command', Float64)
     self.xtion_pitch_pub = rospy.Publisher('kinect_pitch_controller/command', Float64)
     self.picam_yaw_pub = rospy.Publisher('camera_effector/pan_command', Float64)
