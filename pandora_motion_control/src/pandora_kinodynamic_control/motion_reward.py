@@ -26,9 +26,9 @@ class MotionReward(object):
         self._time_granularity = 5
 
         # Cost_to_Reward function Parameters
-        self._max_reward = None
+        self._max_reward = 5
         # If total_cost > cost_threshold , then reward shall be negative
-        self._cost_threshold = None
+        self._cost_threshold = 5
 
     def get_reward_from_pose(self, actual_pose):
         """ @brief: Returns and calculates the reward associated with a certain
@@ -76,8 +76,9 @@ class MotionReward(object):
         self.fuse_cost_node.update_cost()
 
         cost = self.fuse_cost_node.get_cost()
-        #reward = 1 / cost  # TODO how should reward be calculated from cost?
-        reward = cost_to_reward(cost)
+        reward = self.cost_to_reward(cost)
+        # Clear Trajectories from trajecotry node.
+        self.trajectory_cost_node.clear_trajectories()
         return reward
 
     def init_info_from_action(self, actual_pose, twist, duration, clear=False):
