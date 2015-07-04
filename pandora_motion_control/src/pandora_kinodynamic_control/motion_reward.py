@@ -25,6 +25,11 @@ class MotionReward(object):
         self.fuse_cost_node = FuseCostNode(self.cost_nodes, self.strategy)
         self._time_granularity = 5
 
+        # Cost_to_Reward function Parameters
+        self._max_reward = None
+        # If total_cost > cost_threshold , then reward shall be negative
+        self._cost_threshold = None
+
     def get_reward_from_pose(self, actual_pose):
         """ @brief: Returns and calculates the reward associated with a certain
             action taken by the agent who controls the kinodynamic controller
@@ -71,7 +76,8 @@ class MotionReward(object):
         self.fuse_cost_node.update_cost()
 
         cost = self.fuse_cost_node.get_cost()
-        reward = 1 / cost  # TODO how should reward be calculated from cost?
+        #reward = 1 / cost  # TODO how should reward be calculated from cost?
+        reward = cost_to_reward(cost)
         return reward
 
     def init_info_from_action(self, actual_pose, twist, duration, clear=False):
@@ -143,3 +149,15 @@ class MotionReward(object):
         """
         self.strategy.set_weights(cost_weights)
         self._time_granularity = time_granularity
+
+    def cost_to_reward(self,cost):
+        """ @brief: Function to transform cost to reward.
+
+        @param cost: The result of linear fusion of cost functions of each module.
+        @type cost: double
+        @return : The total reward
+        @type : double
+        @note: Obvisouly this function must be a strictly decreasing function.
+        In this implementation we use a linear function with negative slope
+        """
+        return -(self._max_reward/self._cost_threshold)*cost + self._max_reward
