@@ -2,6 +2,7 @@ import rospy
 from geometry_msgs.msg import Twist
 
 from pandora_kinodynamic_control.params import *
+import scipy
 
 class Experiment(object):
 
@@ -20,8 +21,11 @@ class Experiment(object):
         self.command_sub = rospy.Subscriber(NAVIGATION_TOPIC,
                                             Twist, self.navigation_cb)
 
+        # Keep latest agent's action until update
+        self._last_action = scipy.array([1.5])
+
         self.local_step = 0
-        self.local_step_size = 1
+        self.local_step_size = 3
 
     def navigation_cb(self, cmd_vel):
         """ @brief: Callback that handles velocity commands from navigation
@@ -37,7 +41,7 @@ class Experiment(object):
         self.local_step += 1
         self.task.set_velocity_command(cmd_vel)
         final = self.local_step == self.local_step_size
-        observation = self.task.get_observation(final)
+        observation = self.task.get_observation(final)  # must be a numpy array
         # get informed about vehicle's current state
         if final:
             self.local_step = 0
@@ -49,14 +53,15 @@ class Experiment(object):
                 # inform agent about last action's reward
             self.agent.integrateObservation(observation)
             # inform agent about vehicle's current state
-            action = self.agent.getAction()
+            self._last_action = self.agent.getAction()
             # ask agent to decide what the current action will be
             if self.action_done:
                 self.agent.learn()
                 # ask agent to update its estimations about expected returns
-            self.task.perform_action(action)
-            # do the action in the world
             self.action_done = True
+
+        # perform cmd command in the environment , using the last a.n
+        self.task.perform_action(self._last_action)
 
     def set_params(self, local_step_size):
         """ @brief: Setter method for experiment's parameters
