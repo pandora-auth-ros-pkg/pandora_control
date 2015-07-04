@@ -29,7 +29,6 @@ class NavigationEnvironment(Environment):
         self.command_pub = rospy.Publisher(COMMAND_TOPIC, KinodynamicCommand)
         self.transform_listener = tf.TransformListener()
 
-        # Temp fix
         self._last_moment = None
         self._last_index = None
         self._curr_moment = None
@@ -49,11 +48,14 @@ class NavigationEnvironment(Environment):
         @note : Tricky timout var.Must add exception handlers
 
         """
-        now = rospy.Time.now()
-        self.transform_listener.waitForTransform(WORLD, BASE_LINK,
-                                                 now, rospy.Duration(3))
-        trans, rot = self.transform_listener.lookupTransform(WORLD, BASE_LINK,
-                                                             now)
+        try:
+            self.transform_listener.waitForTransform(WORLD, BASE_LINK,
+                                                     rospy.Time(0), rospy.Duration(3))
+            trans, rot = self.transform_listener.lookupTransform(WORLD, BASE_LINK,
+                                                                 rospy.Time(0))
+        except tf.Exception:
+            print "Tf failure! (Not recovery behaviour yet)"
+
         roll, pitch, yaw = transformations.euler_from_quaternion(rot)
         self.curr_pos = trans
         self.curr_roll = roll
@@ -124,7 +126,6 @@ class NavigationEnvironment(Environment):
         @return: nothing
 
         """
-
         # Form a new empty kinodynamic command msg
         command = KinodynamicCommand()
 
