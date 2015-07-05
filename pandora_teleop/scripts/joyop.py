@@ -107,6 +107,7 @@ class Joyop:
 if __name__ == "__main__":
   rospy.init_node('joyop_node')
   rospy.loginfo("Joyop Teleoperation Node Initialized")
+  rospy.loginfo("RS[motors], 1+LS[lac], 2+LS[xtion], 3+LS[picam]")
 
   args = argv[1:]
   if len(args) == 1:

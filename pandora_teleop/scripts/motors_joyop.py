@@ -1,32 +1,32 @@
 #!/usr/bin/env python
 
-import roslib; roslib.load_manifest('pandora_motor_control')
+import roslib; roslib.load_manifest('pandora_teleop')
 import rospy
 import sys
 import thread
 from time import sleep
 from geometry_msgs.msg import Twist
 
-class Joystick:
+class MotorsJoyop:
 
   linear = 0
   angular = 0
   pub = rospy.Publisher("cmd_vel", Twist)
-  
+
   def __init__(self,linear_coeff,angular_coeff):
     thread.start_new_thread(self.setSpeeds, (linear_coeff,angular_coeff))
     self.readJoystick()
-  
+
   def readJoystick(self):
     # Open the js0 device as if it were a file in read mode.
     pipe = open('/dev/input/js0', 'r')
-  
+
     # Create an empty list to store read characters.
     msg = []
-  
+
     # Loop forever.
     while 1:
-  
+
       # For each character read from the /dev/input/js0 pipe...
       for char in pipe.read(1):
 
@@ -57,14 +57,14 @@ class Joystick:
                 self.angular = float(0 - int(msg[5]))/128
           # Reset msg as an empty list.
           msg = []
-  
-  
+
+
   def setSpeeds(self,linear_coeff,angular_coeff):
-  
+
     while True:
       print '--> linear: ', self.linear, ' , angular: ', self.angular
-  
-  
+
+
       #~ while not rospy.is_shutdown():
       msg = Twist()
       msg.linear.x = self.linear*linear_coeff
@@ -75,4 +75,4 @@ class Joystick:
 
 if __name__ == '__main__':
   rospy.init_node('set_vehicle_speed_wrapper')
-  joy = Joystick(linear_coeff=0.55, angular_coeff=1.2)
+  joy = MotorsJoyop(linear_coeff=0.55, angular_coeff=1.2)

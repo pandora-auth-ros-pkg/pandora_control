@@ -50,8 +50,9 @@ namespace pandora_teleop
   }
 
   MotorsKeyop::MotorsKeyop(
-    double max_linear, double max_angular)
-   :
+    double max_linear,
+    double max_angular)
+  :
     linear_(0),
     angular_(0),
     linear_scale_(max_linear),
@@ -197,4 +198,4 @@ namespace pandora_teleop
     }
     return;
   }
-}
+}  // namespace pandora_teleop

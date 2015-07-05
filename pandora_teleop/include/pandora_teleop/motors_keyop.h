@@ -114,7 +114,7 @@ namespace pandora_teleop
       double linear_;  //!< linear motor velocity
       double linear_scale_;  //!< linear velocity scale
       double angular_;  //!< angular motor velocity
-      double angular_scale_;  //!<angular velocity scale
+      double angular_scale_;  //!< angular velocity scale
       ros::Publisher twist_pub_;  //!< motors twist command publisher
       boost::thread pub_thread_;  //!< publisher thread
       boost::mutex lock_;  //!< mutex lock

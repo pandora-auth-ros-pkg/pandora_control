@@ -204,10 +204,11 @@ class Keyop:
 if __name__ == "__main__":
   rospy.init_node('keyop_node')
   rospy.loginfo("Keyboard Teleoperation Node Initialized")
+
   args = argv[1:]
   if len(args) == 2:
-    rospy.loginfo("Setting max linear velocity to %s and angular velocity to %s", args[0], args[1])
+    rospy.loginfo("Setting motors max linear velocity to %s and angular velocity to %s", args[0], args[1])
     keyop = Keyop(args[0], args[1])
   else:
-    rospy.loginfo("Using default max linear(0.5m/s) and angular velocity(0.8m/s)")
+    rospy.loginfo("Using default motors max linear(0.5m/s) and angular velocity(0.8m/s)")
     keyop = Keyop()
