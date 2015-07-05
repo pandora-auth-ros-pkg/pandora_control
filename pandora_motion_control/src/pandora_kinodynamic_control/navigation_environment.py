@@ -50,9 +50,9 @@ class NavigationEnvironment(Environment):
         """
         try:
             self.transform_listener.waitForTransform(WORLD, BASE_LINK,
-                                                     rospy.Time(0), rospy.Duration(3))
+                                                     rospy.Time(), rospy.Duration(3))
             trans, rot = self.transform_listener.lookupTransform(WORLD, BASE_LINK,
-                                                                 rospy.Time(0))
+                                                                 rospy.Time())
         except tf.Exception:
             print "Tf failure! (Not recovery behaviour yet)"
 
@@ -91,7 +91,6 @@ class NavigationEnvironment(Environment):
 
         # Read trajecotry from SLAM /robot_trajecotry
         actual_path = []
-
         # The list must be reversed , otherwise it will immedatelly break
         for p in reversed(self._actual_trajectory.poses):
 

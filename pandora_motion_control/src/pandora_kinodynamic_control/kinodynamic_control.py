@@ -27,7 +27,7 @@ class KinodynamicController(object):
         # Total number of states:
         self._number_of_states = 1
         for i in self._states:
-            self._number_of_states*=i
+            self._number_of_states *= i
 
         # Number of actions
         self._actions = ACTION_STATES
@@ -50,6 +50,8 @@ class KinodynamicController(object):
 
         # Experiment set up
         self._experiment = Experiment(self._task,self._agent)
+        self._experiment.set_params(STEP_SIZE)
+
         print "Successfully Initialization of RL module! (kappa)"
 
 

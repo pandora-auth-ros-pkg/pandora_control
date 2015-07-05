@@ -14,7 +14,6 @@ class Experiment(object):
 
         self.task = task
         self.agent = agent
-        self.stepid = 0
 
         self.action_done = False
 
@@ -24,8 +23,9 @@ class Experiment(object):
         # Keep latest agent's action until update
         self._last_action = scipy.array([1.5])
 
+        # State Change steps
         self.local_step = 0
-        self.local_step_size = 3
+        self.local_step_size = None
 
     def navigation_cb(self, cmd_vel):
         """ @brief: Callback that handles velocity commands from navigation
@@ -41,7 +41,7 @@ class Experiment(object):
         self.local_step += 1
         self.task.set_velocity_command(cmd_vel)
         final = self.local_step == self.local_step_size
-        observation = self.task.get_observation(final)  # must be a numpy array
+        observation = self.task.get_observation(final)
         # get informed about vehicle's current state
         if final:
             self.local_step = 0
@@ -60,7 +60,7 @@ class Experiment(object):
                 # ask agent to update its estimations about expected returns
             self.action_done = True
 
-        # perform cmd command in the environment , using the last a.n
+        # perform cmd command in the environment , using agent's last action
         self.task.perform_action(self._last_action)
 
     def set_params(self, local_step_size):
