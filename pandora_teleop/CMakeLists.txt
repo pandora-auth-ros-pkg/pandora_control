@@ -23,10 +23,15 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
-include_directories(${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+)
 
-add_executable(teleop_key src/teleop_key.cpp)
-target_link_libraries(teleop_key ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_library(motors_keyop src/motors_keyop.cpp)
+add_executable(motors_keyop_node src/motors_keyop_node.cpp)
+target_link_libraries(motors_keyop_node motors_keyop ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 # To check lint : catkin_make roslint_pandora_motor_control
 set(ROSLINT_CPP_OPTS
@@ -34,7 +39,7 @@ set(ROSLINT_CPP_OPTS
 
 FILE(GLOB_RECURSE ${PROJECT_NAME}_LINT_SRCS
   RELATIVE ${PROJECT_SOURCE_DIR}
-  include/${PROJECT_NAME}/.h
+  include/${PROJECT_NAME}/*.h
   src/*.cpp
 )
 roslint_cpp(${${PROJECT_NAME}_LINT_SRCS})
