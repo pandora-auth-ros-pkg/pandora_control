@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-
 import rospy
+import scipy
 from pandora_kinodynamic_control.experiment import Experiment
 from pandora_kinodynamic_control.navigation_task import NavigationTask
 from pandora_kinodynamic_control.navigation_environment import NavigationEnvironment
@@ -22,28 +22,30 @@ class KinodynamicController(object):
 
         # Number of States : (read from params.py)
         self._states = STATES
-        self._limits = LIMITS
+        self._state_limits = LIMITS
 
+        # Total number of states:
         self._number_of_states = 1
         for i in self._states:
             self._number_of_states*=i
 
-        print "total_states ="+str(self._number_of_states)
         # Number of actions
-        self._actions = ACTIONS
-        print "total_actions ="+str(self._actions) 
-        self._av_table = ActionValueTable(self._number_of_states, self._actions)
-        self._av_table.initialize(0.)
+        self._actions = ACTION_STATES
+        self._action_limits = ACTION_RANGE
+
+        # Action Value Table setup
+        self._av_table = ActionValueTable(10,3)
+        # self._av_table = ActionValueTable(self._number_of_states, self._actions)
+        self._av_table.initialize(0.0)
 
         # Set up task parameters:
-        time_granularity = 5
-        weights = [1,1]
-        command_duration = 0.2
-        self._task.set_params(command_duration,weights,
-                            time_granularity,self._limits)
+        self._task.set_params(COMMAND_DURATION,
+                              FUSION_WEIGHTS,
+                              TIME_GRANULARITY,
+                              self._state_limits)
 
         # Agent set up
-        self._learner = SARSA(0.5,0.3)
+        self._learner = SARSA(alpha,gamma)
         self._agent = LearningAgent(self._av_table, self._learner)
 
         # Experiment set up
@@ -52,7 +54,7 @@ class KinodynamicController(object):
 
 
 if __name__ == '__main__':
-
+    # Spawn ROS node , create controller and spin!
     rospy.init_node('kinodynamic_controller')
     controller = KinodynamicController()
     rospy.spin()
