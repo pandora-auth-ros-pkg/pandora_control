@@ -34,8 +34,7 @@ class KinodynamicController(object):
         self._action_limits = ACTION_RANGE
 
         # Action Value Table setup
-        self._av_table = ActionValueTable(10,3)
-        # self._av_table = ActionValueTable(self._number_of_states, self._actions)
+        self._av_table = ActionValueTable(self._number_of_states, self._actions)
         self._av_table.initialize(0.0)
 
         # Set up task parameters:

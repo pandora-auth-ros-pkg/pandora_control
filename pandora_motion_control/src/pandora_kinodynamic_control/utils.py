@@ -201,3 +201,32 @@ def hausdorff_distance(A,B):
         min_distances.append(min(point_distances))
 
     return max(min_distances)
+
+def state_mapper(a,states):
+    """ @brief: Maps a set of integers , representing the state given as a tuple
+    substates to an integer representing the total state.Each input combination
+    must result in a different integer.
+
+    @param a: Input as substates.
+    @type a: tuple of integers
+    @param states: List containing total states count of each substate
+    @type states: List of integers
+
+    @return: The total state as an integer.
+    @note : Logic for achieving so is the following :
+        STATES = [N0,N1,N2,...,NK]
+          A    = (a0,a1,a2,...,ak)  ,  ai e [0,N0-1]
+
+         Total_state = a0*1 + a1* N0 + a2* N0*N1 + ... + ak *(N0*N1*...*N(K-1))
+    """
+    # Construct Coefficients vector:
+    coefficient = [1]
+    for i in range(1,len(a)):
+        coefficient.append(coefficient[i-1]*states[i-1])
+
+    total_state = 0
+
+    for i in range(len(a)):
+        total_state += a[i]*coefficient[i]
+
+    return total_state

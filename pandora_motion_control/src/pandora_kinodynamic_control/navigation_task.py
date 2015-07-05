@@ -5,6 +5,9 @@ from geometry_msgs.msg import Twist
 from pandora_kinodynamic_control.motion_reward import MotionReward
 from pandora_kinodynamic_control import utils
 
+from params import *
+from scipy import array
+
 class NavigationTask(Task):
 
     """ @brief: Class that models the navigational task that we want a robotic
@@ -39,12 +42,12 @@ class NavigationTask(Task):
         self._actual_trajectory = None
 
         # Parameters
-        self._trajectory_duration = 0.2
-        self._time_granularity = 5
+        self._trajectory_duration = None
+        self._time_granularity = None
 
         # Discretization Parameters
         # (list containing number of states to produce in each element of sensros list)
-        self._discretazation_vector = [20,20,20,20]
+        self._number_of_states = STATES
 
         # State Processing:
         self._normalize_states = True
@@ -84,7 +87,6 @@ class NavigationTask(Task):
         if final:
             self._actual_trajectory = self.env.find_actual_trajectory()
 
-
         # Set latest action's expected trajectory in motion reward object
         if self._expected_trajectory is not None:
              self.motion_reward.init_info_from_expected(self._expected_trajectory)
@@ -108,7 +110,10 @@ class NavigationTask(Task):
             # Discretization can be applied only to normalized values
             if self._discretize_states:
                 sensors = self.discretize(sensors)
-        return sensors
+
+        # Map sub-states to a total state:
+        total_state = utils.state_mapper(tuple(sensors),self._number_of_states)
+        return array([total_state])
 
     def get_reward(self):
         """ @brief: Calculates using MotionReward last action's reward
@@ -149,7 +154,7 @@ class NavigationTask(Task):
         discretized_sensors = []
 
         for i in range(len(sensors)):
-            k = utils.discretize_value(sensors[i],self._discretazation_vector[i])
+            k = utils.discretize_value(sensors[i],self._number_of_states[i])
             discretized_sensors.append(k)
 
         return discretized_sensors
