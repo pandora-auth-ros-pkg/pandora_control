@@ -38,3 +38,4 @@ gamma = 0.3
 FUSION_WEIGHTS = [1,1]
 TIME_GRANULARITY = 5
 COMMAND_DURATION = 0.2
+STEP_SIZE = 5        # cmd_vel callbacks ,until agent learn
