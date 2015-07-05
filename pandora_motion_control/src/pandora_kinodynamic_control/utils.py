@@ -165,22 +165,21 @@ def discretize_value(x,states):
                     BEWARE : CANCEROUS AREA !!!!
     @note : there is a possibility that little differences in python floating
     system resolve to different states in ActionValueTable()
+    @return : an integer number in [0,states-1]
     """
     step_size = 2.0/(states-1)
-    is_possitive = (x>=0)
 
-    (quotient , remainder) = divmod(abs(x),step_size)
+    # Transformation from [-1,1] to [0,2]
+    x = x + 1
+    result =  x / step_size
 
-    # Rounding (beware in == case : python floats are rarely equal)
-        # After 15 digit , float numbers are NOT equal
-        # Possible solution : round(x,12)
-    if remainder>=(step_size/2.0):
-            quotient = quotient + 1
+    # Split a number into the integer and decimal
+    (decimal_part,int_part) = math.modf(result)
 
-    if not is_possitive:
-        quotient = (-1)*quotient
+    if decimal_part >=0.5:
+        int_part+=1
 
-    return step_size*quotient
+    return int_part
 
 
 def hausdorff_distance(A,B):
