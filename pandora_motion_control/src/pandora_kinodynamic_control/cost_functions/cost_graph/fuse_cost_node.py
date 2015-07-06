@@ -11,7 +11,7 @@ class FuseCostNode(CostNode):
         """ @brief: Simple initiation of a FuseCostNode object"""
 
         super(FuseCostNode, self).__init__()
-        self.__inside_cost = -1.0
+        self._inside_cost = 0
         if nodes:
             self.lesser_cost_nodes = nodes
         else:
@@ -63,14 +63,16 @@ class FuseCostNode(CostNode):
         """ @brief: First it calculates its own contribution to the costs,
             then fuse_cost method is called to make a unified cost estimation,
             last the process_cost method is called to refine,
-            if needed, the resulting cost. Updates self.__cost
+            if needed, the resulting cost. Updates self._cost
 
         @return: nothing
 
         """
-        self.__inside_update_cost()
-        self.__cost = self.fuse_cost()
-        self.process_cost()
+        # In current Implementation , cost is calculated only from child nodes
+        # self._inside_update_cost()
+        # self.process_cost()
+        self._cost = self.fuse_cost()
+
 
     def process_cost(self):
         """ @brief: Processes the resulting unified cost estimation
@@ -80,11 +82,11 @@ class FuseCostNode(CostNode):
         """
         pass
 
-    def __inside_update_cost(self):
+    def _inside_update_cost(self):
         """ @brief: Calculates as a cost function this CostNode object's own
-            cost estimation, if it has one. Updates self.__inside_cost
+            cost estimation, if it has one. Updates self._inside_cost
 
         @return: nothing
 
         """
-        self.__inside_cost = 0.0
+        self._inside_cost = 0.0

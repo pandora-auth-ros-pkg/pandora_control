@@ -22,8 +22,7 @@ class GoalCost(CostNode):
 
         """
         self._cost = find_distance(self.expected_pose, self.actual_pose)
-        print "Goal Cost = " + str(self.get_cost())
-
+        
     def set_goal_pose(self, pose):
         """ @brief: Sets goal pose, expected pose of vehicle when movement
             command will have finished
