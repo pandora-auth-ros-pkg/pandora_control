@@ -78,9 +78,7 @@ class NavigationTask(Task):
         """
         # 1) Read Info from environment
         # Find current pose, return pitch, roll denormalized states
-        sensors = self.env.get_sensors()
-        # Get current pose as found from environment
-        curr_pose = self.env.get_current_pose()
+        [sensors ,curr_pose] = self.env.get_sensors()
 
         # 2) Trajectory Related:
         # Get actual trajectory as resulted from last command

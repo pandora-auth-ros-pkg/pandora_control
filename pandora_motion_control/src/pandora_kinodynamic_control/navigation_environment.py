@@ -62,16 +62,14 @@ class NavigationEnvironment(Environment):
         self.curr_pitch = pitch
         self.curr_yaw = yaw
 
-        return [roll, pitch]
+        # Find x y yaw from Tranformation
+        x = self.curr_pos[0]
+        y = self.curr_pos[1]
+        yaw = self.curr_yaw
+        angle_states = [roll, pitch]
 
-    def get_current_pose(self):
-        """ @brief: returns enough info from most recent fetched current pose
-            to describe vehicle's 2d pose
+        return [angle_states,(x, y, yaw)]
 
-        @return: tuple of (x, y, yaw), information of 2d vehicle pose
-        @note : changed curr_pos.x ->curr_pos[0] because it was tuple
-        """
-        return (self.curr_pos[0], self.curr_pos[1], self.curr_yaw)
 
     def find_actual_trajectory(self):
         """ @brief: Finds in robot trajectory topic, vehicle's actual trajectory
