@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   geometry_msgs
+  pandora_motor_hardware_interface
   roslint
 )
 
@@ -33,6 +34,7 @@ catkin_package(
     rospy
     std_msgs
     geometry_msgs
+    pandora_motor_hardware_interface
 #  DEPENDS system_lib
 )
 

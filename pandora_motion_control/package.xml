@@ -20,8 +20,7 @@
   <depend>roscpp</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
-  <depend>rospy</depend>>
+  <depend>rospy</depend>
+  <depend>pandora_motor_hardware_interface</depend>
 
-  <export>
-  </export>
 </package>
