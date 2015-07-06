@@ -16,12 +16,13 @@ class GoalCost(CostNode):
 
     def update_cost(self):
         """ @brief: Uses expected final pose (goal) and actual final pose in
-            order to calculate a cost. Updates self.__cost
+            order to calculate a cost. Updates self._cost
 
         @return: nothing
 
         """
-        self.__cost = find_distance(self.expected_pose, self.actual_pose)
+        self._cost = find_distance(self.expected_pose, self.actual_pose)
+        print "Goal Cost = " + str(self.get_cost())
 
     def set_goal_pose(self, pose):
         """ @brief: Sets goal pose, expected pose of vehicle when movement

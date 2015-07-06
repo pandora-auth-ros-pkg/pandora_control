@@ -8,17 +8,17 @@ class CostNode(object):
     def __init__(self):
         """ @brief: Initiates a CostNode object"""
 
-        self.__cost = -1.0
+        self._cost = -1.0
 
     def update_cost(self):
         """ @brief: Implements the cost function with which the estimation of
-        cost due to a source of error is updated. Updates self.__cost
+        cost due to a source of error is updated. Updates self._cost
 
         @return: nothing
 
         """
 
-        self.__cost = 0.0
+        self._cost = 0.0
 
     def get_cost(self):
         """ @brief: Gets most recent cost calculated from update_error method
@@ -27,4 +27,4 @@ class CostNode(object):
 
         """
 
-        return self.__cost
+        return self._cost

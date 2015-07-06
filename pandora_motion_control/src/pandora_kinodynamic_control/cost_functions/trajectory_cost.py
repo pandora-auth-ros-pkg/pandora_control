@@ -17,12 +17,12 @@ class TrajectoryCost(CostNode):
             to calculate a cost based on their dissimilarity
 
             Uses a specific (which?) curve similarity algorithm.
-            Updates self.__cost.
+            Updates self._cost.
 
         @return: nothing
 
         """
-        self.__cost = hausdorff_distance(self.expected_trajectory,self.actual_trajectory )
+        self._cost = hausdorff_distance(self.expected_trajectory,self.actual_trajectory )
 
     def append_actual_pose(self, pose):
         """ @brief: Appends an actual pose to the self.actual_trajectory
