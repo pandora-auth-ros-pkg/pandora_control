@@ -1,20 +1,39 @@
 #!/usr/bin/env python
 
-'''
-File Description  Joystick Teleoperation Script, that controls the robot motors
-                  velocity, linear actuator position, xtion and picam
-                  pan n' tilts
+# Software License Agreement (BSD License)
+#
+# Copyright (c) 2015, P.A.N.D.O.R.A. Team.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+#  * Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#  * Redistributions in binary form must reproduce the above
+#    copyright notice, this list of conditions and the following
+#    disclaimer in the documentation and/or other materials provided
+#    with the distribution.
+#  * Neither the name of P.A.N.D.O.R.A. Team nor the names of its
+#    contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+# Author: George Kouros
 
-Script Usage      Use the keyboard arrow keys to control the module that
-                  corresponds to the mode that is set
-                  Change mode with the m,k,l,p keys
-                    m -> motors
-                    k -> kinect/xtion
-                    l -> linear actuator
-                    p -> picam
-
-Author            George Kouros
-'''
 
 import roslib
 import rospy
@@ -57,9 +76,9 @@ class Keyop:
     self.ang_vel_range = [-float(max_ang_vel), float(max_ang_vel)]
     self.lac_range = [0.0, 14.0]
     self.xtion_yaw_range = [-0.7, 0.7]
-    self.xtion_pitch_range = [-0.45, -0.75]
+    self.xtion_pitch_range = [-0.45, 0.75]
     self.picam_yaw_range = [-0.7, 0.7]
-    self.picam_pitch_range = [-0.45, -0.75]
+    self.picam_pitch_range = [-0.6, 0.75]
 
     self.lin_vel = 0       # motors linear velocity
     self.ang_vel = 0       # motors angular velocity
@@ -70,7 +89,7 @@ class Keyop:
     self.picam_pitch = 0   # picam pitch
 
     self.motors_pub = rospy.Publisher('cmd_vel', Twist)
-    self.lac_pub = rospy.Publisher('linear_elevator_controller/command', Float64)
+    self.lac_pub = rospy.Publisher('linear_actuator/command', Float64)
     self.xtion_yaw_pub = rospy.Publisher('kinect_yaw_controller/command', Float64)
     self.xtion_pitch_pub = rospy.Publisher('kinect_pitch_controller/command', Float64)
     self.picam_yaw_pub = rospy.Publisher('camera_effector/pan_command', Float64)
@@ -204,7 +223,7 @@ class Keyop:
 if __name__ == "__main__":
   rospy.init_node('keyop_node')
   rospy.loginfo("Keyboard Teleoperation Node Initialized")
-
+  rospy.loginfo("Change mode with m(motors), k(xtion), l(lac), p(picam)")
   args = argv[1:]
   if len(args) == 2:
     rospy.loginfo("Setting motors max linear velocity to %s and angular velocity to %s", args[0], args[1])
