@@ -1,10 +1,7 @@
 from pybrain.rl.environments.task import Task
-
 from geometry_msgs.msg import Twist
-
 from pandora_kinodynamic_control.motion_reward import MotionReward
 from pandora_kinodynamic_control import utils
-
 from params import *
 from scipy import array
 
@@ -127,17 +124,20 @@ class NavigationTask(Task):
         """ @brief: Delegates to NavigationEnvironment to create messages and
             order a change in environment according to action argument
 
-        @param action: navigation's velocity command and agent's latest action
-        @type action: tuple of Twist and double
+        @param action: agent's latest action
+        @type action: integer
         @override: from Task
         @return: nothing
+        @note : In current implementation agent's actions must be transformed in
+        this function.
 
         """
         # Make a final action vector of (velocity command, params)
         final_action = list()
         final_action.append(self._cmd_vel.linear.x)
         final_action.append(self._cmd_vel.angular.z)
-        final_action.extend(action)
+        transformed_action = utils.transform_action(action,ACTION_STATES,ACTION_RANGE)
+        final_action.extend(transformed_action)
         # Delegate interaction with environment to NavigationEnvironment
         self.env.perform_action(final_action)
 
