@@ -230,3 +230,24 @@ def state_mapper(a,states):
         total_state += a[i]*coefficient[i]
 
     return total_state
+
+def transform_action(action,action_count,action_limits):
+    """
+    @brief : Transfroms action selected by the agent (integer) to proper form
+             for the environment to use.
+    @param action : Agent's action
+    @type action : Possitive integer
+    @param action_count : Number of possible agent's action_limits
+    @type action_count : Possitive integer
+    @param action_limits : Action limits (after the transformation)
+    @type action_limits : Tuple in form (lower_limit,upper_high)
+    @return : The transformed action
+    @type return : Float
+    """
+    # Possible actions must be at least 2
+    assert action_count>=2
+
+    lower = action_limits[0]
+    upper = action_limits[1]
+
+    return (action*(upper-lower)/(action_count-1.0)) + lower
