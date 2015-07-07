@@ -34,8 +34,12 @@ ACTION_RANGE = (0.8,2.0)
 alpha = 0.5
 gamma = 0.3
 
+# 4) Cost Function :
+MAX_REWARD = 5
+COST_THRESHOLD = 2
+
 # 4) General:
 FUSION_WEIGHTS = [1,1]
 TIME_GRANULARITY = 5
 COMMAND_DURATION = 0.2
-STEP_SIZE = 5        # cmd_vel callbacks ,until agent learn
+STEP_SIZE = 7        # cmd_vel callbacks ,until agent learn

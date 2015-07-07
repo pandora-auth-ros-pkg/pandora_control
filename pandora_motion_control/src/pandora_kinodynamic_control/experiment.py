@@ -21,8 +21,7 @@ class Experiment(object):
                                             Twist, self.navigation_cb)
 
         # Keep latest agent's action until update
-        self._last_action = scipy.array([1.5])
-
+        self._last_action = scipy.array([0])
         # State Change steps
         self.local_step = 0
         self.local_step_size = None

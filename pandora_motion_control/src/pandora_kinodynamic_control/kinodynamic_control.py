@@ -9,7 +9,6 @@ from pybrain.rl.agents import LearningAgent
 from pybrain.rl.learners import SARSA
 from pandora_kinodynamic_control.params import *
 
-
 class KinodynamicController(object):
     """ @brief: A class to handle interactions between various components of the RL module"""
 
@@ -41,7 +40,9 @@ class KinodynamicController(object):
         self._task.set_params(COMMAND_DURATION,
                               FUSION_WEIGHTS,
                               TIME_GRANULARITY,
-                              self._state_limits)
+                              self._state_limits,
+                              MAX_REWARD,
+                              COST_THRESHOLD)
 
         # Agent set up
         self._learner = SARSA(alpha,gamma)

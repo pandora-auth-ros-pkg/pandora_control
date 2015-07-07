@@ -157,7 +157,8 @@ class NavigationTask(Task):
 
         return discretized_sensors
 
-    def set_params(self, duration, cost_weights, time_granularity,limits):
+    def set_params(self, duration, cost_weights, time_granularity,
+                  limits,max_reward,cost_threshold):
         """ @brief: Configure parameters for NavigationTask
 
         @param duration: duration between 2 supposed state changes, length of
@@ -171,9 +172,15 @@ class NavigationTask(Task):
         @return: nothing
 
         """
+        # Task Related
         self._trajectory_duration = duration
         self._time_granularity = time_granularity
-        self.motion_reward.set_params(cost_weights, time_granularity)
+
+        # Reward Related
+        self.motion_reward.set_params(cost_weights,
+                                      time_granularity,
+                                      max_reward,
+                                      cost_threshold)
 
         # Adjust sensor limits:
         self.sensor_limits = limits

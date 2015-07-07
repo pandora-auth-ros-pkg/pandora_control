@@ -4,6 +4,7 @@ from cost_functions.cost_graph.fuse_cost_node import FuseCostNode
 from cost_functions.linear_fusion import LinearFusion
 
 from pandora_kinodynamic_control import utils
+from pandora_kinodynamic_control.params import *
 
 class MotionReward(object):
 
@@ -23,12 +24,12 @@ class MotionReward(object):
         self.cost_nodes = [self.goal_cost_node, self.trajectory_cost_node]
         self.strategy = LinearFusion()
         self.fuse_cost_node = FuseCostNode(self.cost_nodes, self.strategy)
-        self._time_granularity = 5
+        self._time_granularity = None
 
         # Cost_to_Reward function Parameters
-        self._max_reward = 5
-        # If total_cost > cost_threshold , then reward shall be negative
-        self._cost_threshold = 5
+        self._max_reward = None
+        # If total_cost > cost_threshold , then reward shall be negatives
+        self._cost_threshold = None
 
     def get_reward_from_pose(self, actual_pose):
         """ @brief: Returns and calculates the reward associated with a certain
@@ -77,32 +78,32 @@ class MotionReward(object):
 
         cost = self.fuse_cost_node.get_cost()
         reward = self.cost_to_reward(cost)
-        # Clear Trajectories from trajecotry node.
+        # Clear Trajectories from trajectory node.
         self.trajectory_cost_node.clear_trajectories()
         return reward
 
-    def init_info_from_action(self, actual_pose, twist, duration, clear=False):
-        """ @brief: Initialize cost functions with latest actual pose and
-            velocity command
-
-        @param actual_pose: vehicle's pose at the latest state
-        @type actual_pose: Pose
-        @param twist: velocity command from local planner
-        @type twist: Twist
-        @param duration: how much time will the twist be followed
-        @type duration: double
-        @return: nothing
-
-        """
-        if clear:
-            self.trajectory_cost_node.clear_trajectories()
-        expected_trajectory = utils.calculate_expected_trajectory(
-            actual_pose, twist, duration, self._time_granularity)
-        self.trajectory_cost_node.extend_expected_trajectory(expected_trajectory)
-        if len(expected_trajectory) <= 1:
-            print "[MotionReward] ERROR: expected_trajectory has length <= 1"
-        goal_pose = expected_trajectory[-1]
-        self.goal_cost_node.set_goal_pose(goal_pose)
+    # def init_info_from_action(self, actual_pose, twist, duration, clear=False):
+    #     """ @brief: Initialize cost functions with latest actual pose and
+    #         velocity command
+    #
+    #     @param actual_pose: vehicle's pose at the latest state
+    #     @type actual_pose: Pose
+    #     @param twist: velocity command from local planner
+    #     @type twist: Twist
+    #     @param duration: how much time will the twist be followed
+    #     @type duration: double
+    #     @return: nothing
+    #
+    #     """
+    #     if clear:
+    #         self.trajectory_cost_node.clear_trajectories()
+    #     expected_trajectory = utils.calculate_expected_trajectory(
+    #         actual_pose, twist, duration, self._time_granularity)
+    #     self.trajectory_cost_node.extend_expected_trajectory(expected_trajectory)
+    #     if len(expected_trajectory) <= 1:
+    #         print "[MotionReward] ERROR: expected_trajectory has length <= 1"
+    #     goal_pose = expected_trajectory[-1]
+    #     self.goal_cost_node.set_goal_pose(goal_pose)
 
     def init_info_from_expected(self, expected_trajectory, clear=False):
         """ @brief: Initialize cost functions with expected trajectory given from
@@ -113,9 +114,9 @@ class MotionReward(object):
         @return: nothing
 
         """
-        # Reset Case:
-        if clear:
-            self.trajectory_cost_node.clear_trajectories()
+        # # Reset Case:
+        # if clear:
+        #     self.trajectory_cost_node.clear_trajectories()
         self.trajectory_cost_node.extend_expected_trajectory(expected_trajectory)
 
         # Checks trajectory
@@ -126,18 +127,18 @@ class MotionReward(object):
         goal_pose = expected_trajectory[-1]
         self.goal_cost_node.set_goal_pose(goal_pose)
 
-    def update_actual_info(self, actual_pose):
-        """ @brief: Update agent's perception of the environment
+    # def update_actual_info(self, actual_pose):
+    #     """ @brief: Update agent's perception of the environment
+    #
+    #     @param actual_pose: new information from the environment
+    #     considering the latest action taken
+    #     @type actual_pose: Pose
+    #     @return: nothing
+    #
+    #     """
+    #     self.trajectory_cost_node.append_actual_pose(actual_pose)
 
-        @param actual_pose: new information from the environment
-        considering the latest action taken
-        @type actual_pose: Pose
-        @return: nothing
-
-        """
-        self.trajectory_cost_node.append_actual_pose(actual_pose)
-
-    def set_params(self, cost_weights, time_granularity):
+    def set_params(self, cost_weights, time_granularity,max_reward,cost_threshold):
         """ @brief: Configure parameters of cost nodes
 
         @param cost_weights: contains weights for the linear fusion of the costs
@@ -150,6 +151,8 @@ class MotionReward(object):
         """
         self.strategy.set_weights(cost_weights)
         self._time_granularity = time_granularity
+        self._max_reward = max_reward
+        self._cost_threshold = cost_threshold
 
     def cost_to_reward(self,cost):
         """ @brief: Function to transform cost to reward.
