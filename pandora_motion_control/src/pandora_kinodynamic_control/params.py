@@ -35,11 +35,15 @@ alpha = 0.5
 gamma = 0.3
 
 # 4) Cost Function :
-MAX_REWARD = 5
-COST_THRESHOLD = 2
+MAX_REWARD = 2
+COST_THRESHOLD = 0.8
 
-# 4) General:
+# 5) General:
 FUSION_WEIGHTS = [1,1]
 TIME_GRANULARITY = 5
 COMMAND_DURATION = 0.2
 STEP_SIZE = 7        # cmd_vel callbacks ,until agent learn
+
+# 6) Store Results:
+FILENAME = "AV_table"
+SAVE_STEP  = 300
