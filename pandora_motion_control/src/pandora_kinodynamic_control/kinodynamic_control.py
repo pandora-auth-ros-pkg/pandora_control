@@ -71,7 +71,7 @@ class KinodynamicController(object):
     def load_AV_Table(self):
         if os.path.isfile(FILENAME):
             fileObject = open(FILENAME, 'r')
-            self.av_table = pickle.load(fileObject)
+            self._av_table = pickle.load(fileObject)
             fileObject.close()
 
         else:

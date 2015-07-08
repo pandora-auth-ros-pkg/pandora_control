@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   geometry_msgs
   pandora_motor_hardware_interface
+  message_generation
   roslint
 )
 
@@ -22,6 +23,13 @@ find_package(Boost REQUIRED COMPONENTS thread)
 
 # Declare Kinodynamic Command ? // Paizei na exei metafer8ei sto HW Interface
 
+add_service_files(
+  FILES
+  StoreAVTable.srv
+)
+
+catkin_python_setup()
+generate_messages()
 ################################################################################
 #                               Declare Package                                #
 ################################################################################
@@ -35,6 +43,7 @@ catkin_package(
     std_msgs
     geometry_msgs
     pandora_motor_hardware_interface
+    message_generation
 #  DEPENDS system_lib
 )
 
@@ -63,8 +72,6 @@ target_link_libraries(pandora_teleop_key
 #                         Pandora Kinodynamic Control                          #
 ################################################################################
 
-# TODO ?
-catkin_python_setup()
 ################################################################################
 #                                   Roslint                                    #
 ################################################################################
