@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import os.path
+import pickle
 import rospy
 import scipy
 from pandora_kinodynamic_control.experiment import Experiment
@@ -8,6 +10,8 @@ from pybrain.rl.learners.valuebased import ActionValueTable
 from pybrain.rl.agents import LearningAgent
 from pybrain.rl.learners import SARSA
 from pandora_kinodynamic_control.params import *
+
+from pandora_motion_control.srv import StoreAVTable
 
 class KinodynamicController(object):
     """ @brief: A class to handle interactions between various components of the RL module"""
@@ -33,8 +37,10 @@ class KinodynamicController(object):
         self._action_limits = ACTION_RANGE
 
         # Action Value Table setup
-        self._av_table = ActionValueTable(self._number_of_states, self._actions)
-        self._av_table.initialize(0.0)
+        self.load_AV_Table()
+
+        # Declare ROS Service to store Action Value Table
+        store_service = rospy.Service('store_table', StoreAVTable, self.store_cb)
 
         # Set up task parameters:
         self._task.set_params(COMMAND_DURATION,
@@ -53,6 +59,24 @@ class KinodynamicController(object):
         self._experiment.set_params(STEP_SIZE)
 
         print "Successfully Initialization of RL module! (kappa)"
+
+
+    def store_cb(self,req):
+        fileObject = open(FILENAME, 'w')
+        pickle.dump(self._av_table,fileObject)
+        fileObject.close()
+        print "Saved AV Table"
+        return True
+
+    def load_AV_Table(self):
+        if os.path.isfile(FILENAME):
+            fileObject = open(FILENAME, 'r')
+            self.av_table = pickle.load(fileObject)
+            fileObject.close()
+
+        else:
+            self._av_table = ActionValueTable(self._number_of_states, self._actions)
+            self._av_table.initialize(0.0)
 
 
 if __name__ == '__main__':
