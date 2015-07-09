@@ -133,13 +133,9 @@ class NavigationTask(Task):
 
         """
         # Make a final action vector of (velocity command, params)
-        final_action = list()
-        final_action.append(self._cmd_vel.linear.x)
-        final_action.append(self._cmd_vel.angular.z)
         transformed_action = utils.transform_action(action,ACTION_STATES,ACTION_RANGE)
-        final_action.extend(transformed_action)
         # Delegate interaction with environment to NavigationEnvironment
-        self.env.perform_action(final_action)
+        self.env.perform_action(transformed_action)
 
     def discretize(self, sensors):
         """ @brief: Map continuous values to discrete values

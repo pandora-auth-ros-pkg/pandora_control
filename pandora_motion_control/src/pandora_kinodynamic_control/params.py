@@ -1,6 +1,6 @@
 NAVIGATION_TOPIC = "/cmd_vel"
 ACTUAL_TRAJECTORY_TOPIC = "/robot_trajectory"
-COMMAND_TOPIC = "/enhanced_cmd_vel"
+COMMAND_TOPIC = "/kinematic_parameters"
 
 WORLD = "/world"
 BASE_LINK = "/base_link"

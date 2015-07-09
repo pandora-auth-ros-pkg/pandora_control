@@ -7,7 +7,7 @@ from tf import transformations
 from nav_msgs.msg import Path
 from geometry_msgs.msg import Point
 
-from pandora_motor_hardware_interface.msg import KinodynamicCommand
+from pandora_motor_hardware_interface.msg import KinematicParameters
 from pandora_kinodynamic_control.params import *
 
 class NavigationEnvironment(Environment):
@@ -26,7 +26,7 @@ class NavigationEnvironment(Environment):
 
         self.trajectory_sub = rospy.Subscriber(ACTUAL_TRAJECTORY_TOPIC,
                                                Path, self.actual_trajectory_cb)
-        self.command_pub = rospy.Publisher(COMMAND_TOPIC, KinodynamicCommand)
+        self.command_pub = rospy.Publisher(COMMAND_TOPIC, KinematicParameters)
         self.transform_listener = tf.TransformListener()
 
         self._last_moment = None
@@ -119,26 +119,22 @@ class NavigationEnvironment(Environment):
 
         @param action: Details about navigation's velocity commands and quality
         params for the kinodynamic model
-        @type action: [Twist, params]
+        @type action: Double , the transformed agent's action
         @return: nothing
 
         """
-        # Form a new empty kinodynamic command msg
-        command = KinodynamicCommand()
-
-        # Fill with information provided by action argument
-        command.cmd_vel.linear.x = action[0]
-        command.cmd_vel.angular.z = action[1]
+        # Form a new empty parameter message
+        params = KinematicParameters()
 
         # Scale left/right not used in this version
-        command.scale_left = 1
-        command.scale_right = 1
+        params.scale_left = 1
+        params.scale_right = 1
 
         # Fill terrain parameter
-        command.terrain_param = action[2]
+        params.terrain_param = action
 
         # Terrain parameter (= agent's action)
-        self.command_pub.publish(command)
+        self.command_pub.publish(params)
 
     def actual_trajectory_cb(self, actual_trajectory):
         """ @brief: Callback for actual trajectory subscriber
