@@ -2,6 +2,7 @@ import rospy
 from geometry_msgs.msg import Twist
 
 from pandora_kinodynamic_control.params import *
+from pandora_motion_control.srv import StoreAVTable
 import scipy
 
 class Experiment(object):
@@ -26,6 +27,9 @@ class Experiment(object):
         self.local_step = 0
         self.local_step_size = None
 
+        self.save_step_size = SAVE_STEP_SIZE
+        self.save_step = 0
+
     def navigation_cb(self, cmd_vel):
         """ @brief: Callback that handles velocity commands from navigation
 
@@ -38,6 +42,7 @@ class Experiment(object):
 
         """
         self.local_step += 1
+        self.save_step += 1
         self.task.set_velocity_command(cmd_vel)
         final = self.local_step == self.local_step_size
         observation = self.task.get_observation(final)
@@ -62,7 +67,22 @@ class Experiment(object):
         # perform cmd command in the environment , using agent's last action
         self.task.perform_action(self._last_action)
 
-    def set_params(self, local_step_size):
+        # Save Action Value Table
+        if self.save_step == self.save_step_size:
+            self.save_step = 0
+            self.save_Table()
+
+
+    def save_Table(self):
+        rospy.wait_for_service('store_table')
+        try:
+            store_caller = rospy.ServiceProxy('store_table', StoreAVTable)
+            response = store_caller()
+            print "Table Stored !"
+        except rospy.ServiceException:
+            print "Failed to store Table"
+
+    def set_params(self, local_step_size,):
         """ @brief: Setter method for experiment's parameters
 
         @param local_step_size: after how many calls to navigational callback we
