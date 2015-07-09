@@ -1,0 +1,23 @@
+<launch>
+  <arg name="robot" default="gio"/>
+  <arg name="world" default="start"/>
+
+  <!-- Gazebo -->
+  <include file="$(find pandora_gazebo_worlds)/launch/$(arg world).launch" >
+    <arg name="robot" value="$(arg robot)"/>
+  </include>
+
+  <!-- State manager -->
+  <include file="$(find state_manager)/launch/stateManager.launch" />
+
+  <!-- SLAM -->
+  <include file="$(find pandora_slam_2d)/launch/pandora_slam_2d.launch" />
+  <include file="$(find pandora_pose_estimation)/launch/pose_estimation_5_dof.launch" />
+
+  <!-- Navigation [??] (Maybe add explorer)-->
+  <include file="$(find pandora_move_base)/launch/move_base.launch" />
+
+  <!-- Laser Stabilizer -->
+  <include file="$(find pandora_stabilizer)/launch/stabilizer_control.launch" />
+
+</launch>
