@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os.path
+import os
 import pickle
 import rospy
 import scipy
@@ -36,6 +36,11 @@ class KinodynamicController(object):
         self._actions = ACTION_STATES
         self._action_limits = ACTION_RANGE
 
+        # Action Value Table directory
+        self.tables_directory = os.path.dirname(__file__) + "/tables/"
+        self.table_code = "S"+str(self._number_of_states)+"_"+"A"+str(self._actions)
+        self._filepath = self.tables_directory + FILENAME + self.table_code
+
         # Action Value Table setup
         self.load_AV_Table()
 
@@ -62,21 +67,23 @@ class KinodynamicController(object):
 
 
     def store_cb(self,req):
-        fileObject = open(FILENAME, 'w')
+        fileObject = open(self._filepath ,'w')
         pickle.dump(self._av_table,fileObject)
         fileObject.close()
         print "Saved AV Table"
         return True
 
     def load_AV_Table(self):
-        if os.path.isfile(FILENAME):
-            fileObject = open(FILENAME, 'r')
+        if os.path.isfile(self._filepath):
+            fileObject = open(self._filepath, 'r')
             self._av_table = pickle.load(fileObject)
             fileObject.close()
+            print "Found Table!"
 
         else:
             self._av_table = ActionValueTable(self._number_of_states, self._actions)
             self._av_table.initialize(0.0)
+            print "No training for this format. Creating new AV table"
 
 
 if __name__ == '__main__':

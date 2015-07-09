@@ -23,6 +23,6 @@
   <include file="$(find pandora_stabilizer)/launch/stabilizer_control.launch" />
 
   <!-- RVIZ -->
-  <!-- <include file="$(find pandora_runtime_visualization)/launch/rviz/rviz.launch" /> -->
+  <include file="$(find pandora_runtime_visualization)/launch/rviz/rviz.launch" />
 
 </launch>
