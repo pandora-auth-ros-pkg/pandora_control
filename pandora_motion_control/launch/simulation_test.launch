@@ -15,9 +15,14 @@
   <include file="$(find pandora_pose_estimation)/launch/pose_estimation_5_dof.launch" />
 
   <!-- Navigation [??] (Maybe add explorer)-->
-  <include file="$(find pandora_move_base)/launch/move_base.launch" />
+  <include file="$(find pandora_move_base)/launch/move_base.launch">
+    <arg name="map_patch" value="true" />
+  </include>
 
   <!-- Laser Stabilizer -->
   <include file="$(find pandora_stabilizer)/launch/stabilizer_control.launch" />
+
+  <!-- RVIZ -->
+  <!-- <include file="$(find pandora_runtime_visualization)/launch/rviz/rviz.launch" /> -->
 
 </launch>
