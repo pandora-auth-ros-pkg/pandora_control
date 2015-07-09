@@ -22,7 +22,9 @@ class TrajectoryCost(CostNode):
         @return: nothing
 
         """
-        self._cost = hausdorff_distance(self.expected_trajectory,self.actual_trajectory )
+        hausdorff_A = hausdorff_distance(self.expected_trajectory,self.actual_trajectory )
+        hausdorff_B = hausdorff_distance(self.actual_trajectory,self.expected_trajectory)
+        self._cost = max(hausdorff_A,hausdorff_B)
 
     def append_actual_pose(self, pose):
         """ @brief: Appends an actual pose to the self.actual_trajectory
