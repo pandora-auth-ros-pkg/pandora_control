@@ -46,4 +46,4 @@ STEP_SIZE = 7        # cmd_vel callbacks ,until agent learn
 
 # 6) Store Results:
 FILENAME = "AV_table"
-SAVE_STEP  = 300
+SAVE_STEP_SIZE  = 80
