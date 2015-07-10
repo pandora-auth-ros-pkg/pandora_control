@@ -32,18 +32,19 @@ ACTION_RANGE = (0.8,2.0)
 
 # 3) Agent
 alpha = 0.5
-gamma = 0.3
+gamma = 0.1
+epsilon = None
 
 # 4) Cost Function :
 MAX_REWARD = 2
-COST_THRESHOLD = 0.8
+COST_THRESHOLD = 1
 
 # 5) General:
-FUSION_WEIGHTS = [1,1]
+FUSION_WEIGHTS = [1,0.0]
 TIME_GRANULARITY = 5
 COMMAND_DURATION = 0.2
 STEP_SIZE = 7        # cmd_vel callbacks ,until agent learn
-VISUALIZATION = False
+VISUALIZATION = True
 
 # 6) Store Results:
 FILENAME = "AV_table_"
