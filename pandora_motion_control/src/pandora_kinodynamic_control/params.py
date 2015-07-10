@@ -8,10 +8,10 @@ BASE_LINK = "/base_link"
 # Reinforcement Learning Related:
 # 1) States:
 # i) Number of States
-ROLL    = 10
-PITCH   = 10
-LINEAR  = 5
-ANGULAR = 5
+ROLL    = 3
+PITCH   = 3
+LINEAR  = 3
+ANGULAR = 3
 
 STATES = [ROLL,PITCH,LINEAR,ANGULAR]
 
@@ -25,7 +25,7 @@ LIMITS = [ROLL_LIMITS,PITCH_LIMITS,LINEAR_LIMITS,ANGULAR_LIMITS]
 
 # 2) Actions:
 # i) Number of Actions
-ACTION_STATES = 10
+ACTION_STATES = 3
 
 # ii) Action ranges
 ACTION_RANGE = (0.8,2.0)
@@ -43,7 +43,8 @@ FUSION_WEIGHTS = [1,1]
 TIME_GRANULARITY = 5
 COMMAND_DURATION = 0.2
 STEP_SIZE = 7        # cmd_vel callbacks ,until agent learn
+VISUALIZATION = False
 
 # 6) Store Results:
 FILENAME = "AV_table_"
-SAVE_STEP_SIZE  = 80
+SAVE_STEP_SIZE  = 50

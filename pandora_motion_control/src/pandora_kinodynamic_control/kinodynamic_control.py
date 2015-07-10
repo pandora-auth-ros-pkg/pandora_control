@@ -3,6 +3,9 @@ import os
 import pickle
 import rospy
 import scipy
+import matplotlib.pyplot
+import thread
+
 from pandora_kinodynamic_control.experiment import Experiment
 from pandora_kinodynamic_control.navigation_task import NavigationTask
 from pandora_kinodynamic_control.navigation_environment import NavigationEnvironment
@@ -63,6 +66,13 @@ class KinodynamicController(object):
         self._experiment = Experiment(self._task,self._agent)
         self._experiment.set_params(STEP_SIZE)
 
+        # Start print table thread
+        if VISUALIZATION is True:
+            try:
+                thread.start_new_thread(self.print_table,())
+            except:
+                print "Failed to start visualization thread!"
+
         print "Successfully Initialization of RL module! (kappa)"
 
 
@@ -85,6 +95,21 @@ class KinodynamicController(object):
             self._av_table.initialize(0.0)
             print "No training for this format. Creating new AV table"
 
+    def print_table(self):
+        """ @brief: Visual Representation of Action Value Table
+
+        @return: nothing
+
+        """
+        matplotlib.pyplot.ion()
+        while True:
+            data = self._av_table.params.reshape(self._number_of_states,self._actions)
+            matplotlib.pyplot.pcolor(data,
+                                     cmap = matplotlib.pyplot.cm.RdYlGn,
+                                     vmin = -MAX_REWARD,
+                                     vmax = MAX_REWARD)
+            matplotlib.pyplot.draw()
+            rospy.sleep(2)
 
 if __name__ == '__main__':
     # Spawn ROS node , create controller and spin!
