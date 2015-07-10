@@ -12,7 +12,7 @@
 
   <!-- SLAM -->
   <include file="$(find pandora_slam_2d)/launch/pandora_slam_2d.launch" />
-  <include file="$(find pandora_pose_estimation)/launch/pose_estimation_5_dof.launch" />
+  <!-- <include file="$(find pandora_pose_estimation)/launch/pose_estimation_5_dof.launch" /> -->
 
 
   <!-- Navigation [??] (Maybe add explorer (maybe as an arg))-->

@@ -50,214 +50,19 @@ Visualization Manager:
       Reference Frame: <Fixed Frame>
       Value: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        arm:
-          Value: true
-        axis:
-          Value: true
-        base_footprint:
-          Value: true
-        base_footprint_elevated:
-          Value: true
-        base_link:
-          Value: true
-        base_stabilized:
-          Value: true
-        cables:
-          Value: true
-        co2_frame:
-          Value: true
-        co2_link:
-          Value: true
-        epos:
-          Value: true
-        flir_frame:
-          Value: true
-        flir_link:
-          Value: true
-        flir_optical_frame:
-          Value: true
-        imu:
-          Value: true
-        kinect_depth_frame:
-          Value: true
-        kinect_depth_optical_frame:
-          Value: true
-        kinect_frame:
-          Value: true
-        kinect_link:
-          Value: true
-        kinect_optical_frame:
-          Value: true
-        kinect_pitch_servo_link:
-          Value: true
-        kinect_platform_link:
-          Value: true
-        kinect_rgb_frame:
-          Value: true
-        kinect_rgb_optical_frame:
-          Value: true
-        kinect_yaw_servo_link:
-          Value: true
-        laser_link:
-          Value: true
-        laser_main_link:
-          Value: true
-        laser_pitch_servo_link:
-          Value: true
-        laser_roll_servo_link:
-          Value: true
-        left_camera_frame:
-          Value: true
-        left_camera_link:
-          Value: true
-        left_camera_optical_frame:
-          Value: true
-        left_front_wheel_link:
-          Value: true
-        left_rear_wheel_link:
-          Value: true
-        left_side_link:
-          Value: true
-        left_sonar_frame:
-          Value: true
-        left_sonar_link:
-          Value: true
-        linear_link:
-          Value: true
-        map:
-          Value: true
-        microphone_frame:
-          Value: true
-        microphone_link:
-          Value: true
-        miniitx:
-          Value: true
-        motor_battery:
-          Value: true
-        odom:
-          Value: true
-        pc_battery:
-          Value: true
-        psu:
-          Value: true
-        raspberry:
-          Value: true
-        right_camera_frame:
-          Value: true
-        right_camera_link:
-          Value: true
-        right_camera_optical_frame:
-          Value: true
-        right_front_wheel_link:
-          Value: true
-        right_rear_wheel_link:
-          Value: true
-        right_side_link:
-          Value: true
-        right_sonar_frame:
-          Value: true
-        right_sonar_link:
-          Value: true
-        ssd:
-          Value: true
-        world:
-          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: false
       Show Axes: true
       Show Names: true
       Tree:
-        world:
-          map:
-            base_footprint:
-              base_footprint_elevated:
-                base_stabilized:
-                  base_link:
-                    arm:
-                      {}
-                    axis:
-                      {}
-                    cables:
-                      {}
-                    epos:
-                      {}
-                    imu:
-                      {}
-                    kinect_yaw_servo_link:
-                      kinect_pitch_servo_link:
-                        kinect_platform_link:
-                          co2_link:
-                            co2_frame:
-                              {}
-                          flir_link:
-                            flir_frame:
-                              flir_optical_frame:
-                                {}
-                          kinect_link:
-                            kinect_frame:
-                              kinect_depth_frame:
-                                kinect_depth_optical_frame:
-                                  {}
-                              kinect_optical_frame:
-                                {}
-                              kinect_rgb_frame:
-                                kinect_rgb_optical_frame:
-                                  {}
-                          microphone_link:
-                            microphone_frame:
-                              {}
-                    laser_roll_servo_link:
-                      laser_pitch_servo_link:
-                        laser_main_link:
-                          laser_link:
-                            {}
-                    left_camera_link:
-                      left_camera_frame:
-                        left_camera_optical_frame:
-                          {}
-                    left_side_link:
-                      left_front_wheel_link:
-                        {}
-                      left_rear_wheel_link:
-                        {}
-                    left_sonar_link:
-                      left_sonar_frame:
-                        {}
-                    linear_link:
-                      {}
-                    miniitx:
-                      {}
-                    motor_battery:
-                      {}
-                    pc_battery:
-                      {}
-                    psu:
-                      {}
-                    raspberry:
-                      {}
-                    right_camera_link:
-                      right_camera_frame:
-                        right_camera_optical_frame:
-                          {}
-                    right_side_link:
-                      right_front_wheel_link:
-                        {}
-                      right_rear_wheel_link:
-                        {}
-                    right_sonar_link:
-                      right_sonar_frame:
-                        {}
-                    ssd:
-                      {}
-            odom:
-              {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
     - Alpha: 1
       Class: rviz/Map
       Color Scheme: map
@@ -338,260 +143,18 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        arm:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        axis:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        cables:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        co2_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        co2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        differential_left_pin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        differential_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        differential_right_pin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        epos:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        flir_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        flir_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        flir_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        imu:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kinect_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_pitch_servo_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kinect_platform_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kinect_rgb_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_rgb_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kinect_yaw_servo_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        laser_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        laser_main_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        laser_pitch_servo_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        laser_roll_servo_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_camera_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_camera_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_front_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_rear_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_side_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_sonar_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_sonar_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        linear_actuator_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        linear_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        microphone_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        microphone_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        miniitx:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        motor_battery:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        pc_battery:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        psu:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        raspberry:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_camera_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_camera_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_front_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_rear_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_side_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_sonar_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_sonar_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        ssd:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: false
   Enabled: true
   Global Options:
@@ -617,7 +180,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.65882
+      Distance: 4.63788
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -650,5 +213,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1128
-  X: 83
+  X: 76
   Y: 76
