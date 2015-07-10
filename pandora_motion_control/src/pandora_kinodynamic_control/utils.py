@@ -120,13 +120,14 @@ def find_distance(pose_a, pose_b):
     @return: double, euclidean distance of (x, y, yaw)
 
     """
+    # Ensure ,input pair is vectors of same dimension
+    assert len(pose_a) == len(pose_b)
 
-    x_diff = pose_a[0] - pose_b[0]
-    y_diff = pose_a[1] - pose_b[1]
-    yaw_diff = pose_a[2] - pose_b[2]
+    distance = 0
+    for i in range(len(pose_a)):
+        distance += (pose_a[i] - pose_b[i])**2
 
-    distance = math.sqrt(x_diff**2 + y_diff**2 + yaw_diff**2)
-    return distance
+    return math.sqrt(distance)
 
 
 def rotate_trajectory(angle,trajectory_points,trajectory_yaw):
