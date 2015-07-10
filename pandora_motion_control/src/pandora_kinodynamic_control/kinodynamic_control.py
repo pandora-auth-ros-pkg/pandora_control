@@ -12,6 +12,7 @@ from pandora_kinodynamic_control.navigation_environment import NavigationEnviron
 from pybrain.rl.learners.valuebased import ActionValueTable
 from pybrain.rl.agents import LearningAgent
 from pybrain.rl.learners import SARSA
+from pybrain.rl.explorers import EpsilonGreedyExplorer
 from pandora_kinodynamic_control.params import *
 
 from pandora_motion_control.srv import StoreAVTable
@@ -60,6 +61,7 @@ class KinodynamicController(object):
 
         # Agent set up
         self._learner = SARSA(alpha,gamma)
+        self._learner._setExplorer(EpsilonGreedyExplorer(epsilon))
         self._agent = LearningAgent(self._av_table, self._learner)
 
         # Experiment set up

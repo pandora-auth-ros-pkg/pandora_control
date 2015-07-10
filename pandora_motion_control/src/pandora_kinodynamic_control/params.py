@@ -33,7 +33,7 @@ ACTION_RANGE = (0.8,2.0)
 # 3) Agent
 alpha = 0.5
 gamma = 0.1
-epsilon = None
+epsilon = 0.29999999999999999  # default value
 
 # 4) Cost Function :
 MAX_REWARD = 2
