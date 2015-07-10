@@ -7,7 +7,11 @@ RL Tips :
       -  matplotlib
 
 
-2) Branch for testing :
+    You can use run the install_dep script to download deps using the following commands:
+    1) sudo chmod +x install_dep
+    2) sudo ./install_dep
+
+2) Github Branches for running RL :
 
          REPO                             BRANCH
       pandora_control                motion_control_devel
