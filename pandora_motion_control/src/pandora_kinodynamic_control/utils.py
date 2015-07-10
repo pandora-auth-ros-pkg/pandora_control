@@ -123,7 +123,7 @@ def find_distance(pose_a, pose_b):
 
     x_diff = pose_a[0] - pose_b[0]
     y_diff = pose_a[1] - pose_b[1]
-    yaw_diff = pose_a[0] - pose_b[2]
+    yaw_diff = pose_a[2] - pose_b[2]
 
     distance = math.sqrt(x_diff**2 + y_diff**2 + yaw_diff**2)
     return distance
