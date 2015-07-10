@@ -1,0 +1,21 @@
+RL Tips :
+
+1) Dependencies:
+      -  scipy
+      -  numpy
+      -  pybrain
+      -  matplotlib
+
+
+2) Branch for testing :
+
+         REPO                             BRANCH
+      pandora_control                motion_control_devel
+      pandora_hardware_interface     rl_motor_interface
+      crsm-slam-ros-pkg               pandora_branch
+
+
+3) Running :
+    Before running rl , make sure /tf and /robot_trajectory topics
+    are active . (Which means , laucnh pandora_slam , pandora_pose_estimation
+    and pandora_stabilizer )
