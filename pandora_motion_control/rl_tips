@@ -23,3 +23,12 @@ RL Tips :
     Before running rl , make sure /tf and /robot_trajectory topics
     are active . (Which means , laucnh pandora_slam , pandora_pose_estimation
     and pandora_stabilizer )
+
+4) Visualization :
+
+    a) Change params.py at pandora_kinodynamic_control VISUALIZATION param
+    b) DON'T forget to ssh at robot with ssh -X
+    c) DON'T forget to change it to false afterwards
+
+5) In case you do not want to use rl, use arg rl:=false on integration_test.launch
+of pandora_launchers
