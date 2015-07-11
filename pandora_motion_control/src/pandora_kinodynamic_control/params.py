@@ -8,10 +8,10 @@ BASE_LINK = "/base_link"
 # Reinforcement Learning Related:
 # 1) States:
 # i) Number of States
-ROLL    = 3
-PITCH   = 3
-LINEAR  = 3
-ANGULAR = 3
+ROLL    = 7
+PITCH   = 7
+LINEAR  = 7
+ANGULAR = 7
 
 STATES = [ROLL,PITCH,LINEAR,ANGULAR]
 
@@ -25,15 +25,15 @@ LIMITS = [ROLL_LIMITS,PITCH_LIMITS,LINEAR_LIMITS,ANGULAR_LIMITS]
 
 # 2) Actions:
 # i) Number of Actions
-ACTION_STATES = 5
+ACTION_STATES = 8
 
 # ii) Action ranges
-ACTION_RANGE = (0.8,2.0)
+ACTION_RANGE = (0.8,1.8)
 
 # 3) Agent
 alpha = 0.5
 gamma = 0.1
-epsilon = 0.29999999999999999  # default value
+epsilon = 0.4  # default value
 
 # 4) Cost Function :
 MAX_REWARD = 2
