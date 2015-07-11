@@ -97,7 +97,7 @@ class Keyop:
 
     self.mode = 'motors'  # initialize mode to motors mode
 
-    rospy.Timer(rospy.Duration(0.1), self.pub_callback, oneshot=False)
+    rospy.Timer(rospy.Duration(1.0/5.0), self.pub_callback, oneshot=False)
     self.key_loop()
 
 
