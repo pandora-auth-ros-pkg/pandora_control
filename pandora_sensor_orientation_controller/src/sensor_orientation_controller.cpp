@@ -334,7 +334,7 @@ namespace pandora_control
 
   void SensorOrientationActionServer::centerSensor()
   {
-    if (position_ != START  || position_ != CENTER)
+    if (position_ != START)
     {
       pitchTargetPosition_.data = offsetPitch_;
       yawTargetPosition_.data = offsetYaw_;
@@ -360,26 +360,40 @@ namespace pandora_control
     {
       case START:
         yawScan_ = yawStep_;
-        position_ = LEFT;
+        pitchScan_ = 0;
+        position_ = LEFT_UP;
         break;
-      case LEFT:
+      case LEFT_UP:
+        yawScan_ = yawStep_;
+        pitchScan_ = pitchStep_;
+        position_ = LEFT_DOWN;
+        break;
+      case LEFT_DOWN:
         yawScan_ = 0;
-        position_ = CENTER;
+        pitchScan_ = pitchStep_;
+        position_ = CENTER_DOWN;
         break;
-      case CENTER:
+      case CENTER_DOWN:
         yawScan_ = -yawStep_;
-        position_ = RIGHT;
+        pitchScan_ = pitchStep_;
+        position_ = RIGHT_DOWN;
         break;
-      case RIGHT:
+      case RIGHT_DOWN:
+        yawScan_ = -yawStep_;
+        pitchScan_ = 0;
+        position_ = RIGHT_UP;
+        break;
+      case RIGHT_UP:
         yawScan_ = 0;
+        pitchScan_ = 0;
         position_ = START;
         break;
       case UNKNOWN:
         yawScan_ = 0;
+        pitchScan_ = 0;
         position_ = START;
         break;
     }
-    pitchScan_ = pitchStep_;
 
     publishScanPitchCommand();
     publishScanYawCommand();
