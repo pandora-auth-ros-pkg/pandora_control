@@ -109,8 +109,6 @@ namespace pandora_control
     movementThreshold_ = fabs(movementThreshold_);
     privateNodeHandle_.param("command_timeout", commandTimeout_, 15.0);
 
-    ROS_INFO("private ns: %s", privateNodeHandle_.getNamespace().c_str());
-
     if (privateNodeHandle_.getParam("linear_actuator_command_topic", linearActuatorCommandTopic_))
     {
       ROS_INFO_STREAM("Got param linear_actuator_command_topic: " << linearActuatorCommandTopic_);
@@ -196,7 +194,7 @@ namespace pandora_control
       linearZ = linearActuatorTransform.getOrigin()[2];
       if (ros::Time::now().toSec() - begin.toSec() > commandTimeout_)
       {
-        ROS_DEBUG("%s: Aborted", actionName_.c_str());
+        ROS_ERROR("%s: Aborted", actionName_.c_str());
         // set the action state to succeeded
         actionServer_.setAborted();
         return;
@@ -209,7 +207,7 @@ namespace pandora_control
         return;
       }
     }
-    ROS_DEBUG("%s: Succeeded", actionName_.c_str());
+    ROS_INFO("%s: Succeeded", actionName_.c_str());
     // set the action state to succeeded
     actionServer_.setSucceeded();
   }
@@ -247,13 +245,13 @@ namespace pandora_control
       }
       if (ros::Time::now().toSec() - begin.toSec() > commandTimeout_)
       {
-        ROS_DEBUG("%s: Aborted", actionName_.c_str());
+        ROS_ERROR("%s: Aborted", actionName_.c_str());
         // set the action state to succeeded
         actionServer_.setAborted();
         return;
       }
     }
-    ROS_DEBUG("%s: Succeeded", actionName_.c_str());
+    ROS_INFO("%s: Succeeded", actionName_.c_str());
     // set the action state to succeeded
     actionServer_.setSucceeded();
   }
@@ -269,7 +267,7 @@ namespace pandora_control
     {
       if (actionServer_.isPreemptRequested() || !ros::ok())
       {
-        ROS_DEBUG("%s: Preempted", actionName_.c_str());
+        ROS_WARN("%s: Preempted", actionName_.c_str());
         // set the action state to preempted
         actionServer_.setPreempted();
         return;
