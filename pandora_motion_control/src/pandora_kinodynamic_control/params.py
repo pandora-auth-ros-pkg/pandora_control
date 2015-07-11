@@ -44,7 +44,7 @@ FUSION_WEIGHTS = [1,0.0]
 TIME_GRANULARITY = 5
 COMMAND_DURATION = 0.2
 STEP_SIZE = 7        # cmd_vel callbacks ,until agent learn
-VISUALIZATION = True
+VISUALIZATION = False
 
 # 6) Store Results:
 FILENAME = "AV_table_"
