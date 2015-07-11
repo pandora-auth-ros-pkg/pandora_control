@@ -18,14 +18,14 @@ STATES = [ROLL,PITCH,LINEAR,ANGULAR]
 # ii) Limits of each state [format = (low,high)]
 ROLL_LIMITS    = (-0.28,0.28)  # input in rads
 PITCH_LIMITS   = (-0.28,0.28)  # input in rads
-LINEAR_LIMITS  = (-0.3,0.3)    # in m/s
-ANGULAR_LIMITS = (-0.4,0.4)    # in rad/s
+LINEAR_LIMITS  = (-0.31,0.31)    # in m/s
+ANGULAR_LIMITS = (-0.61,0.61)    # in rad/s
 
 LIMITS = [ROLL_LIMITS,PITCH_LIMITS,LINEAR_LIMITS,ANGULAR_LIMITS]
 
 # 2) Actions:
 # i) Number of Actions
-ACTION_STATES = 3
+ACTION_STATES = 5
 
 # ii) Action ranges
 ACTION_RANGE = (0.8,2.0)
