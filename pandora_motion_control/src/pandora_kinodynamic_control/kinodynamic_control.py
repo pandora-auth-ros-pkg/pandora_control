@@ -16,6 +16,7 @@ from pybrain.rl.explorers import EpsilonGreedyExplorer
 from pandora_kinodynamic_control.params import *
 
 from pandora_motion_control.srv import StoreAVTable
+from pandora_motor_hardware_interface.msg import KinematicParameters
 
 class KinodynamicController(object):
     """ @brief: A class to handle interactions between various components of the RL module"""
@@ -114,7 +115,21 @@ class KinodynamicController(object):
             rospy.sleep(2)
 
 if __name__ == '__main__':
-    # Spawn ROS node , create controller and spin!
-    rospy.init_node('kinodynamic_controller')
-    controller = KinodynamicController()
-    rospy.spin()
+    try:
+        # Spawn ROS node , create controller and spin!
+        rospy.init_node('kinodynamic_controller')
+        controller = KinodynamicController()
+        rospy.spin()
+    except:
+        # Case when RL modules fails for some reason , reset velocity controller
+        # to nomral control mode (all parameters set to 1)
+        pub = rospy.Publisher(COMMAND_TOPIC, KinematicParameters, queue_size=1)
+
+        # Fill reset msg
+        params = KinematicParameters()
+        params.scale_left = 1
+        params.scale_right = 1
+        params.terrain_param = 1
+
+        pub.publish(params)
+        print "RL module failed.Switching to controller-only mode"
