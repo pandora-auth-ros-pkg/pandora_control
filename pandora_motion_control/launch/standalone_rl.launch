@@ -14,10 +14,7 @@
   <include file="$(find pandora_stabilizer)/launch/stabilizer_control.launch" />
 
   <!-- IMU -->
-  <include file="$(find pandora_imu_hardware_interface)/imu_hardware_inteface/launch/imu_hardware_interface_and_controllers.launch" />
-
-  <!-- Laser Stabilizer -->
-  <include file="$(find pandora_stabilizer)/launch/stabilizer_control.launch" />
+  <include file="$(find pandora_imu_hardware_interface)/imu_hardware_interface/launch/imu_hardware_interface_and_controllers.launch" />
 
   <!-- Software -->
   <!-- Robot Description -->
@@ -27,7 +24,7 @@
   <include file="$(find state_manager)/launch/stateManager.launch" />
 
   <!-- SLAM -->
-  <include file="$(find pandora_slam_2d)/launch/pandora_slam_2d.launch" />
+  <include file="$(find pandora_slam_2d)/launch/pandora_slam_2d_real.launch" />
   <include file="$(find pandora_pose_estimation)/launch/pose_estimation_5_dof.launch" />
 
 
