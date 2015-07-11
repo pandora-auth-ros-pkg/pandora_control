@@ -48,7 +48,7 @@ class Joyop:
   def __init__(self, motors_lin_vel_scale=0.5, motors_ang_vel_scale=0.8):
     self.motors_lin_vel_scale = motors_lin_vel_scale
     self.motors_ang_vel_scale = motors_ang_vel_scale
-    self.lac_scale = 14.0
+    self.lac_scale = 0.14
     self.xtion_yaw_range = [-0.7, 0.7]
     self.xtion_pitch_range = [-0.45, 0.75]
     self.picam_yaw_range = [-0.7, 0.7]
