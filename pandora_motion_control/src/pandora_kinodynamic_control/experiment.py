@@ -1,5 +1,6 @@
 import rospy
 from geometry_msgs.msg import Twist
+from threading import Lock
 
 from pandora_kinodynamic_control.params import *
 from pandora_motion_control.srv import StoreAVTable
@@ -15,6 +16,7 @@ class Experiment(object):
 
         self.task = task
         self.agent = agent
+        self.cbLock = Lock()
 
         self.action_done = False
 
@@ -41,6 +43,8 @@ class Experiment(object):
         @return: nothing
 
         """
+        self.cbLock.acquire(False)
+
         self.local_step += 1
         self.save_step += 1
         self.task.set_velocity_command(cmd_vel)
@@ -72,6 +76,7 @@ class Experiment(object):
             self.save_step = 0
             self.save_Table()
 
+        self.cbLock.release()
 
     def save_Table(self):
         rospy.wait_for_service('store_table')
