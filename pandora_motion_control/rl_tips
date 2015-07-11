@@ -1,0 +1,25 @@
+RL Tips :
+
+1) Dependencies:
+      -  scipy
+      -  numpy
+      -  pybrain
+      -  matplotlib
+
+
+    You can use run the install_dep script to download deps using the following commands:
+    1) sudo chmod +x install_dep
+    2) sudo ./install_dep
+
+2) Github Branches for running RL :
+
+         REPO                             BRANCH
+      pandora_control                motion_control_devel
+      pandora_hardware_interface     rl_motor_interface
+      crsm-slam-ros-pkg               pandora_branch
+
+
+3) Running :
+    Before running rl , make sure /tf and /robot_trajectory topics
+    are active . (Which means , laucnh pandora_slam , pandora_pose_estimation
+    and pandora_stabilizer )
