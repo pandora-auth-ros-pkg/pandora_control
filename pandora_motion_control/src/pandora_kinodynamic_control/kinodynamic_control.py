@@ -31,7 +31,7 @@ class KinodynamicController(object):
 
         # Number of States : (read from params.py)
         self._states = STATES
-        self._state_limits = LIMITS
+        self._state_limits = STATE_LIMITS
 
         # Total number of states:
         self._number_of_states = 1
@@ -39,8 +39,13 @@ class KinodynamicController(object):
             self._number_of_states *= i
 
         # Number of actions
-        self._actions = ACTION_STATES
-        self._action_limits = ACTION_RANGE
+        self._actions = ACTIONS
+        self._action_limits = ACTION_LIMITS
+
+        # Total number of actions:
+        self._number_of_actions = 1
+        for i in self._actions:
+            self._number_of_actions *= i
 
         # Action Value Table directory
         self.tables_directory = os.path.dirname(__file__) + "/tables/"
