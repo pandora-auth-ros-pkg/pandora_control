@@ -46,6 +46,9 @@ class NavigationTask(Task):
         # (list containing number of states to produce in each element of sensros list)
         self._number_of_states = STATES
 
+        # Flags
+        self._updated_SLAM = False
+
         # State Processing:
         self._normalize_states = True
         self._discretize_states = True
@@ -80,7 +83,12 @@ class NavigationTask(Task):
         # 2) Trajectory Related:
         # Get actual trajectory as resulted from last command
         if final:
-            self._actual_trajectory = self.env.find_actual_trajectory()
+            update_trajectory = self.env.find_actual_trajectory()
+
+            # Read Data:
+            self._actual_trajectory = update_trajectory[0]
+            self._updated_SLAM = update_trajectory[1]
+
 
         # Set latest action's expected trajectory in motion reward object
         if self._expected_trajectory is not None:
@@ -93,7 +101,7 @@ class NavigationTask(Task):
 
         # 3)Retruns:
         if not final:
-            return list()
+            return [list(),True]  # returns True so that callback can continue process
 
         # Make a state vector of (pitch, roll, linear, angular)
         sensors.append(self._cmd_vel.linear.x)
@@ -108,7 +116,7 @@ class NavigationTask(Task):
 
         # Map sub-states to a total state:
         total_state = utils.state_mapper(tuple(sensors),self._number_of_states)
-        return array([total_state])
+        return [array([total_state]),self._updated_SLAM]
 
     def get_reward(self):
         """ @brief: Calculates using MotionReward last action's reward

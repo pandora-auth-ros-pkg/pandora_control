@@ -19,7 +19,7 @@ STATES = [ROLL,PITCH,LINEAR,ANGULAR]
 ROLL_LIMITS    = (-0.28,0.28)  # input in rads
 PITCH_LIMITS   = (-0.28,0.28)  # input in rads
 LINEAR_LIMITS  = (-0.31,0.31)    # in m/s
-ANGULAR_LIMITS = (-0.61,0.61)    # in rad/s
+ANGULAR_LIMITS = (-0.81,0.81)    # in rad/s
 
 LIMITS = [ROLL_LIMITS,PITCH_LIMITS,LINEAR_LIMITS,ANGULAR_LIMITS]
 
@@ -33,7 +33,7 @@ ACTION_RANGE = (0.8,1.8)
 # 3) Agent
 alpha = 0.5
 gamma = 0.1
-epsilon = 0.4  # default value
+epsilon = 0.4  # default value = 0.29
 
 # 4) Cost Function :
 MAX_REWARD = 2
@@ -43,7 +43,7 @@ COST_THRESHOLD = 1
 FUSION_WEIGHTS = [1,0.0]
 TIME_GRANULARITY = 5
 COMMAND_DURATION = 0.2
-STEP_SIZE = 7        # cmd_vel callbacks ,until agent learn
+STEP_SIZE = 1       # cmd_vel callbacks ,until agent learn
 VISUALIZATION = False
 
 # 6) Store Results:

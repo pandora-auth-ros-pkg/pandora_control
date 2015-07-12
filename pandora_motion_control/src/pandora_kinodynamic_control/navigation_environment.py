@@ -77,7 +77,9 @@ class NavigationEnvironment(Environment):
         Actual trajectory is defined in time by the last time this method was
         called and the next time is called
 
-        @return: list of tuples (x, y, yaw), vehicle's actual trajectory
+        @return: List of :
+                 0)list of tuples (x, y, yaw), vehicle's actual trajectory
+                 1) a boolean , if update_actual_trajectory succeeded
         @note : self._last_moment is not updated ...
                 Update every new actual_path
         """
@@ -85,10 +87,12 @@ class NavigationEnvironment(Environment):
         # Initiallization of time for limiting actual_trajectory from SLAM
         if self._last_moment == None:
             self._last_moment = rospy.Time.now()
-            return list()
+            return [list(),False]
 
         # Read trajecotry from SLAM /robot_trajecotry
+        updated = True
         actual_path = []
+
         # The list must be reversed , otherwise it will immedatelly break
         for p in reversed(self._actual_trajectory.poses):
 
@@ -109,9 +113,14 @@ class NavigationEnvironment(Environment):
             info = (p.pose.position.x,p.pose.position.y,p_yaw)
             actual_path.insert(0,info)
 
+        # Case actual_path is empty (which means SLAM hasn't updated /robot_trajecotry yet)
+        if len(actual_path)<2:
+            updated = False
+            return [actual_path,updated]
+
         self._last_actual_trajectory = actual_path
         self._last_moment = rospy.Time.now()
-        return actual_path
+        return [actual_path,updated]
 
     def perform_action(self, action):
         """ @brief: perform an action on the world that changes vehicle's state

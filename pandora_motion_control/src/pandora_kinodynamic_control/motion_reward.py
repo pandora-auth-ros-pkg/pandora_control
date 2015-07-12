@@ -82,29 +82,6 @@ class MotionReward(object):
         self.trajectory_cost_node.clear_trajectories()
         return reward
 
-    # def init_info_from_action(self, actual_pose, twist, duration, clear=False):
-    #     """ @brief: Initialize cost functions with latest actual pose and
-    #         velocity command
-    #
-    #     @param actual_pose: vehicle's pose at the latest state
-    #     @type actual_pose: Pose
-    #     @param twist: velocity command from local planner
-    #     @type twist: Twist
-    #     @param duration: how much time will the twist be followed
-    #     @type duration: double
-    #     @return: nothing
-    #
-    #     """
-    #     if clear:
-    #         self.trajectory_cost_node.clear_trajectories()
-    #     expected_trajectory = utils.calculate_expected_trajectory(
-    #         actual_pose, twist, duration, self._time_granularity)
-    #     self.trajectory_cost_node.extend_expected_trajectory(expected_trajectory)
-    #     if len(expected_trajectory) <= 1:
-    #         print "[MotionReward] ERROR: expected_trajectory has length <= 1"
-    #     goal_pose = expected_trajectory[-1]
-    #     self.goal_cost_node.set_goal_pose(goal_pose)
-
     def init_info_from_expected(self, expected_trajectory, clear=False):
         """ @brief: Initialize cost functions with expected trajectory given from
             local planner
@@ -126,17 +103,6 @@ class MotionReward(object):
         # Goal Related
         goal_pose = expected_trajectory[-1]
         self.goal_cost_node.set_goal_pose(goal_pose)
-
-    # def update_actual_info(self, actual_pose):
-    #     """ @brief: Update agent's perception of the environment
-    #
-    #     @param actual_pose: new information from the environment
-    #     considering the latest action taken
-    #     @type actual_pose: Pose
-    #     @return: nothing
-    #
-    #     """
-    #     self.trajectory_cost_node.append_actual_pose(actual_pose)
 
     def set_params(self, cost_weights, time_granularity,max_reward,cost_threshold):
         """ @brief: Configure parameters of cost nodes

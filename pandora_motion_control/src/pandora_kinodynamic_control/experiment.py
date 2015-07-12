@@ -49,9 +49,14 @@ class Experiment(object):
         self.save_step += 1
         self.task.set_velocity_command(cmd_vel)
         final = self.local_step == self.local_step_size
-        observation = self.task.get_observation(final)
+        [observation,ready] = self.task.get_observation(final)
+
+        # If SLAM failed , reduce loacal step so next callback is also final
+        if not ready:
+            self.local_step-=1
+
         # get informed about vehicle's current state
-        if final:
+        if final and ready:
             self.local_step = 0
 
             if self.action_done:
