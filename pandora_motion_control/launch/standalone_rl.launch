@@ -1,5 +1,6 @@
 <launch>
   <arg name="robot" default="gio"/>
+  <arg name="rviz" default="false"/>
 
   <!-- Actuators -->
   <!-- Motors -->
@@ -42,6 +43,7 @@
     respawn="true"/>
 
   <!-- RVIZ -->
-  <node name="rviz" type="rviz" pkg="rviz" args="-d $(find pandora_motion_control)/launch/config.rviz" />
-
+  <group if="$(arg rviz)">
+    <node name="rviz" type="rviz" pkg="rviz" args="-d $(find pandora_motion_control)/launch/config.rviz" />
+  </group>
 </launch>
