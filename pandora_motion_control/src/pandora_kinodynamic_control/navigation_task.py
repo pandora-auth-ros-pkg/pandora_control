@@ -103,10 +103,11 @@ class NavigationTask(Task):
         if not final:
             return [list(),True]  # returns True so that callback can continue process
 
-        # Make a state vector of (pitch, roll, linear, angular)
+        # Make a state vector of (roll,pitch, linear, angular)
         sensors.append(self._cmd_vel.linear.x)
         sensors.append(self._cmd_vel.angular.z)
 
+        sensors = utils.clamp(sensors,self.sensor_limits)
         if self._normalize_states:
             sensors = self.normalize(sensors)
 

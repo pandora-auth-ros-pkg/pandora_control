@@ -252,3 +252,30 @@ def transform_action(action,action_count,action_limits):
     upper = action_limits[1]
 
     return (action*(upper-lower)/(action_count-1.0)) + lower
+
+def clamp(sensors, limits):
+    """
+    @brief : Clamper for sensors to ensure they stay in defined range
+
+    @param sensors: Vector containing all states defined in params.py in
+                     the defined order
+    @type sensors: List
+    @param limits:  Vector containing sensor limits
+    @type limits: List of tuples
+
+    """
+    clamped_sensors = sensors
+    for i in range(len(sensors)):
+        lim = limits[i]
+
+        # Low Limit
+        if sensors[i]<lim[0]:
+            print "sensor["+str(i)+"] out of limit [LOWER]"
+            clamped_sensors[i] = lim[0]
+
+        # High Limit
+        elif sensors[i]>lim[1]:
+            print "sensor["+str(i)+"] out of limit [UPPER]"
+            clamped_sensors[i] = lim[1]
+
+    return clamped_sensors
