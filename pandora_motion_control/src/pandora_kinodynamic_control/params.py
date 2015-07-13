@@ -41,7 +41,7 @@ ACTION_LIMITS = [TERRAIN_RANGE, SCALE_LEFT_RANGE, SCALE_RIGHT_RANGE]
 # 3) Agent
 alpha = 0.5
 gamma = 0.1
-epsilon = 0.4  # default value = 0.29
+epsilon = 0.3 # default value = 0.29
 
 # 4) Cost Function :
 MAX_REWARD = 2
