@@ -43,7 +43,7 @@ move_camera_effector_action:
   pitch_command_topic: /camera_effector/tilt_command
   yaw_command_topic: /camera_effector/pan_command
   pitch_joint_parent: camera_effector_tilt_link
-  pitch_joint_child: pi_camera_link
+  pitch_joint_child: front_picam_link
   yaw_joint_parent: linear_actuator_link
   yaw_joint_child: camera_effector_pan_link
-  sensor_frame: pi_camera_frame
+  sensor_frame: front_picam_frame
