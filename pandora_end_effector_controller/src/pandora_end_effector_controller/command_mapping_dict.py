@@ -62,6 +62,6 @@ translate_command = {
         MoveEndEffectorGoal.PARK: MoveSensorGoal.CENTER,
         MoveEndEffectorGoal.TRACK: MoveSensorGoal.POINT,
         MoveEndEffectorGoal.LAX_TRACK: MoveSensorGoal.LAX_POINT,
-        MoveEndEffectorGoal.SCAN: MoveSensorGoal.SOFT_MOVE
+        MoveEndEffectorGoal.SCAN: MoveSensorGoal.MOVE
     }
 }
