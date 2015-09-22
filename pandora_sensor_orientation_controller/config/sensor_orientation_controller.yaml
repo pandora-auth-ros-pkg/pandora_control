@@ -26,10 +26,10 @@ move_kinect_action:
   yaw_joint_child: kinect_pitch_servo_link
   sensor_frame: kinect_frame
 move_camera_effector_action:
-  pitch_step: 0.0
+  pitch_step: -0.2
   min_pitch: -0.6
   max_pitch: 0.6
-  offset_pitch: -0.3
+  offset_pitch: -0.45
   yaw_step: 0.35
   min_yaw: -1.3962
   max_yaw: 1.3962
