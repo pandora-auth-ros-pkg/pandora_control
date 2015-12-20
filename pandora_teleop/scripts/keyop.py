@@ -88,12 +88,12 @@ class Keyop:
     self.picam_yaw = 0     # picam yaw
     self.picam_pitch = 0   # picam pitch
 
-    self.motors_pub = rospy.Publisher('cmd_vel', Twist)
-    self.lac_pub = rospy.Publisher('linear_actuator/command', Float64)
-    self.xtion_yaw_pub = rospy.Publisher('kinect_yaw_controller/command', Float64)
-    self.xtion_pitch_pub = rospy.Publisher('kinect_pitch_controller/command', Float64)
-    self.picam_yaw_pub = rospy.Publisher('camera_effector/pan_command', Float64)
-    self.picam_pitch_pub = rospy.Publisher('camera_effector/tilt_command', Float64)
+    self.motors_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
+    self.lac_pub = rospy.Publisher('linear_actuator/command', Float64, queue_size=1)
+    self.xtion_yaw_pub = rospy.Publisher('kinect_yaw_controller/command', Float64, queue_size=1)
+    self.xtion_pitch_pub = rospy.Publisher('kinect_pitch_controller/command', Float64, queue_size=1)
+    self.picam_yaw_pub = rospy.Publisher('camera_effector/pan_command', Float64, queue_size=1)
+    self.picam_pitch_pub = rospy.Publisher('camera_effector/tilt_command', Float64, queue_size=1)
 
     self.mode = 'motors'  # initialize mode to motors mode
 
