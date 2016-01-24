@@ -134,15 +134,20 @@ class Keyop:
 
     def print_state(self):
         sys.stderr.write("\x1b[2J\x1b[H")
-        rospy.loginfo("\x1b[1M\r**********************************************************************")
-        rospy.loginfo("\x1b[1M\rUse the arrow keys to adjust speed or position and space to halt/reset")
-        rospy.loginfo("\x1b[1M\rPress 'ctr-c' or 'q' to exit")
-        rospy.loginfo("\x1b[1M\r**********************************************************************")
+        rospy.loginfo("\x1b[1M\r*************************************")
+        rospy.loginfo("\x1b[1M\rUse the arrow keys to adjust speed or"
+                      "\nposition and space to halt/reset")
+        rospy.loginfo("\x1b[1M\r\nPress 'ctr-c' or 'q' to exit")
+        rospy.loginfo("\x1b[1M\r*************************************")
         rospy.loginfo("\x1b[1M\r\033[32;1mTeleop Mode: %s", self.mode)
-        rospy.loginfo("\x1b[1M\r\033[33;1mMotors: linear_speed: %0.1f - angular_speed: %0.1f\033[0m", self.lin_vel, self.ang_vel)
-        rospy.loginfo("\x1b[1M\r\033[33;1mLinear Actuator: Position: %0.2f\033[0m", self.lac_position)
-        rospy.loginfo("\x1b[1M\r\033[33;1mXtion: pitch: %0.2f - yaw: %0.2f\033[0m", self.xtion_pitch, self.xtion_yaw)
-        rospy.loginfo("\x1b[1M\r\033[33;1mPicam: pitch: %0.2f - yaw: %0.2f\033[0m", self.picam_pitch, self.picam_yaw)
+        rospy.loginfo("\x1b[1M\r\033[33;1mMotors: lin_vel: %0.1f - "
+                      "ang_vel: %0.1f\033[0m", self.lin_vel, self.ang_vel)
+        rospy.loginfo("\x1b[1M\r\033[33;1mLinear Actuator: Position: "
+                      "%0.2f\033[0m", self.lac_position)
+        rospy.loginfo("\x1b[1M\r\033[33;1mXtion: pitch: %0.2f - yaw: "
+                      "%0.2f\033[0m", self.xtion_pitch, self.xtion_yaw)
+        rospy.loginfo("\x1b[1M\r\033[33;1mPicam: pitch: %0.2f - yaw: "
+                      "%0.2f\033[0m", self.picam_pitch, self.picam_yaw)
 
     def get_key(self):
         tty.setraw(sys.stdin.fileno())
@@ -166,32 +171,57 @@ class Keyop:
                     else:
                         self.lin_vel = self.lin_vel + control_bindings[key][0]
                         self.ang_vel = self.ang_vel + control_bindings[key][1]
-                        self.lin_vel = clip(self.lin_vel, self.lin_vel_range[0], self.lin_vel_range[1])
-                        self.ang_vel = clip(self.ang_vel, self.ang_vel_range[0], self.ang_vel_range[1])
+                        self.lin_vel = clip(
+                            self.lin_vel,
+                            self.lin_vel_range[0],
+                            self.lin_vel_range[1])
+                        self.ang_vel = clip(
+                            self.ang_vel,
+                            self.ang_vel_range[0],
+                            self.ang_vel_range[1])
                 elif self.mode == 'lac':
                     if key == control_keys['space']:
                         self.lac_position = 0
                     else:
-                        self.lac_position = self.lac_position + control_bindings[key][0] / 10
-                        self.lac_position = clip(self.lac_position, self.lac_range[0], self.lac_range[1])
+                        self.lac_position = self.lac_position + \
+                                control_bindings[key][0] / 10
+                        self.lac_position = clip(self.lac_position,
+                                                 self.lac_range[0],
+                                                 self.lac_range[1])
                 elif self.mode == 'xtion':
                     if key == control_keys['space']:
                         self.xtion_pitch = 0
                         self.xtion_yaw = 0
                     else:
-                        self.xtion_pitch = self.xtion_pitch + control_bindings[key][0] / 2
-                        self.xtion_yaw = self.xtion_yaw + control_bindings[key][1] / 2
-                        self.xtion_pitch = clip(self.xtion_pitch, self.xtion_pitch_range[0], self.xtion_pitch_range[1])
-                        self.xtion_yaw = clip(self.xtion_yaw, self.xtion_yaw_range[0], self.xtion_yaw_range[1])
+                        self.xtion_pitch = \
+                                self.xtion_pitch + control_bindings[key][0] / 2
+                        self.xtion_yaw = \
+                                self.xtion_yaw + control_bindings[key][1] / 2
+                        self.xtion_pitch = clip(
+                            self.xtion_pitch,
+                            self.xtion_pitch_range[0],
+                            self.xtion_pitch_range[1])
+                        self.xtion_yaw = clip(
+                            self.xtion_yaw,
+                            self.xtion_yaw_range[0],
+                            self.xtion_yaw_range[1])
                 elif self.mode == "picam":
                     if key == control_keys['space']:
                         self.picam_pitch = 0
                         self.picam_yaw = 0
                     else:
-                        self.picam_pitch = self.picam_pitch + control_bindings[key][0] / 2
-                        self.picam_yaw = self.picam_yaw + control_bindings[key][1] / 2
-                        self.picam_yaw = clip(self.picam_yaw, self.picam_yaw_range[0], self.picam_yaw_range[1])
-                        self.picam_pitch = clip(self.picam_pitch, self.picam_pitch_range[0], self.picam_pitch_range[1])
+                        self.picam_pitch = \
+                                self.picam_pitch + control_bindings[key][0] / 2
+                        self.picam_yaw = \
+                                self.picam_yaw + control_bindings[key][1] / 2
+                        self.picam_yaw = clip(
+                            self.picam_yaw,
+                            self.picam_yaw_range[0],
+                            self.picam_yaw_range[1])
+                        self.picam_pitch = clip(
+                            self.picam_pitch,
+                            self.picam_pitch_range[0],
+                            self.picam_pitch_range[1])
                 else:
                     self.mode="motors"
 
@@ -231,8 +261,10 @@ if __name__ == "__main__":
     args = argv[1:]
 
     if len(args) == 2:
-        rospy.loginfo("Setting motors max linear velocity to %s and angular velocity to %s", args[0], args[1])
+        rospy.loginfo("Setting motors max linear velocity to %s and angular"
+                      "velocity to %s", args[0], args[1])
         keyop = Keyop(args[0], args[1])
     else:
-        rospy.loginfo("Using default motors max linear(0.5m/s) and angular velocity(0.8m/s)")
+        rospy.loginfo("Using default motors max linear(0.5m/s) and angular "
+                      "velocity(0.8m/s)")
         keyop = Keyop()
