@@ -134,10 +134,10 @@ class Keyop:
 
     def print_state(self):
         sys.stderr.write("\x1b[2J\x1b[H")
-        rospy.loginfo("\x1b[1M\r**********************************************************************");
+        rospy.loginfo("\x1b[1M\r**********************************************************************")
         rospy.loginfo("\x1b[1M\rUse the arrow keys to adjust speed or position and space to halt/reset")
         rospy.loginfo("\x1b[1M\rPress 'ctr-c' or 'q' to exit")
-        rospy.loginfo("\x1b[1M\r**********************************************************************");
+        rospy.loginfo("\x1b[1M\r**********************************************************************")
         rospy.loginfo("\x1b[1M\r\033[32;1mTeleop Mode: %s", self.mode)
         rospy.loginfo("\x1b[1M\r\033[33;1mMotors: linear_speed: %0.1f - angular_speed: %0.1f\033[0m", self.lin_vel, self.ang_vel)
         rospy.loginfo("\x1b[1M\r\033[33;1mLinear Actuator: Position: %0.2f\033[0m", self.lac_position)
@@ -197,9 +197,11 @@ class Keyop:
 
                 self.print_state()
             elif key in mode_keys:
-                self.lin_vel = 0; self.ang_vel = 0
+                self.lin_vel = 0
+                self.ang_vel = 0
                 motors_msg = Twist()
-                motors_msg.linear.x = 0; motors_msg.angular.z = 0
+                motors_msg.linear.x = 0
+                motors_msg.angular.z = 0
                 self.motors_pub.publish(motors_msg)
                 self.mode = modes[key]
                 self.print_state()
@@ -215,8 +217,8 @@ class Keyop:
         rospy.loginfo('Halting motors and exiting...')
         self.settings = termios.tcgetattr(sys.stdin)
         self.mode = 'quit'
-        motors_msg = Twist();
-        motors_msg.linear.x = 0;
+        motors_msg = Twist()
+        motors_msg.linear.x = 0
         motors_msg.angular.z = 0
         self.motors_pub.publish(motors_msg)
         sys.exit()
