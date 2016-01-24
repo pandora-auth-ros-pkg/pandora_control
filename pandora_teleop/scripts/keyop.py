@@ -181,8 +181,8 @@ class Keyop:
                     else:
                         self.xtion_pitch = self.xtion_pitch + control_bindings[key][0] / 2
                         self.xtion_yaw = self.xtion_yaw + control_bindings[key][1] / 2
-                        self.xtion_pitch = clip(self.xtion_pitch, self.xtion_yaw_range[0], self.xtion_yaw_range[1])
-                        self.xtion_yaw = clip(self.xtion_yaw, self.xtion_pitch_range[0], self.xtion_pitch_range[1])
+                        self.xtion_pitch = clip(self.xtion_pitch, self.xtion_pitch_range[0], self.xtion_pitch_range[1])
+                        self.xtion_yaw = clip(self.xtion_yaw, self.xtion_yaw_range[0], self.xtion_yaw_range[1])
                 elif self.mode == "picam":
                     if key == control_keys['space']:
                         self.picam_pitch = 0
