@@ -1,0 +1,17 @@
+<launch>
+
+  <arg name="nodelet_manager_name"  value="nodelet_manager"/>
+  <arg name="config_file"           value="$(find pandora_cmd_vel_mux)/config/cmd_vel_mux_config.yaml"/>
+
+  <node name="nodelet_manager" pkg="nodelet" type="nodelet" args="manager"/>
+
+  <node pkg="nodelet" type="nodelet" name="yocs_cmd_vel_mux"
+        args="load yocs_cmd_vel_mux/CmdVelMuxNodelet $(arg nodelet_manager_name)">
+    <param name="yaml_cfg_file" value="$(arg config_file)" />
+    <remap from="yocs_cmd_vel_mux/keyop/cmd_vel" to="keyop/cmd_vel" />
+    <remap from="yocs_cmd_vel_mux/joyop/cmd_vel" to="joyop/cmd_vel" />
+    <remap from="yocs_cmd_vel_mux/navigation/cmd_vel" to="navigation/cmd_vel" />
+    <remap from="yocs_cmd_vel_mux/cmd_vel" to="cmd_vel" />
+  </node>
+
+</launch>

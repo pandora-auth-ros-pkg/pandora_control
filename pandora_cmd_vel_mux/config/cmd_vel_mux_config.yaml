@@ -1,0 +1,16 @@
+subscribers:
+  - name: "Keyop"
+    topic: "keyop/cmd_vel"
+    timeout: 0.5
+    priority: 0
+  - name: "Joyop"
+    topic: "joyop/cmd_vel"
+    timeout: 0.5
+    priority: 1
+  - name: "Navigation Stack"
+    topic: "navigation/cmd_vel"
+    timeout: 0.5
+    priority: 2
+    short_desc: "Navigation stack controller"
+
+publisher: "cmd_vel"
