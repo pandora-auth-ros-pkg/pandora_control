@@ -49,15 +49,15 @@ class Joyop:
         if len(args) == 0:
             self.motors_lin_vel_scale = 0.5
             self.motors_ang_vel_scale = 0.5
-            self.motors_cmd_topic = "cmd_vel"
+            self.motors_cmd_topic = "joyop/cmd_vel"
         elif len(args) == 1:
             self.motors_lin_vel_scale = [-float(args[0]), float(args[0])]
             self.motors_ang_vel_scale = [-float(args[0]), float(args[0])]
-            self.cmd_topic = "cmd_vel"
+            self.cmd_topic = "joyop/cmd_vel"
         elif len(args) == 2:
             self.motors_lin_vel_scale = [-float(args[0]), float(args[0])]
             self.motors_ang_vel_scale = [-float(args[1]), float(args[1])]
-            self.cmd_topic = "cmd_vel"
+            self.cmd_topic = "joyop/cmd_vel"
         elif len(args) == 3:
             self.motors_lin_vel_scale = [-float(args[0]), float(args[0])]
             self.motors_ang_vel_scale = [-float(args[1]), float(args[1])]
