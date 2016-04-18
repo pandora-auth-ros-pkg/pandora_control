@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>pandora_cmd_vel_mux</name>
+  <version>0.0.0</version>
+  <description>The pandora_cmd_vel_mux package</description>
+
+  <maintainer email="gkourosg@yahoo.gr">George Kouros</maintainer>
+
+  <license>BSD</license>
+
+  <url type="bugtracker">https://github.com/pandora-auth-ros-pkg/pandora_control/issues</url>
+  <url type="repository">https://github.com/pandora-auth-ros-pkg/pandora_control</url>
+
+  <author email="gkourosg@yahoo.gr">George Kouros</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>yocs_cmd_vel_mux</exec_depend>
+
+  <export>
+  </export>
+</package>

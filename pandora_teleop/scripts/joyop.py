@@ -45,9 +45,28 @@ from subprocess import call
 
 class Joyop:
 
-    def __init__(self, motors_lin_vel_scale=0.5, motors_ang_vel_scale=0.8):
-        self.motors_lin_vel_scale = motors_lin_vel_scale
-        self.motors_ang_vel_scale = motors_ang_vel_scale
+    def __init__(self, args):
+        if len(args) == 0:
+            self.motors_lin_vel_scale = 0.5
+            self.motors_ang_vel_scale = 0.5
+            self.motors_cmd_topic = "joyop/cmd_vel"
+        elif len(args) == 1:
+            self.motors_lin_vel_scale = [-float(args[0]), float(args[0])]
+            self.motors_ang_vel_scale = [-float(args[0]), float(args[0])]
+            self.cmd_topic = "joyop/cmd_vel"
+        elif len(args) == 2:
+            self.motors_lin_vel_scale = [-float(args[0]), float(args[0])]
+            self.motors_ang_vel_scale = [-float(args[1]), float(args[1])]
+            self.cmd_topic = "joyop/cmd_vel"
+        elif len(args) == 3:
+            self.motors_lin_vel_scale = [-float(args[0]), float(args[0])]
+            self.motors_ang_vel_scale = [-float(args[1]), float(args[1])]
+            self.cmd_topic = args[2]
+        else:
+            rospy.logerr("Too many arguments! Expected 3 arguments at most ("
+                         "linear_velocity_scale, angular_velocity_scale and "
+                         "cmd_topic)");
+            exit(-1)
 
         self.lac_scale = 0.14
         self.xtion_yaw_range = [-0.7, 0.7]
@@ -64,7 +83,8 @@ class Joyop:
         self.picam_yaw = 0
         self.picam_pitch = 0
 
-        self.motors_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+        self.motors_vel_pub = rospy.Publisher(
+            self.motors_cmd_topic, Twist, queue_size=1)
         self.lac_position_pub = rospy.Publisher(
             '/linear_actuator/command', Float64, queue_size=1)
         self.xtion_yaw_pub = rospy.Publisher(
@@ -153,16 +173,5 @@ class Joyop:
 
 if __name__ == "__main__":
     rospy.init_node('joyop_node')
-    rospy.loginfo("Joyop Teleoperation Node Initialized")
+    Joyop = Joyop(sys.argv[1:])
 
-    args = sys.argv[1:]
-
-    if len(args) == 2:
-        rospy.loginfo(
-            "Setting max linear velocity to %s and angular velocity to %s",
-            args[0], args[1])
-        joyop = Joyop(args[0], args[1])
-    else:
-        rospy.loginfo(
-            "Using default max linear(0.5m/s) and angular velocity(0.8m/s)")
-        joyop = Joyop()

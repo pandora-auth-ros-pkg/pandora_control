@@ -71,9 +71,28 @@ modes = {
 
 class Keyop:
 
-    def __init__(self, max_lin_vel=0.5, max_ang_vel=0.8):
-        self.lin_vel_range = [-float(max_lin_vel), float(max_lin_vel)]
-        self.ang_vel_range = [-float(max_ang_vel), float(max_ang_vel)]
+    def __init__(self, args):
+        if len(args) == 0:
+            self.lin_vel_range = [-0.5, 0.5]
+            self.ang_vel_range = [-0.8, 0.8]
+            self.cmd_topic = "keyop/cmd_vel"
+        elif len(args) == 1:
+            self.lin_vel_range = [-float(args[0]), float(args[0])]
+            self.ang_vel_range = [-float(args[0]), float(args[0])]
+            self.cmd_topic = "keyop/cmd_vel"
+        elif len(args) == 2:
+            self.lin_vel_range = [-float(args[0]), float(args[0])]
+            self.ang_vel_range = [-float(args[1]), float(args[1])]
+            self.cmd_topic = "keyop/cmd_vel"
+        elif len(args) == 3:
+            self.lin_vel_range = [-float(args[0]), float(args[0])]
+            self.ang_vel_range = [-float(args[1]), float(args[1])]
+            self.cmd_topic = args[2]
+        else:
+            rospy.logerr("Too many arguments! Expected 3 arguments at most ("
+                         "max_linear_velocity, max_angular_velocity and "
+                         "cmd_topic)");
+            exit(-1)
 
         self.lac_range = [0.0, 0.14]
         self.xtion_yaw_range = [-0.7, 0.7]
@@ -90,7 +109,7 @@ class Keyop:
         self.picam_pitch = 0   # picam pitch
 
         self.motors_pub = rospy.Publisher(
-            '/cmd_vel', Twist, queue_size=1)
+            self.cmd_topic, Twist, queue_size=1)
         self.lac_pub = rospy.Publisher(
             'linear_actuator/command', Float64, queue_size=1)
         self.xtion_yaw_pub = rospy.Publisher(
@@ -255,16 +274,4 @@ class Keyop:
 
 if __name__ == "__main__":
     rospy.init_node('keyop_node')
-    rospy.loginfo("Keyboard Teleoperation Node Initialized")
-    rospy.loginfo("Change mode with m(motors), k(xtion), l(lac), p(picam)")
-
-    args = argv[1:]
-
-    if len(args) == 2:
-        rospy.loginfo("Setting motors max linear velocity to %s and angular"
-                      "velocity to %s", args[0], args[1])
-        keyop = Keyop(args[0], args[1])
-    else:
-        rospy.loginfo("Using default motors max linear(0.5m/s) and angular "
-                      "velocity(0.8m/s)")
-        keyop = Keyop()
+    keyop = Keyop(argv[1:])
